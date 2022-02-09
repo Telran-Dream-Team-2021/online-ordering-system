@@ -1,4 +1,4 @@
-export type productData = {
+export type ProductData = {
     productId: string,
     name: string,
     categoryName: string,
