@@ -6,18 +6,18 @@ import {Observable} from "rxjs";
 export default class Catalog {
     constructor(private productService: DataProvider<ProductData>) {}
     addProduct(product: ProductData): Promise<ProductData> {
-        throw new Error("Method not implemented.");
+        return this.productService.add(product);
     }
     updateProduct(productId: number, newProductData: ProductData): Promise<ProductData> {
-        throw new Error("Method not implemented.");
+        return this.productService.update(productId, newProductData);
     }
     removeProduct(productId: number): Promise<ProductData> {
-        throw new Error("Method not implemented.");
+        return this.productService.remove(productId);
     }
     getProduct(productId: number): Promise<ProductData> {
-        throw new Error("Method not implemented.");
+        return this.productService.get(productId) as Promise<ProductData>;
     }
     getAllProducts(): Observable<ProductData[]> {
-        throw new Error("Method not implemented.");
+        return this.productService.get() as Observable<ProductData[]>;
     }
 }
