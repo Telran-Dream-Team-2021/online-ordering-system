@@ -14,7 +14,10 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         this.fireCollection = collection(getFirestore(firebaseApp), collectionName);
     }
     async add(entity: ProductData): Promise<ProductData> {
-        const productDocRef =doc(this.fireCollection, entity.productId.toString());
+        if(await this.exists(entity.productId)) {
+            throw `Product with id ${entity.productId} already exists`
+        }
+        const productDocRef = doc(this.fireCollection, entity.productId.toString());
         try {
             await setDoc(productDocRef, entity);
         } catch (e) {
