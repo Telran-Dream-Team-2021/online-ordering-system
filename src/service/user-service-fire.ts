@@ -3,7 +3,7 @@ import {UserData} from "../models/common/user-data";
 import {Observable} from "rxjs";
 
 export default class UserServiceFire extends AbstractDataProvider<UserData> {
-    exists(id: number): Promise<boolean> {
+    exists(id: string): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
 
@@ -11,15 +11,15 @@ export default class UserServiceFire extends AbstractDataProvider<UserData> {
         throw new Error('Not implemented yet!')
     }
 
-    get(id?: number): Observable<UserData[]> | Promise<UserData> {
+    get(id?: string): Observable<UserData[]> | Promise<UserData> {
         throw new Error('Not implemented yet!')
     }
 
-    remove(id: number): Promise<UserData> {
+    remove(id: string): Promise<UserData> {
         throw new Error('Not implemented yet!')
     }
 
-    update(id: number, newEntity: UserData): Promise<UserData> {
+    update(id: string, newEntity: UserData): Promise<UserData> {
         throw new Error('Not implemented yet!')
     }
 }

@@ -1,5 +1,5 @@
 export type ProductData = {
-    productId: number,
+    productId: number | string,
     name: string,
     categoryName: string,
     description: string,
@@ -7,4 +7,15 @@ export type ProductData = {
     price: number,
     unitOfMeasurement: string,
     isActive: boolean,
+}
+
+export const dummyProduct: ProductData = {
+    productId: 0,
+    name: "",
+    categoryName: "",
+    description: "",
+    imageUrl: "",
+    price: 0,
+    unitOfMeasurement: "",
+    isActive: false
 }
