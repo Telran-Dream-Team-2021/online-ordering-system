@@ -14,10 +14,10 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         this.fireCollection = collection(getFirestore(firebaseApp), collectionName);
     }
     async add(entity: ProductData): Promise<ProductData> {
-        if(await this.exists(entity.productId)) {
+        if(await this.exists(entity.productId as string)) {
             throw `Product with id ${entity.productId} already exists`
         }
-        const productDocRef = doc(this.fireCollection, entity.productId.toString());
+        const productDocRef = doc(this.fireCollection, entity.productId as string);
         try {
             await setDoc(productDocRef, entity);
         } catch (e) {
@@ -25,14 +25,14 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         }
         return entity;
     }
-    async exists(id: number): Promise<boolean> {
-        const productDocRef = doc(this.fireCollection, id.toString());
+    async exists(id: string): Promise<boolean> {
+        const productDocRef = doc(this.fireCollection, id);
         const productDocSnap = await getDoc(productDocRef);
         return productDocSnap.exists();
     }
-    get(id?: number): Promise<ProductData> | Observable<ProductData[]> {
+    get(id?: string): Promise<ProductData> | Observable<ProductData[]> {
         if(id) {
-            const productDocRef = doc(this.fireCollection, id.toString());
+            const productDocRef = doc(this.fireCollection, id);
             return getDoc(productDocRef).then(resp => resp.data() as ProductData)
         } else {
            return (collectionData(this.fireCollection) as Observable<ProductData[]>).pipe(
@@ -42,8 +42,8 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
             )
         }
     }
-    async remove(id: number): Promise<ProductData> {
-        const productDocRef = doc(this.fireCollection, id.toString());
+    async remove(id: string): Promise<ProductData> {
+        const productDocRef = doc(this.fireCollection, id);
         const productSnapshot = await this.get(id) as ProductData;
         try {
             await deleteDoc(productDocRef);
@@ -52,8 +52,8 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         }
         return productSnapshot;
     }
-    async update(id: number, newEntity: ProductData): Promise<ProductData> {
-        const productDocRef = doc(this.fireCollection, id.toString());
+    async update(id: string, newEntity: ProductData): Promise<ProductData> {
+        const productDocRef = doc(this.fireCollection, id);
         const oldProductSnapshot = await this.get(id) as ProductData;
         try {
             await setDoc(productDocRef, newEntity);

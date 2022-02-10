@@ -11,19 +11,19 @@ export default interface DataProvider<T> {
      * Removes entity from database
      * @param id
      */
-    remove(id: number): Promise<T>;
+    remove(id: number | string): Promise<T>;
 
     /**
      * Checks that the entity with given id is exists in database
      * @param id
      */
-    exists(id: number): Promise<boolean>;
+    exists(id: number | string): Promise<boolean>;
 
     /**
      * Returns entity with given id if its defined, otherwise all entities using observing
      * @param id
      */
-    get(id?: number): Observable<T[]> | Promise<T>;
+    get(id?: number | string): Observable<T[]> | Promise<T>;
 
     /**
      * Replaces entity, with given id, with the newEntity
@@ -31,5 +31,5 @@ export default interface DataProvider<T> {
      * @param newEntity
      * @return Old entity
      */
-    update(id: number, newEntity: T): Promise<T>;
+    update(id: number | string, newEntity: T): Promise<T>;
 }
