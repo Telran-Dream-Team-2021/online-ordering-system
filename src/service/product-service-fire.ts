@@ -1,9 +1,10 @@
 import AbstractDataProvider from "./abstract-data-provider";
 import {ProductData} from "../models/product-data";
-import { Observable } from "rxjs";
+import {catchError, Observable} from "rxjs";
 import {collectionData} from "rxfire/firestore";
 import firebaseApp from "../config/fire-config";
-import {CollectionReference, getFirestore, collection } from "firebase/firestore";
+import {CollectionReference, getFirestore, collection, doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
+import ErrorCode from "../models/common/error-code";
 
 
 export default class ProductServiceFire extends AbstractDataProvider<ProductData> {
@@ -12,20 +13,53 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         super();
         this.fireCollection = collection(getFirestore(firebaseApp), collectionName);
     }
-
-    add(entity: ProductData): Promise<ProductData> {
-        throw new Error("Method not implemented.");
+    async add(entity: ProductData): Promise<ProductData> {
+        if(await this.exists(entity.productId)) {
+            throw `Product with id ${entity.productId} already exists`
+        }
+        const productDocRef = doc(this.fireCollection, entity.productId.toString());
+        try {
+            await setDoc(productDocRef, entity);
+        } catch (e) {
+            throw ErrorCode.AUTH_ERROR;
+        }
+        return entity;
     }
-    exists(id: number): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async exists(id: number): Promise<boolean> {
+        const productDocRef = doc(this.fireCollection, id.toString());
+        const productDocSnap = await getDoc(productDocRef);
+        return productDocSnap.exists();
     }
     get(id?: number): Promise<ProductData> | Observable<ProductData[]> {
-        throw new Error("Method not implemented.");
+        if(id) {
+            const productDocRef = doc(this.fireCollection, id.toString());
+            return getDoc(productDocRef).then(resp => resp.data() as ProductData)
+        } else {
+           return (collectionData(this.fireCollection) as Observable<ProductData[]>).pipe(
+                catchError(err => {
+                    throw err.code ?  ErrorCode.AUTH_ERROR : ErrorCode.SERVER_UNAVAILABLE;
+                })
+            )
+        }
     }
-    remove(id: number): Promise<ProductData> {
-        throw new Error("Method not implemented.");
+    async remove(id: number): Promise<ProductData> {
+        const productDocRef = doc(this.fireCollection, id.toString());
+        const productSnapshot = await this.get(id) as ProductData;
+        try {
+            await deleteDoc(productDocRef);
+        } catch (e) {
+            throw ErrorCode.AUTH_ERROR;
+        }
+        return productSnapshot;
     }
-    update(id: number, newEntity: ProductData): Promise<ProductData> {
-        throw new Error("Method not implemented.");
+    async update(id: number, newEntity: ProductData): Promise<ProductData> {
+        const productDocRef = doc(this.fireCollection, id.toString());
+        const oldProductSnapshot = await this.get(id) as ProductData;
+        try {
+            await setDoc(productDocRef, newEntity);
+        } catch(e) {
+            throw ErrorCode.AUTH_ERROR;
+        }
+        return oldProductSnapshot;
     }
 }
