@@ -1,5 +1,5 @@
 export type ItemData = {
-    productId: string,
+    productId: number | string,
     pricePerUnit: number,
     quantity: number
 }
