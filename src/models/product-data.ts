@@ -8,3 +8,14 @@ export type ProductData = {
     unitOfMeasurement: string,
     isActive: boolean,
 }
+
+export const dummyProduct: ProductData = {
+    productId: 0,
+    name: "",
+    categoryName: "",
+    description: "",
+    imageUrl: "",
+    price: 0,
+    unitOfMeasurement: "",
+    isActive: false
+}
