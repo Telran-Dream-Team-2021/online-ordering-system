@@ -3,10 +3,12 @@ import {UserData} from "../models/common/user-data";
 import ErrorCode from "../models/common/error-code";
 import {ProductData} from "../models/product-data";
 import {catalog} from "../config/services-config";
+import {OrderData} from "../models/order-data";
 
 export const SET_USER_DATA = "set_user_data";
 export const SET_ERROR_CODE = "set_error_code";
 export const SET_CATALOG = "set_catalog";
+export const SET_ORDERS = "set_orders";
 
 type ActionType<T> = (data: T) => PayloadAction<T>;
 
@@ -18,6 +20,9 @@ export const setErrorCode: ActionType<ErrorCode> = errorCode => (
 )
 export const setCatalog: ActionType<ProductData[]> = catalog => (
     {payload: catalog, type: SET_CATALOG}
+)
+export const setOrders: ActionType<OrderData[]> = orders => (
+    {payload: orders, type: SET_ORDERS}
 )
 
 async function action(handlerFn: any, dispatch: Dispatch) {
@@ -38,3 +43,7 @@ export const removeProductAction = function (productId: number): (dispatch: any)
 export const updateProductAction = function (productId: number, newProduct: ProductData): (dispatch: any) => void {
     return action.bind(null, catalog.updateProduct.bind(catalog, productId, newProduct));
 }
+
+// export const addOrderAction = (order: OrderData): (dispatch: any) => void {
+//
+// }

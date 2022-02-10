@@ -1,6 +1,6 @@
 import {ItemData} from "./item-data";
 
-enum statuses {
+export enum statuses {
     created,
     inProgress,
     shipped,
