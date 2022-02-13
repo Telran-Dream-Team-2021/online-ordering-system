@@ -28,9 +28,9 @@ const App: FC = () => {
 
     useEffect(() => {
         let subscription: any;
-        subscription = getData();
+        subscription = getCatalogData();
 
-        function getData(): Subscription {
+        function getCatalogData(): Subscription {
             subscription && subscription.unsubscribe();
             return catalog.getAllProducts().subscribe({
                 next(arr) {
@@ -40,7 +40,7 @@ const App: FC = () => {
                 error(err) {
                     dispatch(setErrorCode(err));
                     setTimeout(() => {
-                        subscription = getData()
+                        subscription = getCatalogData()
                     }, 2000);
                 }
             })
