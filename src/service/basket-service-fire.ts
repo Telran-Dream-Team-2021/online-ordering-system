@@ -27,22 +27,24 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
     }
 
     get(id?: string): Promise<BasketData> {
-        const userDocRef = doc(this.fireCollection, id);
-        return getDoc(userDocRef).then(resp => resp.data() as UserData).then(res => res.basket);
+        throw "Not implemented"
+        // const userDocRef = doc(this.fireCollection, id);
+        // return getDoc(userDocRef).then(resp => resp.data() as UserData).then(res => res.basket);
     }
 
     async remove(id: string): Promise<BasketData> {
-        const user = (await getDoc(doc(this.fireCollection, id))).data() as UserData;
-        const newUser = {
-            username: user.username, isAdmin: user.isAdmin, displayName: user.displayName,
-            deliveryAddress: user.deliveryAddress
-        }
-        try {
-            await setDoc(doc(this.fireCollection, id), newUser);
-        } catch (e) {
-            throw ErrorCode.AUTH_ERROR;
-        }
-        return user.basket;
+        throw "Not implemented"
+        // const user = (await getDoc(doc(this.fireCollection, id))).data() as UserData;
+        // const newUser = {
+        //     username: user.username, isAdmin: user.isAdmin, displayName: user.displayName,
+        //     deliveryAddress: user.deliveryAddress
+        // }
+        // try {
+        //     await setDoc(doc(this.fireCollection, id), newUser);
+        // } catch (e) {
+        //     throw ErrorCode.AUTH_ERROR;
+        // }
+        // return user.basket;
     }
 
     async update(id: string, newEntity: BasketData): Promise<BasketData> {

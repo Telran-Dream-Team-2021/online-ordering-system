@@ -1,11 +1,14 @@
-import React, {useEffect, useState, FC, useMemo, useRef} from 'react';
-import {catalog} from "../../config/services-config";
+import React, {useState, FC, useMemo, useRef} from 'react';
 import {ProductData} from "../../models/product-data";
 import {useDispatch, useSelector} from "react-redux";
 import {catalogSelector, userDataSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
-import {Avatar, Box, Paper} from '@mui/material';
-import {DataGrid, GridColumns, GridRowsProp} from "@mui/x-data-grid";
+import {Avatar, Box, Paper, Switch} from '@mui/material';
+import {DataGrid, GridActionsCellItem, GridColumns, GridRowsProp} from "@mui/x-data-grid";
+import {Delete, Visibility} from "@mui/icons-material";
+import ConfirmDialog from "../common/confirm-dialog";
+import {ConfirmationDataType, initialConfirmationData} from "../../models/common/confirmation-data-type";
+import {removeProductAction} from "../../redux/actions";
 
 
 function getRows(assortment: ProductData[]): GridRowsProp {
@@ -20,24 +23,68 @@ const AssortmentPage: FC = () => {
     const rows = useMemo(() => {
         return getRows(assortment);
     }, [assortment]);
-    const columns = useRef<GridColumns>(getColumns());
+    const columns = getColumns();
+    const confirmationDialog = useRef<ConfirmationDataType>(initialConfirmationData);
+    const [isConfDialogVisible, setIsConfDialogVisible] = useState(false);
 
     function getColumns(): GridColumns {
         return [
-            {field: 'imageUrl', headerName: 'Image', flex: 1, renderCell: params => {
+            {field: 'categoryName', headerName: 'Category', flex: 2},
+            {field: 'imageUrl', headerName: 'Image', flex: 1, headerAlign: "center", align: "center",
+                renderCell: params => {
                     return <Avatar
                         src={params.value}
-                        sx={{ width: 24, height: 24 }}
+                        sx={{ width: 48, height: 48 }}
                     />
                 }
             },
-            {field: 'productId', headerName: 'Product ID', flex: 1},
-            {field: 'categoryName', headerName: 'Category', flex: 2},
-            {field: 'name', headerName: 'Product name', flex: 3},
-
+            {field: 'productId', headerName: 'Product ID', flex: 2},
+            {field: 'name', headerName: 'Product name', flex: 6},
+            {field: 'isActive', headerName: '', flex: 1, editable: true,
+                renderCell: params => {
+                    return (
+                        <Switch
+                            checked={params.value}
+                            // onChange={handleChange}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                    );
+                }
+            },
+            {field: 'actions', type: "actions", getActions(params) {
+                    return [
+                        <GridActionsCellItem icon={<Visibility />}
+                             onClick={() => showProductDetails(params.id as number)} label="Details"/>,
+                        <GridActionsCellItem icon={<Delete />}
+                                             onClick={() => {
+                                                 showDeleteProductDialog(params.id as number)
+                                             }} label="Delete"/>
+                    ]
+                }
+            }
         ]
     }
-
+    function showProductDetails(productId: number) {
+        throw "Not implemented";
+    }
+    function showDeleteProductDialog(productId: number) {
+        confirmationDialog.current.title = "Delete product";
+        confirmationDialog.current.message = `Are you sure that you want to delete ${productId}
+            ${getProduct(productId).name} from assortment?`
+        confirmationDialog.current.handler = removeProduct.bind(null, productId);
+        setIsConfDialogVisible(true);
+    }
+    function getProduct(productId: number): ProductData {
+        const product =  assortment.find(product => product.productId === productId);
+        if(!product) {
+            throw `No product with id ${productId} in the assortment`
+        }
+        return product;
+    }
+    function removeProduct(productId: number) {
+        dispatch(removeProductAction(productId));
+        setIsConfDialogVisible(false);
+    }
     return (
         <Box
             sx={{
@@ -53,8 +100,9 @@ const AssortmentPage: FC = () => {
                     height: '80vh', marginTop: '2vh'
                     }}
             >
-                <DataGrid rows={rows} getRowId={(row) => row.productId} columns={columns.current} />
+                <DataGrid rows={rows} getRowId={(row) => row.productId} columns={columns} />
             </Paper>
+            {isConfDialogVisible && <ConfirmDialog data={confirmationDialog.current} open={isConfDialogVisible}/>}
         </Box>
     );
 };

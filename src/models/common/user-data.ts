@@ -5,14 +5,14 @@ export type UserData = {
     isAdmin: boolean;
     displayName: string;
     deliveryAddress?: string;
-    basket: BasketData;
+    // basket: BasketData;
 }
 export const DISPLAY_NAME_ERROR = 'error'
 export const nonAuthorizedUser: UserData = {
     username: '',
     isAdmin: false,
     displayName: '',
-    basket: {userId: "", basketItems: []}
+    // basket: {userId: "", basketItems: []}
 };
 // export const unavailableServiceUser: UserData = {
 //     username: 'error', isAdmin: false,
