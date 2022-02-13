@@ -12,5 +12,5 @@ export const nonAuthorizedUser: UserData = {
 };
 export const unavailableServiceUser: UserData = {
     username: 'error', isAdmin: false,
-    displayName: DISPLAY_NAME_ERROR
+    displayName: DISPLAY_NAME_ERROR,
 }

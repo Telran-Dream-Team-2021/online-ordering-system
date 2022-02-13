@@ -27,7 +27,6 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
 
     get(id?: string): Promise<BasketData> {
         const basketDocRef = doc(this.fireCollection, id);
-        //TODO
         return getDoc(basketDocRef).then(resp => resp.data() as BasketData).then(res => res);
     }
 
