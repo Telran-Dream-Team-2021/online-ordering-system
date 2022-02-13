@@ -5,6 +5,7 @@ import ErrorCode from "../models/common/error-code";
 import {errorCodeReducer, userDataReducer, catalogReducer} from "./reducers";
 import {ProductData} from "../models/product-data";
 
+
 type StoreType = {
     userData: UserData,
     errorCode: ErrorCode,
