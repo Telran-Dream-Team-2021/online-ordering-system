@@ -26,3 +26,4 @@ export const store = createStore(reducers, applyMiddleware(thunk));
 export const userDataSelector = (state: StoreType): UserData => state.userData;
 export const errorCodeSelector = (state: StoreType): ErrorCode => state.errorCode;
 export const catalogSelector = (state: StoreType): ProductData[] => state.catalog;
+export const ordersSelector = (state: StoreType): OrderData [] => state.orders;

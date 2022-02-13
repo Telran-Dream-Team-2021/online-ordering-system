@@ -1,6 +1,7 @@
 import {OrderData} from "../models/order-data";
-import {FC, useState} from "react";
+import {FC} from "react";
 import {getRandomOrder} from "../utils/random";
+import {Button} from "@mui/material";
 
 type AddOrderForm = {
     addOrderFn: (order: OrderData) => void
@@ -8,9 +9,9 @@ type AddOrderForm = {
 
 const AddOrderForm: FC<AddOrderForm> = (props)=>{
     const {addOrderFn} = props
-    const [orderState, setOrderState] = useState<OrderData>(getRandomOrder())
+
     return (
-        <button onClick={()=>addOrderFn(orderState)}>add random order</button>
+        <Button onClick={()=>addOrderFn(getRandomOrder())}>add random order</Button>
     )
 }
 

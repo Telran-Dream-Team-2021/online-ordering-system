@@ -20,9 +20,13 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
 
     async add(entity: OrderData): Promise<OrderData> {
         const orderId = getUuidByOrder()
-        entity = {...entity, orderId}
+
         try{
-            await setDoc(doc(this.fireCollection, orderId as string), entity);
+            await setDoc(doc(this.fireCollection, orderId as string), {...entity,
+                orderId,
+                deliveryDate: entity.deliveryDate.toISOString(),
+                lastEditionDate: entity.lastEditionDate.toISOString()
+            });
         } catch(err){
             throw ErrorCode.AUTH_ERROR
         }
@@ -62,4 +66,6 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
         }
         return oldOrderSnapshot
     }
+
+
 }

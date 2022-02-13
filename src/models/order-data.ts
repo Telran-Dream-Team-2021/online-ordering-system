@@ -1,4 +1,5 @@
 import {ItemData} from "./item-data";
+import {Timestamp} from "firebase/firestore";
 
 export enum statuses {
     created,
@@ -13,7 +14,7 @@ export type OrderData = {
     OrderItems: ItemData[],
     userId: string,
     deliveryAddress?: string,
-    status: statuses,
+    status: string,
     deliveryDate: Date,
     lastEditionDate: Date,
 }

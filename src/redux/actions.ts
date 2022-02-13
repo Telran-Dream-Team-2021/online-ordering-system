@@ -2,7 +2,7 @@ import {Dispatch, PayloadAction} from '@reduxjs/toolkit'
 import {UserData} from "../models/common/user-data";
 import ErrorCode from "../models/common/error-code";
 import {ProductData} from "../models/product-data";
-import {catalog} from "../config/services-config";
+import {catalog, orders} from "../config/services-config";
 import {OrderData} from "../models/order-data";
 
 export const SET_USER_DATA = "set_user_data";
@@ -44,6 +44,6 @@ export const updateProductAction = function (productId: number, newProduct: Prod
     return action.bind(null, catalog.updateProduct.bind(catalog, productId, newProduct));
 }
 
-// export const addOrderAction = (order: OrderData): (dispatch: any) => void {
-//
-// }
+export const addOrderAction = function(order: OrderData): (dispatch: any) => void {
+    return action.bind(null, orders.addOrder.bind(orders, order));
+}

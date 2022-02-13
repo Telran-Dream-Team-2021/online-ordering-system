@@ -4,11 +4,11 @@ import {getUuidByOrder, getUuidByProduct, getUuidByUser} from "./uuid";
 
 export const getRandomOrder: ()=>OrderData = ()=>{
     const order: OrderData = {
-        orderId: getUuidByOrder(),
+        orderId: '',
         OrderItems: getRandomItems(5),
         userId: getUuidByUser(),
         deliveryAddress: "Beer Sheva, Sderot 3",
-        status: statuses.created,
+        status: statuses[statuses.created],
         deliveryDate: getLastEditionDate(),
         lastEditionDate: getDeliveryDate()
     };
