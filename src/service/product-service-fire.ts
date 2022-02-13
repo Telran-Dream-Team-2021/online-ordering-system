@@ -14,7 +14,7 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         this.fireCollection = collection(getFirestore(firebaseApp), collectionName);
     }
     async add(entity: ProductData): Promise<ProductData> {
-        if(await this.exists(entity.productId as string)) {
+        if(await this.exists(entity.productId as number)) {
             throw `Product with id ${entity.productId} already exists`
         }
         const productDocRef = doc(this.fireCollection, entity.productId as string);
@@ -25,14 +25,14 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         }
         return entity;
     }
-    async exists(id: string): Promise<boolean> {
-        const productDocRef = doc(this.fireCollection, id);
+    async exists(id: number): Promise<boolean> {
+        const productDocRef = doc(this.fireCollection, id.toString());
         const productDocSnap = await getDoc(productDocRef);
         return productDocSnap.exists();
     }
-    get(id?: string): Promise<ProductData> | Observable<ProductData[]> {
+    get(id?: number): Promise<ProductData> | Observable<ProductData[]> {
         if(id) {
-            const productDocRef = doc(this.fireCollection, id);
+            const productDocRef = doc(this.fireCollection, id.toString());
             return getDoc(productDocRef).then(resp => resp.data() as ProductData)
         } else {
            return (collectionData(this.fireCollection) as Observable<ProductData[]>).pipe(
@@ -42,8 +42,8 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
             )
         }
     }
-    async remove(id: string): Promise<ProductData> {
-        const productDocRef = doc(this.fireCollection, id);
+    async remove(id: number): Promise<ProductData> {
+        const productDocRef = doc(this.fireCollection, id.toString());
         const productSnapshot = await this.get(id) as ProductData;
         try {
             await deleteDoc(productDocRef);
@@ -52,8 +52,11 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         }
         return productSnapshot;
     }
-    async update(id: string, newEntity: ProductData): Promise<ProductData> {
-        const productDocRef = doc(this.fireCollection, id);
+    async update(id: number, newEntity: ProductData): Promise<ProductData> {
+        console.log(id);
+        console.log(newEntity);
+
+        const productDocRef = doc(this.fireCollection, id.toString());
         const oldProductSnapshot = await this.get(id) as ProductData;
         try {
             await setDoc(productDocRef, newEntity);

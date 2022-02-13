@@ -8,7 +8,7 @@ import {DataGrid, GridActionsCellItem, GridColumns, GridRowsProp} from "@mui/x-d
 import {Delete, Visibility} from "@mui/icons-material";
 import ConfirmDialog from "../common/confirm-dialog";
 import {ConfirmationDataType, initialConfirmationData} from "../../models/common/confirmation-data-type";
-import {removeProductAction} from "../../redux/actions";
+import {removeProductAction, updateProductAction} from "../../redux/actions";
 
 
 function getRows(assortment: ProductData[]): GridRowsProp {
@@ -45,7 +45,7 @@ const AssortmentPage: FC = () => {
                     return (
                         <Switch
                             checked={params.value}
-                            // onChange={handleChange}
+                            onChange={() => switchProductActivity(params.id as number)}
                             inputProps={{ 'aria-label': 'controlled' }}
                         />
                     );
@@ -63,6 +63,11 @@ const AssortmentPage: FC = () => {
                 }
             }
         ]
+    }
+    function switchProductActivity(productId: number) {
+        const product = getProduct(productId);
+        product.isActive = !product.isActive;
+        dispatch(updateProductAction(productId, product));
     }
     function showProductDetails(productId: number) {
         throw "Not implemented";
