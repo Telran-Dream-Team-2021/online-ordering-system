@@ -19,6 +19,7 @@ type ModalProps = {
     message: string[],
     onClose: () => void
     open: boolean,
+    imageUrl: string,
 }
 
 const InfoModal: React.FC<ModalProps> = (props) => {
@@ -34,6 +35,7 @@ const InfoModal: React.FC<ModalProps> = (props) => {
                 {props.title}
             </Typography>
             <Box id="modal-modal-description" sx={{ mt: 2 }}>
+                <img src={props.imageUrl} height={350}/>
                 <List>
                     {props.message.map((e, index) => <ListItem key={index}>{e}</ListItem>)}
                 </List>
