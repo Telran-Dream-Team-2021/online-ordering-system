@@ -54,7 +54,7 @@ const ListingPage: FC = () => {
 
             }
         ]
-    };
+    }
 
     function badgeHandler() {
         if (count == 0) {

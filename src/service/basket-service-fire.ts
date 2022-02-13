@@ -3,7 +3,6 @@ import {collection, CollectionReference, doc, getDoc, getFirestore, setDoc} from
 import firebaseApp from "../config/fire-config";
 import ErrorCode from "../models/common/error-code";
 import {BasketData} from "../models/basket-data";
-import {UserData} from "../models/common/user-data";
 
 export default class BasketServiceFire extends AbstractDataProvider<BasketData> {
     fireCollection: CollectionReference;
@@ -27,22 +26,22 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
     }
 
     get(id?: string): Promise<BasketData> {
-        const userDocRef = doc(this.fireCollection, id);
-        return getDoc(userDocRef).then(resp => resp.data() as UserData).then(res => res.basket);
+        const basketDocRef = doc(this.fireCollection, id);
+        //TODO
+        return getDoc(basketDocRef).then(resp => resp.data() as BasketData).then(res => res);
     }
 
     async remove(id: string): Promise<BasketData> {
-        const user = (await getDoc(doc(this.fireCollection, id))).data() as UserData;
-        const newUser = {
-            username: user.username, isAdmin: user.isAdmin, displayName: user.displayName,
-            deliveryAddress: user.deliveryAddress
+        const basket = (await getDoc(doc(this.fireCollection, id))).data() as BasketData;
+        const newBasket = {
+            basketItems: basket.basketItems = [], userId: id
         }
         try {
-            await setDoc(doc(this.fireCollection, id), newUser);
+            await setDoc(doc(this.fireCollection, id), newBasket);
         } catch (e) {
             throw ErrorCode.AUTH_ERROR;
         }
-        return user.basket;
+        return basket;
     }
 
     async update(id: string, newEntity: BasketData): Promise<BasketData> {

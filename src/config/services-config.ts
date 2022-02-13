@@ -15,4 +15,4 @@ export const authService = new AuthServiceFire();
 export const userService = new UserServiceFire();
 
 /*** Basket Service config***/
-export const basketService = new BasketServiceFire("users");
+export const basketService = new BasketServiceFire("baskets");
