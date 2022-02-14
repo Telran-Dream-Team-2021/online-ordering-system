@@ -1,4 +1,3 @@
-import {ReactNode} from "react";
 import Login from "../components/pages/registration-auth-page";
 import {RouteType} from "../models/common/route-type";
 import AssortmentPage from "../components/pages/assortment-page";
@@ -8,6 +7,7 @@ import ListingPage from "../components/pages/listing-page";
 
 export const PATH_ASSORTMENT = "/assortment";
 export const PATH_LOGIN = "/login";
+export const PATH_LOGIN_STEP_2 = "/login/step2";
 export const PATH_BASKET = "/basket";
 export const PATH_ORDERS = "/orders";
 export const PATH_LISTING = "/listing";

@@ -1,12 +1,25 @@
 import {Box, Grid, Paper} from '@mui/material';
-import React, {FC, useMemo} from 'react';
+import React, {FC, useMemo, useRef, useState} from 'react';
 import {DataGrid, GridColumns, GridRowsProp, GridActionsCellItem, GridRowParams} from "@mui/x-data-grid";
 import {ProductData} from "../../models/product-data";
 import {useSelector} from "react-redux";
 import {userDataSelector, catalogSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
-import {ShoppingBasket, ShoppingCart, Visibility} from "@mui/icons-material";
+import {ShoppingCart, Visibility} from "@mui/icons-material";
 import Badge from "@mui/material/Badge";
+import InfoModal from "../common/info-modal";
+
+function getInfo(product: ProductData): string[] {
+    const res: string[] = [
+        `Product ID  : ${product.productId}`,
+        `Product Name: ${product.name}`,
+        `Category   : ${product.categoryName}`,
+        `Price      : ${product.price}`,
+        `Unit : ${product.unitOfMeasurement}`,
+        `isActive : ${product.isActive}`,
+    ];
+    return res;
+}
 
 function getRows(products: ProductData[]): GridRowsProp {
     return products.map(product => product);
@@ -20,6 +33,11 @@ const ListingPage: FC = () => {
     console.log(products);
     const rows = useMemo(() => getRows(products), [products]);
     console.log(rows);
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const textModal = useRef<string[]>(['']);
+    const imgUrlModal = useRef<string>('');
 
     function getColumns(userData: UserData): GridColumns {
         return [
@@ -37,7 +55,7 @@ const ListingPage: FC = () => {
                 field: 'actions', type: 'actions', width: 100, getActions: (params: GridRowParams) => {
                     const actionItems = [
                         <GridActionsCellItem icon={<Visibility/>} label='Details'
-                            // onClick={() => showDetails(params.id as number)}
+                                             onClick={() => showDetails(params.id as number)}
                         />];
 
                     actionItems.push(<GridActionsCellItem icon={
@@ -64,6 +82,17 @@ const ListingPage: FC = () => {
         }
     }
 
+    function showDetails(id: any) {
+        const product = products.find(e => e.productId === +id);
+        if (!!product) {
+            textModal.current = getInfo(product);
+            imgUrlModal.current = product.imageUrl;
+        } else {
+            textModal.current = ["Not found"];
+        }
+        setModalVisible(true);
+    }
+
     return <Box sx={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         '& .Mui-error': {bgcolor: '#FF9494', color: 'white', width: '100%', height: '100%'}
@@ -71,6 +100,11 @@ const ListingPage: FC = () => {
         <Paper sx={{width: {xs: '100vw', sm: '80vw'}, height: '80vh', marginTop: '2vh'}}>
             <DataGrid getRowId={(row) => row.productId} rows={rows} columns={getColumns(userData)}/>
         </Paper>
+        <InfoModal title={"Detailed information about the product"}
+                   message={textModal.current} open={modalVisible}
+                   onClose={() => setModalVisible(false)}
+                   imageUrl={imgUrlModal.current}
+        />
     </Box>
 };
 
