@@ -7,8 +7,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {basketSelector, userDataSelector} from "../../redux/store";
 import {BasketData} from "../../models/basket-data";
 import {ProductData} from "../../models/product-data";
-import {addBasketItemAction, removeBasketItemAction} from "../../redux/actions";
+import { setBasket} from "../../redux/actions";
 import {UserData} from "../../models/common/user-data";
+import {basket} from "../../config/services-config";
 
 
 const BasketPage = () => {
@@ -25,10 +26,15 @@ const BasketPage = () => {
     const dispatch = useDispatch();
 
     function removeFromCart() {
-        dispatch(removeBasketItemAction(basketData, 444));
+        // dispatch(removeBasketItemAction(basketData, 444));
+        const res = basket.removeItem(basketData, 444);
+        return res.then((bd) => {
+            dispatch(setBasket({...bd}));
+        })
     }
 
     function addToCart() {
+        console.log("startAdd", basketData);
         const product: ProductData = {
             categoryName: "Test",
             description: "Test",
@@ -42,7 +48,12 @@ const BasketPage = () => {
         if (!basketData.userId) {
             basketData.userId = userData.username;
         }
-        dispatch(addBasketItemAction(basketData, product));
+        const res = basket.addItem(basketData, product);
+        return res.then((bd) => {
+            console.log(bd);
+            dispatch(setBasket({...bd}));
+        })
+        // dispatch(addBasketItemAction(basketData, product));
     }
 
     return (
@@ -65,7 +76,7 @@ const BasketPage = () => {
                     <Button size="large" onClick={removeFromCart}>Remove</Button>
                 </Grid>
             </Grid>
-            {JSON.stringify(basketData)}
+            <div>{JSON.stringify(basketData)}</div>
         </Box>
     );
 };

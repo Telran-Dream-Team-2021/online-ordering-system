@@ -19,10 +19,10 @@ export default class Basket {
             } else {
                 basket.basketItems[indexId].quantity += 1;
             }
-            return this.basketService.update(basket.userId, basket);
+            return await this.basketService.update(basket.userId, basket);
         } else {
             basket.basketItems.push(item);
-            return this.basketService.add(basket);
+            return await this.basketService.add(basket);
         }
     }
 
@@ -41,6 +41,6 @@ export default class Basket {
     }
 
     getBasket(userId: string): Observable<BasketData> {
-        return from(this.basketService.get(userId) as unknown as Observable<BasketData>);
+        return from(this.basketService.get(userId) as Promise<BasketData>);
     }
 }
