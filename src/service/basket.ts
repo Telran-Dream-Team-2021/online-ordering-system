@@ -10,10 +10,11 @@ export default class Basket {
     }
 
     async addItem(basket: BasketData, product: ProductData): Promise<BasketData> {
+        console.log("call addItem")
         const item: ItemData = {pricePerUnit: product.price, productId: product.productId, quantity: 1};
         if (await basketService.exists(basket.userId)) {
             const indexId = basket.basketItems.findIndex((element) => element.productId === item.productId);
-            if (-1 !== indexId) {
+            if (-1 === indexId) {
                 basket.basketItems.push(item);
             } else {
                 basket.basketItems[indexId].quantity += 1;
@@ -29,7 +30,9 @@ export default class Basket {
         const indexId = basket.basketItems.findIndex((element) => element.productId === productId);
         if (-1 !== indexId) {
             if (basket.basketItems[indexId].quantity <= 1) {
-                basket.basketItems = basket.basketItems.splice(indexId, 1);
+                console.log("qty 1")
+                 basket.basketItems.splice(indexId, 1);
+                console.log(basket.basketItems)
             } else {
                 basket.basketItems[indexId].quantity -= 1;
             }

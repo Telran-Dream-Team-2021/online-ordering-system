@@ -7,8 +7,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {basketSelector, userDataSelector} from "../../redux/store";
 import {BasketData} from "../../models/basket-data";
 import {ProductData} from "../../models/product-data";
-import {addBasketItemAction} from "../../redux/actions";
+import {addBasketItemAction, removeBasketItemAction} from "../../redux/actions";
 import {UserData} from "../../models/common/user-data";
+
 
 const BasketPage = () => {
     const Item = styled(Paper)(({theme}) => ({
@@ -23,6 +24,9 @@ const BasketPage = () => {
     const userData: UserData = useSelector(userDataSelector);
     const dispatch = useDispatch();
 
+    function removeFromCart() {
+        dispatch(removeBasketItemAction(basketData, 444));
+    }
 
     function addToCart() {
         const product: ProductData = {
@@ -30,7 +34,7 @@ const BasketPage = () => {
             description: "Test",
             imageUrl: "http://localhost",
             isActive: false,
-            name: "Gavr",
+            name: "Gavr7",
             price: 7770,
             productId: 444,
             unitOfMeasurement: "kg"
@@ -58,6 +62,7 @@ const BasketPage = () => {
                 </Grid>
                 <Grid>
                     <Button size="large" onClick={addToCart}>Add to cart</Button>
+                    <Button size="large" onClick={removeFromCart}>Remove</Button>
                 </Grid>
             </Grid>
             {JSON.stringify(basketData)}

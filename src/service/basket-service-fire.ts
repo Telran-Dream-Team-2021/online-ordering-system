@@ -1,5 +1,13 @@
 import AbstractDataProvider from "./abstract-data-provider";
-import {collection, CollectionReference, doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
+import {
+    collection,
+    CollectionReference,
+    doc,
+    DocumentReference, DocumentSnapshot,
+    getDoc,
+    getFirestore,
+    setDoc
+} from "firebase/firestore";
 import firebaseApp from "../config/fire-config";
 import ErrorCode from "../models/common/error-code";
 import {BasketData} from "../models/basket-data";
@@ -13,8 +21,11 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
         this.fireCollection = collection(getFirestore(firebaseApp), collectionName);
     }
 
-    exists(id: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async exists(id: string): Promise<boolean> {
+        const docRef: DocumentReference = doc(this.fireCollection, id.toString());
+        const docSnap: DocumentSnapshot = await getDoc(docRef);
+
+        return docSnap.exists();
     }
 
     async add(entity: BasketData): Promise<BasketData> {
