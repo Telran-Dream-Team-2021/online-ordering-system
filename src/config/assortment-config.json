@@ -1,0 +1,15 @@
+{
+  "categories": [
+    "Bread",
+    "Cakes",
+    "Cookies",
+    "Sandwiches",
+    "Chocolate"
+  ],
+  "unitsOfMeasurement": [
+    "pieces",
+    "100 gr",
+    "500 gr",
+    "kg"
+  ]
+}
