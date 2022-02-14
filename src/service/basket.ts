@@ -1,18 +1,43 @@
 import DataProvider from "./data-provider";
 import {BasketData} from "../models/basket-data";
+import {basketService} from "../config/services-config";
+import {ProductData} from "../models/product-data";
+import {ItemData} from "../models/item-data";
+import {from, Observable} from "rxjs";
 
 export default class Basket {
-    constructor(private basketService: DataProvider<BasketData>) {}
-    addProduct(basket: BasketData): Promise<BasketData> {
-        return this.basketService.add(basket);
+    constructor(private basketService: DataProvider<BasketData>) {
     }
-    updateBasket(basketId: number, newProductData: BasketData): Promise<BasketData> {
-        return this.basketService.update(basketId, newProductData);
+
+    async addItem(basket: BasketData, product: ProductData): Promise<BasketData> {
+        const item: ItemData = {pricePerUnit: product.price, productId: product.productId, quantity: 1};
+        if (await basketService.exists(basket.userId)) {
+            const indexId = basket.basketItems.findIndex((element) => element.productId === item.productId);
+            if (-1 !== indexId) {
+                basket.basketItems.push(item);
+            } else {
+                basket.basketItems[indexId].quantity += 1;
+            }
+            return this.basketService.update(basket.userId, basket);
+        } else {
+            basket.basketItems.push(item);
+            return this.basketService.add(basket);
+        }
     }
-    removeBasket(basketId: number): Promise<BasketData> {
-        return this.basketService.remove(basketId);
+
+    removeItem(basket: BasketData, productId: number): Promise<BasketData> {
+        const indexId = basket.basketItems.findIndex((element) => element.productId === productId);
+        if (-1 !== indexId) {
+            if (basket.basketItems[indexId].quantity <= 1) {
+                basket.basketItems = basket.basketItems.splice(indexId, 1);
+            } else {
+                basket.basketItems[indexId].quantity -= 1;
+            }
+        }
+        return this.basketService.update(basket.userId, basket);
     }
-    getBasket(basketId: number): Promise<BasketData> {
-        return this.basketService.get(basketId) as Promise<BasketData>;
+
+    getBasket(userId: string): Observable<BasketData> {
+        return from(this.basketService.get(userId) as unknown as Observable<BasketData>);
     }
 }

@@ -4,6 +4,7 @@ import firebaseApp from "../config/fire-config";
 import ErrorCode from "../models/common/error-code";
 import {BasketData} from "../models/basket-data";
 
+
 export default class BasketServiceFire extends AbstractDataProvider<BasketData> {
     fireCollection: CollectionReference;
 
@@ -27,7 +28,7 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
 
     get(id?: string): Promise<BasketData> {
         const basketDocRef = doc(this.fireCollection, id);
-        return getDoc(basketDocRef).then(resp => resp.data() as BasketData).then(res => res);
+        return getDoc(basketDocRef).then(resp => resp.data() as BasketData);
     }
 
     async remove(id: string): Promise<BasketData> {
@@ -52,4 +53,5 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
         }
         return oldBasketSnapshot;
     }
+
 }

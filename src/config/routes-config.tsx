@@ -14,7 +14,7 @@ export const PATH_LISTING = "/listing";
 
 export const routes: RouteType[] = [
     {path: PATH_ASSORTMENT, element: <AssortmentPage/>, label: 'Assortment', adminOnly: true},
-    {path: PATH_BASKET, element: <BasketPage/>, label: 'Basket', authenticated: true},
+    {path: PATH_BASKET, element: <BasketPage/>, label: 'Shopping Cart', authenticated: true},
     {path: PATH_ORDERS, element: <OrdersPage/>, label: 'Orders', authenticated: true},
     {path: PATH_LISTING, element: <ListingPage/>, label: 'Listing'},
     {path: PATH_LOGIN, element: <Login/>, label: 'Login', authenticated: false},
