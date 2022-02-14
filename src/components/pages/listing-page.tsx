@@ -8,6 +8,10 @@ import {UserData} from "../../models/common/user-data";
 import {ShoppingCart, Visibility} from "@mui/icons-material";
 import Badge from "@mui/material/Badge";
 import InfoModal from "../common/info-modal";
+import Basket from "../../service/basket";
+import {basketService} from "../../config/services-config";
+import {ItemData} from "../../models/item-data";
+import {BasketData} from "../../models/basket-data";
 
 function getInfo(product: ProductData): string[] {
     const res: string[] = [
@@ -57,29 +61,38 @@ const ListingPage: FC = () => {
                         <GridActionsCellItem icon={<Visibility/>} label='Details'
                                              onClick={() => showDetails(params.id as number)}
                         />];
-
                     actionItems.push(<GridActionsCellItem icon={
                         <Badge color="secondary" badgeContent={count}>
                             <ShoppingCart/>
                         </Badge>
                     } label='Basket' onClick={() => {
-                        badgeHandler();
+                        badgeHandler(params.id as number);
                     }}
                     />)
-
                     return actionItems;
                 }
-
             }
         ]
     };
 
-    function badgeHandler() {
-        if (count == 0) {
-            setCount(count + 1);
-        } else {
-            setCount(Math.max(count - 1, 0));
+    function badgeHandler(id: any) {
+        const itemData: ItemData = {pricePerUnit: 0, productId: 0, quantity: 0};
+        const product = products.find(e => e.productId === +id);
+        if (!!product) {
+            itemData.productId = product.productId;
+            itemData.pricePerUnit = product.price;
+            itemData.quantity = 1;
         }
+        const basket = new Basket(basketService);
+        const basketData: BasketData = {basketItems: [itemData], userId: userData.username};
+        // console.log(basket);
+        basket.addProduct(basketData).then(r => console.log("RES" + r)).catch(err => console.log("err" + err));
+        // console.log(bla);
+        // if (count == 0) {
+        //     setCount(count + 1);
+        // } else {
+        //     setCount(Math.max(count - 1, 0));
+        // }
     }
 
     function showDetails(id: any) {
