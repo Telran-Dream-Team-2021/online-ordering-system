@@ -12,7 +12,7 @@ export const catalog: Catalog = new Catalog(productService);
 export const authService = new AuthServiceFire();
 
 /*** Users Service Config ***/
-export const userService = new UserServiceFire();
+export const userService = new UserServiceFire("users");
 
 /*** Basket Service config***/
 export const basketService = new BasketServiceFire("users");
