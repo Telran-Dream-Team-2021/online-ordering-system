@@ -73,7 +73,7 @@ const ListingPage: FC = () => {
                 }
             }
         ]
-    };
+    }
 
     function badgeHandler(id: any) {
         if (basket.has(id)) {

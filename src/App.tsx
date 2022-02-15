@@ -11,9 +11,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {userDataSelector} from "./redux/store";
 import process from "process";
 import {Subscription} from "rxjs";
-import {authService, catalog} from "./config/services-config";
+import {authService, basket, catalog} from "./config/services-config";
 import ErrorCode from "./models/common/error-code";
-import {setCatalog, setErrorCode, setUserData} from "./redux/actions";
+import {setBasket, setCatalog, setErrorCode, setUserData} from "./redux/actions";
 import UserDataModal from "./components/common/user-data-modal";
 
 
@@ -69,6 +69,26 @@ const App: FC = () => {
 
         return () => subscriptionUserData.unsubscribe();
     }, []);// eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        function getBasketData() {
+            return basket.getBasket(userData.username).subscribe({
+                next(bd) {
+                    console.log("bd");
+                    dispatch(setErrorCode(ErrorCode.NO_ERROR));
+                    dispatch(setBasket(bd));
+                },
+                error(err) {
+                    dispatch(setErrorCode(err));
+                }
+            });
+
+        }
+        if (!!userData.username) {
+            let subscriptionBasketData = getBasketData();
+            return () => subscriptionBasketData.unsubscribe();
+        }
+    }, [dispatch, userData.username]);
 
     async function logout() {
         return await authService.logout();

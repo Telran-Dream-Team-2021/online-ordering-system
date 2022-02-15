@@ -3,6 +3,7 @@ import Catalog from "../service/catalog";
 import AuthServiceFire from "../service/auth-service-fire";
 import UserServiceFire from "../service/user-service-fire";
 import BasketServiceFire from "../service/basket-service-fire";
+import Basket from "../service/basket";
 
 /*** Product Service Config ***/
 const productService = new ProductServiceFire("products");
@@ -15,4 +16,5 @@ export const authService = new AuthServiceFire();
 export const userService = new UserServiceFire("users");
 
 /*** Basket Service config***/
-export const basketService = new BasketServiceFire("users");
+export const basketService = new BasketServiceFire("baskets");
+export const basket: Basket = new Basket(basketService);
