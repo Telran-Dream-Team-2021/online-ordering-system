@@ -1,17 +1,16 @@
-import {Box, Grid, Paper} from '@mui/material';
+import {Box, Grid, Paper, Tooltip} from '@mui/material';
 import React, {FC, useMemo, useRef, useState} from 'react';
 import {DataGrid, GridColumns, GridRowsProp, GridActionsCellItem, GridRowParams} from "@mui/x-data-grid";
 import {ProductData} from "../../models/product-data";
 import {useSelector} from "react-redux";
 import {userDataSelector, catalogSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
-import {ShoppingCart, Visibility} from "@mui/icons-material";
+import {Visibility} from "@mui/icons-material";
 import Badge from "@mui/material/Badge";
 import InfoModal from "../common/info-modal";
-import Basket from "../../service/basket";
-import {basketService} from "../../config/services-config";
 import {ItemData} from "../../models/item-data";
-import {BasketData} from "../../models/basket-data";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 
 function getInfo(product: ProductData): string[] {
     const res: string[] = [
@@ -30,16 +29,11 @@ function getRows(products: ProductData[]): GridRowsProp {
 }
 
 const ListingPage: FC = () => {
-    const [count, setCount] = React.useState(1);
-
+    const [basket, setBasket] = React.useState(new Set());
     const userData: UserData = useSelector(userDataSelector);
     const products: ProductData[] = useSelector(catalogSelector);
-    console.log(products);
     const rows = useMemo(() => getRows(products), [products]);
-    console.log(rows);
-
     const [modalVisible, setModalVisible] = useState(false);
-
     const textModal = useRef<string[]>(['']);
     const imgUrlModal = useRef<string>('');
 
@@ -58,13 +52,19 @@ const ListingPage: FC = () => {
             {
                 field: 'actions', type: 'actions', width: 100, getActions: (params: GridRowParams) => {
                     const actionItems = [
-                        <GridActionsCellItem icon={<Visibility/>} label='Details'
-                                             onClick={() => showDetails(params.id as number)}
+                        <GridActionsCellItem
+                            icon={
+                                <DetailedInfo/>
+                            }
+                            label='Details'
+                            onClick={() => showDetails(params.id as number)}
                         />];
                     actionItems.push(<GridActionsCellItem icon={
-                        <Badge color="secondary" badgeContent={count}>
-                            <ShoppingCart/>
-                        </Badge>
+                        !basket.has(params.id)
+                            ?
+                            <AddToShoppingCart/>
+                            :
+                            <RemoveFromShoppingCart/>
                     } label='Basket' onClick={() => {
                         badgeHandler(params.id as number);
                     }}
@@ -76,6 +76,15 @@ const ListingPage: FC = () => {
     };
 
     function badgeHandler(id: any) {
+        if (basket.has(id)) {
+            console.log("удаляем из корзины " + id);
+            basket.delete(id);
+            setBasket(new Set(basket));
+        } else {
+            console.log("добавляем в корзину " + id);
+            basket.add(id);
+            setBasket(new Set(basket));
+        }
         const itemData: ItemData = {pricePerUnit: 0, productId: 0, quantity: 0};
         const product = products.find(e => e.productId === +id);
         if (!!product) {
@@ -83,20 +92,11 @@ const ListingPage: FC = () => {
             itemData.pricePerUnit = product.price;
             itemData.quantity = 1;
         }
-        const basket = new Basket(basketService);
-        const basketData: BasketData = {basketItems: [itemData], userId: userData.username};
-        // console.log(basket);
-        basket.addProduct(basketData).then(r => console.log("RES" + r)).catch(err => console.log("err" + err));
-        // console.log(bla);
-        // if (count == 0) {
-        //     setCount(count + 1);
-        // } else {
-        //     setCount(Math.max(count - 1, 0));
-        // }
     }
 
-    function showDetails(id: any) {
-        const product = products.find(e => e.productId === +id);
+    function showDetails(id: number | string) {
+        const product = products.find(e => e.productId == +id);
+        console.log(product);
         if (!!product) {
             textModal.current = getInfo(product);
             imgUrlModal.current = product.imageUrl;
@@ -121,6 +121,35 @@ const ListingPage: FC = () => {
     </Box>
 };
 
+const AddToShoppingCart = () => {
+    return (
+        <Tooltip
+            title="Add to the shopping cart"
+        >
+            <AddShoppingCartIcon color={"success"}/>
+        </Tooltip>
+    );
+};
+const RemoveFromShoppingCart = () => {
+    return (
+        <Tooltip
+            title="Remove from the shopping cart"
+        >
+            <RemoveShoppingCartIcon color={"error"}/>
+        </Tooltip>
+    );
+};
+const DetailedInfo = () => {
+    return (
+        <Tooltip
+            title="Show detailed info"
+        >
+            <Visibility/>
+        </Tooltip>
+    );
+};
+
 export default ListingPage;
+
 
 
