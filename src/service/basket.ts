@@ -43,4 +43,6 @@ export default class Basket {
     getBasket(userId: string): Observable<BasketData> {
         return from(this.basketService.get(userId) as Promise<BasketData>);
     }
+
+    //calculateTotal() use reduce for array arr.reduce((sum, cur)=>)
 }
