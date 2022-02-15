@@ -40,7 +40,18 @@ const AssortmentPage: FC = () => {
             },
             {field: 'productId', headerName: 'Product ID', flex: 2},
             {field: 'name', headerName: 'Product name', flex: 6},
-            {field: 'isActive', headerName: '', flex: 1, editable: true,
+            {field: 'isActive', headerName: '', flex: 1,
+                renderCell: params => {
+                    return (
+                        <Switch
+                            checked={params.value}
+                            onChange={() => switchProductActivity(params.id as number)}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                    );
+                }
+            },
+            {field: 'edit', headerName: '',
                 renderCell: params => {
                     return (
                         <Switch
@@ -53,8 +64,6 @@ const AssortmentPage: FC = () => {
             },
             {field: 'actions', type: "actions", getActions(params) {
                     return [
-                        <GridActionsCellItem icon={<Visibility />}
-                             onClick={() => showProductDetails(params.id as number)} label="Details"/>,
                         <GridActionsCellItem icon={<Delete />}
                                              onClick={() => {
                                                  showDeleteProductDialog(params.id as number)

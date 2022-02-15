@@ -11,5 +11,10 @@
     "100 gr",
     "500 gr",
     "kg"
-  ]
+  ],
+  "minProductNameLength": 3,
+  "maxProductNameLength": 30,
+  "maxProductDescriptionLength": 1000,
+  "minProductPrice": 1,
+  "maxProductPrice": 10000
 }
