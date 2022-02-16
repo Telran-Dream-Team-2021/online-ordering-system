@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {LoginData} from "../../models/common/login-data";
 import {
     Alert, AlertColor,
-    Avatar, Backdrop,
+    Backdrop,
     Box,
     Button,
     ButtonGroup,
@@ -12,19 +12,19 @@ import {
     IconButton, TextField,
     Typography
 } from "@mui/material";
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import socialAuthProviders, {SocialProvider} from "../../config/firebase-auth-config";
 
 type RegistrationAuthType = {
     loginFn: (loginData: LoginData) => Promise<boolean>,
     isAdminsEmailFn: (email: string) => Promise<boolean>,
-    passwordValidationFn: (password: string) => string
+    passwordValidationFn: (password: string) => string,
+    sentFn: () => void,
 }
 
 const initialLoginData: LoginData = {email: '', password: ''};
 
 const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
-    const {loginFn, passwordValidationFn, isAdminsEmailFn} = props;
+    const {loginFn, passwordValidationFn, isAdminsEmailFn, sentFn} = props;
     const [loginData, setLoginData] = useState<LoginData>(initialLoginData);
     const errorMessage = useRef<string>('');
     const [flValid, setValid] = useState<boolean>(false);
@@ -42,13 +42,12 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
         event.preventDefault();
         setSpinner(true);
         const res: boolean = await loginFn(loginData);
-        // TODO если вернулось тру и это без пароля, то показывать сообщение что отправлена ссыль
+
         if (!res) {
             alertMessage.current = 'Wrong credentials!';
             setAlert('error');
         } else if (!withPassword.current) {
-            alertMessage.current = 'Email with link for login was successfully send.';
-            setAlert('success');
+            sentFn();
         }
 
         setSpinner(false);
@@ -87,7 +86,13 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
         setLoginData({...loginData, password});
     }
 
-    return <Container component="main" maxWidth="xs">
+    return <Container sx={{
+        marginLeft: '55vw',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        justifyContent: 'center'
+    }} component="main" maxWidth="xs">
         <Backdrop
             sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
             open={spinner}
@@ -101,27 +106,25 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
                 marginTop: 8,
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
             }}
         >
-            <Avatar sx={{m: 1, bgcolor: alert ? 'error.main' : 'primary.main'}}>
-                <LockOutlinedIcon/>
-            </Avatar>
-            <Typography component="h1" variant="h5">
-                Login
+            <Typography component="h1" variant="h3">
+                {!withPassword.current ? 'Enter your Email' : 'Enter your Password'}
             </Typography>
-            <Collapse in={!!alert}>
-                <Alert onClose={() => setAlert(undefined)} severity={alert}>{alertMessage.current}</Alert>
-            </Collapse>
+            {/*<Collapse in={!!alert}>*/}
+            {/*    <Alert onClose={() => setAlert(undefined)} severity={alert}>{alertMessage.current}</Alert>*/}
+            {/*</Collapse>*/}
             <Box component="form" onSubmit={onSubmit} sx={{mt: 1}}>
                 <TextField
                     margin="normal"
+                    variant="standard"
                     label="Email"
                     type="email"
                     fullWidth
                     onChange={emailHandler}
                 />
                 {withPassword.current && <TextField
+                    variant="standard"
                     margin="normal"
                     label="Password"
                     type="password"
@@ -136,14 +139,15 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
                     type="submit"
                     fullWidth
                     variant="contained"
-                    sx={{mt: 3, mb: 2}}
+                    color={!withPassword.current ? 'primary' : 'secondary'}
+                    sx={{mt: 3, mb: 2, justifyContent: 'start'}}
                 >
-                    Sign In
+                    Send
                 </Button>
             </Box>
-            {!withPassword.current && <Box sx={{display: 'flex', m: 2, alignItems: 'center'}}>
-                <Typography>Or enter with: </Typography>
-                <ButtonGroup variant="text" aria-label="text button group">
+            {!withPassword.current && <Box sx={{display: 'flex', my: 2, alignItems: 'center'}}>
+                <ButtonGroup variant="text" aria-label="text button group"
+                             sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
                     {socialAuthProviders.map(provider => (
                         <IconButton key={provider.name} onClick={() => loginWithSocial(provider)}>
                             {provider.icon}

@@ -3,8 +3,7 @@ import {Backdrop, Box, Button, CircularProgress, Container, CssBaseline, Grid, T
 import {UserData} from "../../models/common/user-data";
 import {useDispatch, useSelector} from "react-redux";
 import {userDataSelector} from "../../redux/store";
-import {userService} from "../../config/services-config";
-import {setUserData} from "../../redux/actions";
+import {updateUserDataAction} from "../../redux/actions";
 
 type UserFormData = {
     country: string,
@@ -48,36 +47,21 @@ const UserDataForm: React.FC<UserDataFormProps> = (props) => {
         return `${formData.country}, ${formData.state}, ${formData.city}, ${formData.street}`;
     }
 
-    async function updateUserData(formData: UserFormData): Promise<boolean> {
-        const isNew = await userService.exists(userData.username);
-        let res: Promise<UserData>;
-        const deliveryAddress = buildAddress(formData);
-        const email = formData.email;
-        const displayName = formData.displayName;
-
-        if (isNew) {
-            res = userService.add({...userData, deliveryAddress, email, displayName});
-        } else {
-            res = userService.update(userData.username, {...userData, deliveryAddress, email, displayName});
-        }
-
-        return res.then((ud) => {
-            console.log(ud);
-            dispatch(setUserData(ud));
-            return !!ud.deliveryAddress;
-        }).catch(() => false);
-    }
-
     async function onSubmit(event: any) {
         event.preventDefault();
         setSpinner(true);
-        const res: boolean = await updateUserData(formData);
 
-        if (!res) {
-            errors.current.set('main', 'Something went wrong!');
-        } else {
+        try {
+            const deliveryAddress = buildAddress(formData);
+            const email = formData.email;
+            const displayName = formData.displayName;
+
+            dispatch(updateUserDataAction({...userData, deliveryAddress, email, displayName}));
+
             errors.current.delete('main');
             props.closeFn();
+        } catch (e) {
+            errors.current.set('main', 'Something went wrong! ' + e);
         }
 
         setSpinner(false);

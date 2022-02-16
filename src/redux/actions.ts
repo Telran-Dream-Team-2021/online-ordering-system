@@ -2,7 +2,7 @@ import {Dispatch, PayloadAction} from '@reduxjs/toolkit'
 import {UserData} from "../models/common/user-data";
 import ErrorCode from "../models/common/error-code";
 import {ProductData} from "../models/product-data";
-import {basket, catalog, orders} from "../config/services-config";
+import {basket, catalog, userDataProcessor, orders} from "../config/services-config";
 import {BasketData} from "../models/basket-data";
 import {OrderData} from "../models/order-data";
 
@@ -57,6 +57,22 @@ export const removeBasketItemAction = function (basketData: BasketData, productI
 }
 export const getBasketAction = function (id: string): (dispatch: any) => void {
     return action.bind(null, basket.getBasket.bind(basket, id));
+}
+
+export const updateUserDataAction = function (userData: UserData): (dispatch: any) => void {
+    // return action.bind(null, userDataProcessor.updateData.bind(userDataProcessor, userData));
+    return async dispatch => {
+        try {
+            await userDataProcessor.updateData(userData);
+            dispatch(setUserData(userData));
+            dispatch(setErrorCode(ErrorCode.NO_ERROR));
+        } catch (error: any) {
+            dispatch(setErrorCode(error));
+        }
+    }
+}
+export const logoutAction = function (): (dispatch: any) => void {
+    return action.bind(null, userDataProcessor.logout.bind(userDataProcessor));
 }
 
 export const addOrderAction = function(basket: BasketData): (dispatch: any) => void {
