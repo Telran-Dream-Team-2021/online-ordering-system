@@ -59,6 +59,7 @@ export const getBasketAction = function (id: string): (dispatch: any) => void {
     return action.bind(null, basket.getBasket.bind(basket, id));
 }
 
-export const addOrderAction = function(order: OrderData): (dispatch: any) => void {
-    return action.bind(null, orders.addOrder.bind(orders, order));
+export const addOrderAction = function(basket: BasketData): (dispatch: any) => void {
+    console.log('addOrderAction')
+    return action.bind(null, orders.addOrder.bind(orders, basket));
 }
