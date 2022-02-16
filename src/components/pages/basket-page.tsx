@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {basketSelector, userDataSelector} from "../../redux/store";
 import {BasketData} from "../../models/basket-data";
 import {ProductData} from "../../models/product-data";
-import { setBasket} from "../../redux/actions";
+import {setBasket} from "../../redux/actions";
 import {UserData} from "../../models/common/user-data";
 import {basket} from "../../config/services-config";
 
@@ -50,35 +50,35 @@ const BasketPage = () => {
         }
         const res = basket.addItem(basketData, product);
         return res.then((bd) => {
-            console.log(bd);
+            // console.log(bd);
             dispatch(setBasket({...bd}));
         })
         // dispatch(addBasketItemAction(basketData, product));
     }
 
     return (
-        <Box sx={{flexGrow: 1}}>
-            <Grid container spacing={2}>
-                <Grid item xs={1}>
-                    <ShoppingBasketIcon/>
-                </Grid>
-                <Grid item xs={4}>
-                    <Item>Shopping Cart</Item>
-                </Grid>
-                <Grid item xs={8}>
-                    <Item><MainGrid/></Item>
-                </Grid>
-                <Grid item xs={4}>
-                    <Item><SummaryCheckoutBlock/></Item>
-                </Grid>
-                <Grid>
-                    <Button size="large" onClick={addToCart}>Add to cart</Button>
-                    <Button size="large" onClick={removeFromCart}>Remove</Button>
-                </Grid>
-            </Grid>
-            <div>{JSON.stringify(basketData)}</div>
-        </Box>
-    );
+        <div style={{justifyContent: "center", alignItems: "center"}}>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+                <div style={{alignItems: "stretch", width: "50px"}}><ShoppingBasketIcon/></div>
+                <div><h1>Shopping Cart</h1></div>
+            </div>
+            <div>
+                <Button size="large" onClick={addToCart}>Add to cart</Button>
+                <Button size="large" onClick={removeFromCart}>Remove</Button>
+            </div>
+            <div style={{display: "flex", flexDirection: "row"}}>
+                <div style={{width: "80%"}}>
+                    <MainGrid/>
+                </div>
+                <div style={{width: "40%"}}>
+                    <SummaryCheckoutBlock/>
+                </div>
+            </div>
+            {JSON.stringify(basketData)}
+        </div>
+    )
+        ;
 };
 
 export default BasketPage;
+
