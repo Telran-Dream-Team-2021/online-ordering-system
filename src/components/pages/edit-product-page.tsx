@@ -6,14 +6,27 @@ import {useDispatch, useSelector} from "react-redux";
 import {catalogSelector} from "../../redux/store";
 import assortmentConfig from "../../config/assortment-config.json"
 import {addProductAction, removeProductAction, updateProductAction} from "../../redux/actions";
+import {useParams} from "react-router-dom";
+import {PATH_PRODUCT} from "../../config/routes-config";
 
-const EditProductPage: FC<{ product: ProductData }> = (props) => {
-    const {product} = props;
-    const {minProductNameLength, maxProductNameLength, maxProductDescriptionLength,
-        minProductPrice, maxProductPrice} = assortmentConfig;
-
+const EditProductPage: FC = () => {
+    const params = useParams();
+    const productId = parseInt(params[PATH_PRODUCT.substring(1)] as string);
     const assortment: ProductData[] = useSelector(catalogSelector);
     const dispatch = useDispatch();
+
+    function getProductData(): ProductData {
+        let res = dummyProduct;
+        const productFromAssortment = assortment.find(p => p.productId === productId);
+        if(productFromAssortment) {
+            res = productFromAssortment;
+        }
+        return res;
+    }
+
+    const product: ProductData = getProductData();
+    const {minProductNameLength, maxProductNameLength, maxProductDescriptionLength,
+        minProductPrice, maxProductPrice} = assortmentConfig;
 
     return (
         <Box>
@@ -55,6 +68,7 @@ const EditProductPage: FC<{ product: ProductData }> = (props) => {
                         return "";
                     }
                 }} submitProductFn={function (productState: ProductData): void {
+
                     // add new product
                     if (product == dummyProduct) {
                         dispatch(addProductAction(productState));

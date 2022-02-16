@@ -7,7 +7,6 @@ import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
 import {RouteType} from "./models/common/route-type";
 import {routes} from "./config/routes-config";
 import {Subscription} from "rxjs";
-import {catalogSelector} from "./redux/store";
 import {catalog} from "./config/services-config";
 import {setCatalog, setErrorCode} from "./redux/actions";
 import {useDispatch} from "react-redux";
@@ -23,7 +22,14 @@ const App: FC = () => {
     // }, [userData])
 
     function getRoutes(): ReactNode[] {
-        return relevantRoutes.map((r: RouteType) => <Route key={r.path} path={r.path} element={r.element}/>)
+        return relevantRoutes.map((r: RouteType) => {
+            return <Route key={r.path} path={r.path} element={r.element}>
+                {r.indexElement && <Route index element={r.indexElement}/>}
+                {r.childRoutes && r.childRoutes.map(r =>
+                    <Route key={r.path} path={r.path} element={r.element}/>)}
+            </Route>
+        });
+
     }
 
     useEffect(() => {
@@ -53,10 +59,10 @@ const App: FC = () => {
         {flErrorServer ? <Alert severity='error'>Server is unavailable</Alert> :
             <BrowserRouter>
                 <NavigatorResponsive items={relevantRoutes}/>
-                : <Routes>
-                {getRoutes()}
-                <Route path={'*'} element={<Navigate to={relevantRoutes[0].path}/>}/>
-            </Routes>
+                <Routes>
+                    {getRoutes()}
+                    <Route path={'*'} element={<Navigate to={relevantRoutes[0].path}/>}/>
+                </Routes>
             </BrowserRouter>}
     </ThemeProvider>
 }

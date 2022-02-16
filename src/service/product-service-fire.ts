@@ -17,7 +17,7 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         if(await this.exists(entity.productId as number)) {
             throw `Product with id ${entity.productId} already exists`
         }
-        const productDocRef = doc(this.fireCollection, entity.productId as string);
+        const productDocRef = doc(this.fireCollection, entity.productId.toString());
         try {
             await setDoc(productDocRef, entity);
         } catch (e) {

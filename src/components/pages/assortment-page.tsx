@@ -3,12 +3,13 @@ import {ProductData} from "../../models/product-data";
 import {useDispatch, useSelector} from "react-redux";
 import {catalogSelector, userDataSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
-import {Avatar, Box, Paper, Switch} from '@mui/material';
+import {Avatar, Box, IconButton, Paper, Switch} from '@mui/material';
 import {DataGrid, GridActionsCellItem, GridColumns, GridRowsProp} from "@mui/x-data-grid";
 import {Delete, Visibility} from "@mui/icons-material";
 import ConfirmDialog from "../common/confirm-dialog";
 import {ConfirmationDataType, initialConfirmationData} from "../../models/common/confirmation-data-type";
 import {removeProductAction, updateProductAction} from "../../redux/actions";
+import {Link} from "react-router-dom";
 
 
 function getRows(assortment: ProductData[]): GridRowsProp {
@@ -54,11 +55,13 @@ const AssortmentPage: FC = () => {
             {field: 'edit', headerName: '',
                 renderCell: params => {
                     return (
-                        <Switch
-                            checked={params.value}
-                            onChange={() => switchProductActivity(params.id as number)}
-                            inputProps={{ 'aria-label': 'controlled' }}
-                        />
+                        <IconButton
+                            aria-label="edit product"
+                            component={Link}
+                            to={`/assortment/${params.id}`}
+                        >
+                            <Visibility />
+                        </IconButton>
                     );
                 }
             },
@@ -78,9 +81,7 @@ const AssortmentPage: FC = () => {
         product.isActive = !product.isActive;
         dispatch(updateProductAction(productId, product));
     }
-    function showProductDetails(productId: number) {
-        throw "Not implemented";
-    }
+
     function showDeleteProductDialog(productId: number) {
         confirmationDialog.current.title = "Delete product";
         confirmationDialog.current.message = `Are you sure that you want to delete ${productId}

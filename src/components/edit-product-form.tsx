@@ -16,7 +16,7 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
     const {categories, unitsOfMeasurement} = assortmentConfig;
     const {initialProductState, validateProductIdFn, validateProductNameFn,
         validateProductDescriptionFn, validateProductPriceFn, submitProductFn} = props;
-    const [productState, setProductState] = useState<ProductData>(initialProductState);
+    const [productState, setProductState] = useState<ProductData>({...initialProductState});
 
     const [errorProductIdMessage, setProductIdErrorMessage] = React.useState<string>("");
     const [errorProductNameMessage, setProductNameErrorMessage] = React.useState<string>("");
@@ -43,7 +43,7 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
     }
 
     function handleChangeProductId(event: any) {
-        const enteredProductId = event.target.value as number;
+        const enteredProductId = parseInt(event.target.value);
         const message = validateProductIdFn(enteredProductId);
         setProductIdErrorMessage(message);
         productState.productId = enteredProductId;
@@ -67,7 +67,7 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
     }
 
     function handleChangeProductPrice(event: any) {
-        const enteredProductPrice = event.target.value as number;
+        const enteredProductPrice = parseInt(event.target.value);
         const message = validateProductPriceFn(enteredProductPrice);
         setProductPriceErrorMessage(message);
         productState.price = enteredProductPrice;
@@ -81,7 +81,7 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
     }
 
     function resetFn() {
-        setProductState(initialProductState);
+        setProductState({...initialProductState});
     }
 
     async function onSubmit(event: any) {
@@ -97,20 +97,26 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
         <Box
             component ="form"
             onSubmit={onSubmit}
-            sx={{display: "flex", flexDirection: "row", margin: 2}}
+            sx={{display: "flex", flexDirection: "column", margin: 2}}
         >
             <Box
-                sx={{display: "flex", flexDirection: "column"}}
+                sx={{display: "flex", flexDirection: "row"}}
             >
                 {/*  Изображение  */}
                 <Box
-                    sx={{display: "flex", flexDirection: "row", margin: 2}}
+
+                    sx={{display: "flex", flexDirection: "column", mr: 2}}
                 >
                     <Avatar
                         src={productState.imageUrl}
-                        sx={{ width: 150}}
+                        sx={{ width: 400, height: 400, mb: 2}}
+                        variant={'rounded'}
                     >
-                        <img src={noProductImageUrl} />
+                        <Avatar
+                            src={noProductImageUrl}
+                            sx={{ width: 400, height: 400}}
+                            variant={'rounded'}
+                        />
                     </Avatar>
                     {/*    imageUrl: string,*/}
                     <TextField
@@ -118,12 +124,13 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
                         label="Image URL"
                         variant="outlined"
                         type="url"
+                        value={productState.imageUrl}
                         onChange={(event: any) => handleProductDataChange('imageUrl', event.target.value)}
                     />
                 </Box>
                 {/*  Характеристикик  */}
                 <Box
-                    sx={{display: "flex", flexDirection: "row", margin: 2}}
+                    sx={{display: "flex", flexDirection: "column", margin: 2}}
                 >
                     {/*    isActive: boolean,*/}
                     <Switch
@@ -136,7 +143,7 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
                         id="product-id"
                         label="Product Id"
                         variant="outlined"
-                        type="text"
+                        type="number"
                         value={productState.productId}
                         error={!!errorProductIdMessage}
                         helperText={errorProductIdMessage}
