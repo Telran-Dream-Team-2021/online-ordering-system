@@ -1,8 +1,9 @@
-import {Tabs, Tab} from "@mui/material";
+import {Tabs, Tab, IconButton} from "@mui/material";
 import {useState, FC, ReactNode, useEffect} from "react";
 import {Link, useLocation} from "react-router-dom";
 import {isTemplateSpan} from "typescript";
 import {RouteType} from "../../models/common/route-type";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
     let res = items.findIndex(item => path === item.path);
@@ -11,7 +12,7 @@ function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
 
 }
 
-const NavigatorWeb: FC<{ items: RouteType[] }> = (props) => {
+const NavigatorWeb: FC<{ items: RouteType[], logoutFn?: () => void }> = (props) => {
 
     const location = useLocation();
 
@@ -30,6 +31,9 @@ const NavigatorWeb: FC<{ items: RouteType[] }> = (props) => {
 
     return <Tabs value={activeTabIndex >= props.items.length ? 0 : activeTabIndex} onChange={onChangeHandler}>
         {getTabs()}
+        {!!props.logoutFn && <IconButton edge="end" onClick={props.logoutFn}>
+            <LogoutIcon/>
+        </IconButton>}
     </Tabs>
 }
 export default NavigatorWeb;
