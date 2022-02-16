@@ -1,13 +1,14 @@
 import React, {FC} from 'react';
 import {dummyProduct, ProductData} from "../../models/product-data";
-import {Box} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import EditProductForm from "../edit-product-form";
 import {useDispatch, useSelector} from "react-redux";
 import {catalogSelector} from "../../redux/store";
 import assortmentConfig from "../../config/assortment-config.json"
 import {addProductAction, removeProductAction, updateProductAction} from "../../redux/actions";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {PATH_PRODUCT} from "../../config/routes-config";
+import {KeyboardReturn} from "@mui/icons-material";
 
 const EditProductPage: FC = () => {
     const params = useParams();
@@ -30,12 +31,28 @@ const EditProductPage: FC = () => {
 
     return (
         <Box>
-            {/*Кнопка возврата на страницу Ассортимент*/}
-            <Box>
+            {/* Кнопки действий*/}
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                }}
+            >
+                {/*Кнопка возврата на страницу Ассортимент*/}
+                <Box>
+                    <Button
+                        variant="outlined"
+                        startIcon={<KeyboardReturn />}
+                        component={Link}
+                        to={`/assortment`}
+                        sx={{m: 1}}
+                    > Back to Assortment </Button>
+                </Box>
+                {/*Кнопка для удаления карточки товара из Ассортимента*/}
+                <Box>
+                </Box>
             </Box>
-            {/*Кнопка для удаления карточки товара из Ассортимента*/}
-            <Box>
-            </Box>
+
             <EditProductForm
                  initialProductState={product}
                  validateProductIdFn={function (productId: number): string {

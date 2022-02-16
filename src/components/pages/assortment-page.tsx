@@ -3,9 +3,9 @@ import {ProductData} from "../../models/product-data";
 import {useDispatch, useSelector} from "react-redux";
 import {catalogSelector, userDataSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
-import {Avatar, Box, IconButton, Paper, Switch} from '@mui/material';
+import {Avatar, Box, Button, IconButton, Paper, Switch} from '@mui/material';
 import {DataGrid, GridActionsCellItem, GridColumns, GridRowsProp} from "@mui/x-data-grid";
-import {Delete, Visibility} from "@mui/icons-material";
+import {Delete, Visibility, AddRounded} from "@mui/icons-material";
 import ConfirmDialog from "../common/confirm-dialog";
 import {ConfirmationDataType, initialConfirmationData} from "../../models/common/confirmation-data-type";
 import {removeProductAction, updateProductAction} from "../../redux/actions";
@@ -116,6 +116,15 @@ const AssortmentPage: FC = () => {
                     height: '80vh', marginTop: '2vh'
                     }}
             >
+                <Button
+                    variant="outlined"
+                    startIcon={<AddRounded />}
+                    component={Link}
+                    to={`/assortment/new_product`}
+                    sx={{m: 1}}
+                >
+                    Add product
+                </Button>
                 <DataGrid rows={rows} getRowId={(row) => row.productId} columns={columns} />
             </Paper>
             {isConfDialogVisible && <ConfirmDialog data={confirmationDialog.current} open={isConfDialogVisible}/>}
