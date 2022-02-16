@@ -13,7 +13,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import {BasketData} from "../../models/basket-data";
 import {addBasketItemAction, getBasketAction, removeBasketItemAction, setBasket} from "../../redux/actions";
-import {baskets} from "../../config/services-config";
+// import {baskets} from "../../config/services-config";
 
 function getInfo(product: ProductData): string[] {
     const res: string[] = [
