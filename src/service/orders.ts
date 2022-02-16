@@ -8,7 +8,7 @@ export default class Orders {
     addOrder(product: OrderData): Promise<OrderData> {
         return this.productService.add(product);
     }
-    updateOrder(productId: number, newOrderData: OrderData): Promise<OrderData> {
+    updateOrder(productId: string | number, newOrderData: OrderData): Promise<OrderData> {
         return this.productService.update(productId, newOrderData);
     }
     removeOrder(productId: number): Promise<OrderData> {

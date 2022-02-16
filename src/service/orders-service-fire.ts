@@ -19,18 +19,22 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
     }
 
     async add(entity: OrderData): Promise<OrderData> {
-        const orderId = getUuidByOrder()
+        entity.orderId = getUuidByOrder()
 
         try{
-            await setDoc(doc(this.fireCollection, orderId as string), {...entity,
-                orderId,
-                deliveryDate: entity.deliveryDate.toISOString(),
-                lastEditionDate: entity.lastEditionDate.toISOString()
-            });
+            await setDoc(doc(this.fireCollection, entity.orderId as string), this.convertOrder(entity));
         } catch(err){
             throw ErrorCode.AUTH_ERROR
         }
         return entity
+    }
+
+    convertOrder(order: OrderData){
+        return {...order,
+            orderId: order.orderId,
+            deliveryDate: typeof order.deliveryDate !== "string" ? order.deliveryDate.toISOString(): order.deliveryDate,
+            lastEditionDate: typeof order.lastEditionDate !== "string" ? order.lastEditionDate.toISOString(): order.lastEditionDate
+        }
     }
 
     get(id?: string): Observable<OrderData[]> | Promise<OrderData> {
@@ -60,8 +64,9 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
     async update(id: string, newEntity: OrderData): Promise<OrderData> {
         const oldOrderSnapshot = await this.get(id) as OrderData
         try{
-            await setDoc(doc(this.fireCollection, id), newEntity)
+            await setDoc(doc(this.fireCollection, id), this.convertOrder(newEntity))
         } catch (e) {
+            console.log(e)
             throw ErrorCode.AUTH_ERROR
         }
         return oldOrderSnapshot
