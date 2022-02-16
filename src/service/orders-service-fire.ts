@@ -19,11 +19,14 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
     }
 
     async add(entity: OrderData): Promise<OrderData> {
+        console.log('add')
         entity.orderId = getUuidByOrder()
-
+        console.log(entity)
         try{
             await setDoc(doc(this.fireCollection, entity.orderId as string), this.convertOrder(entity));
         } catch(err){
+            console.log('error')
+            console.log(err)
             throw ErrorCode.AUTH_ERROR
         }
         return entity
