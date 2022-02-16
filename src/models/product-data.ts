@@ -1,3 +1,5 @@
+export const noProductImageUrl: string = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
+
 export type ProductData = {
     productId: number | string,
     name: string,

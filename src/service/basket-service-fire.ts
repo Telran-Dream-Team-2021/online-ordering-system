@@ -1,8 +1,18 @@
 import AbstractDataProvider from "./abstract-data-provider";
-import {collection, CollectionReference, doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
+import {
+    collection,
+    CollectionReference,
+    doc,
+    DocumentReference, DocumentSnapshot,
+    getDoc,
+    getFirestore,
+    setDoc
+} from "firebase/firestore";
 import firebaseApp from "../config/fire-config";
 import ErrorCode from "../models/common/error-code";
 import {BasketData} from "../models/basket-data";
+import {Observable} from "rxjs";
+
 
 export default class BasketServiceFire extends AbstractDataProvider<BasketData> {
     fireCollection: CollectionReference;
@@ -12,8 +22,11 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
         this.fireCollection = collection(getFirestore(firebaseApp), collectionName);
     }
 
-    exists(id: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async exists(id: string): Promise<boolean> {
+        const docRef: DocumentReference = doc(this.fireCollection, id.toString());
+        const docSnap: DocumentSnapshot = await getDoc(docRef);
+
+        return docSnap.exists();
     }
 
     async add(entity: BasketData): Promise<BasketData> {
@@ -25,9 +38,13 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
         return entity;
     }
 
-    get(id?: string): Promise<BasketData> {
-        const basketDocRef = doc(this.fireCollection, id);
-        return getDoc(basketDocRef).then(resp => resp.data() as BasketData).then(res => res);
+    get(id?: string): Observable<BasketData[]> | Promise<BasketData> {
+        if (!!id) {
+            const docRef: DocumentReference = doc(this.fireCollection, id.toString());
+
+            return getDoc(docRef).then(docSnap => docSnap.data() as BasketData);
+        }
+        throw new Error('Illegal argument.');
     }
 
     async remove(id: string): Promise<BasketData> {
@@ -50,6 +67,7 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
         } catch (e) {
             throw ErrorCode.AUTH_ERROR;
         }
-        return oldBasketSnapshot;
+        return newEntity;
     }
+
 }
