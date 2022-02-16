@@ -5,7 +5,7 @@ import {getUuidByOrder, getUuidByProduct, getUuidByUser} from "./uuid";
 export const getRandomOrder: ()=>OrderData = ()=>{
     const order: OrderData = {
         orderId: '',
-        OrderItems: getRandomItems(5),
+        orderItems: getRandomItems(5),
         userId: getUuidByUser(),
         deliveryAddress: "Beer Sheva, Sderot 3",
         status: statuses[statuses.created],

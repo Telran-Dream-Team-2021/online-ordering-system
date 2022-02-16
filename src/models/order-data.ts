@@ -11,7 +11,7 @@ export enum statuses {
 
 export type OrderData = {
     orderId: number | string,
-    OrderItems: ItemData[],
+    orderItems: ItemData[],
     userId: string,
     deliveryAddress?: string,
     status: string,

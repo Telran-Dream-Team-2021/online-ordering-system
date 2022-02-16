@@ -27,14 +27,16 @@ import {
 import Quantity from "./quantity-form";
 import {ItemData} from "../../models/item-data";
 import _ from 'lodash'
+import {userDataSelector} from "../../redux/store";
+import {useSelector} from "react-redux";
 
 
 const OrderForm: FC<{ order: OrderData }> = (props) =>{
     const {order} = props
-    const [itemsState, setItemsState] = useState<ItemData[]>(_.cloneDeep(order.OrderItems))
+    const [itemsState, setItemsState] = useState<ItemData[]>(_.cloneDeep(order.orderItems))
     const [confirmOpen, setConfirmOpen] = useState<boolean>(false)
     const confirmationData = useRef<ConfirmationDataType>(initialConfirmationData);
-
+    const userState = useSelector(userDataSelector)
     const handleStatusChange = (event: SelectChangeEvent) => {
         const oldValue = order.status
         const newOrder = {...order, status: event.target.value}
@@ -67,7 +69,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
         confirmationData.current.handler = (status)=> {
             if (status){
                 orders.updateOrder!(newOrder.orderId, newOrder);
-                setItemsState(_.cloneDeep(newOrder.OrderItems))
+                setItemsState(_.cloneDeep(newOrder.orderItems))
             }
             setConfirmOpen(false);
         }
@@ -77,11 +79,11 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
     const onRemoveItem =(item: ItemData)=>{
         confirmationData.current.title="Remove item";
         confirmationData.current.message = `Do you wanna remove ${item.productId}?`;
-        const newOrder: OrderData = {...order, OrderItems: itemsState.filter(i=>i.productId!==item.productId)}
+        const newOrder: OrderData = {...order, orderItems: itemsState.filter(i=>i.productId!==item.productId)}
         confirmationData.current.handler = (status)=> {
             if (status){
                 orders.updateOrder(newOrder.orderId, newOrder).then()
-                setItemsState(_.cloneDeep(newOrder.OrderItems))
+                setItemsState(_.cloneDeep(newOrder.orderItems))
             }
             setConfirmOpen(false);
         }
@@ -90,14 +92,14 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
 
     const onEditQuantityOfItems = (items: ItemData[])=>{
         confirmationData.current.title="Updating order";
-        const newOrder: OrderData = {...order, OrderItems: items.filter(item=>item.quantity>0)}
-        confirmationData.current.message = `Old total sum is ${getTotalSum(order.OrderItems)}$,
+        const newOrder: OrderData = {...order, orderItems: items.filter(item=>item.quantity>0)}
+        confirmationData.current.message = `Old total sum is ${getTotalSum(order.orderItems)}$,
             New total sum is ${getTotalSum(itemsState)}$.
             Confirm the change`
         confirmationData.current.handler = (status)=> {
             if (status){
                 orders.updateOrder(newOrder.orderId, newOrder).then()
-                setItemsState(_.cloneDeep(newOrder.OrderItems))
+                setItemsState(_.cloneDeep(newOrder.orderItems))
             }
             setConfirmOpen(false);
         }
@@ -114,17 +116,21 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                     sx={{ width: 56, height: 56 }}
                 />},
             { field: 'productName', headerName: 'Name', width: 150, align: 'center', headerAlign: 'center' },
-            { field: 'quantity', headerName: 'Qty', width: 150, align: 'center', headerAlign: 'center',renderCell: (params)=><Quantity item={params.value.item} setItemsStateFn={handleSetItemsState}/>},
+            { field: 'quantity', headerName: 'Qty', width: 150, align: 'center', headerAlign: 'center', renderCell: (params)=> {
+                    return !userState.isAdmin?<Quantity item={params.value.item} setItemsStateFn={handleSetItemsState}/> : <div>{params.value.item.quantity}</div>
+                }},
             { field: 'price', headerName: 'Price ($)', width: 150, align: 'center', headerAlign: 'center' },
             { field: 'totalSum', headerName: 'Total ($)', width: 150, align: 'center', headerAlign: 'center' },
             { field: 'removing', headerName: '', width: 50, align: 'center', headerAlign: 'center', renderCell: (params)=>{
-                return <Button onClick={()=>onRemoveItem(params.value)}>
-                    <CloseRoundedIcon/>
-                </Button>
+                return !userState.isAdmin?
+                    <Button onClick={() => onRemoveItem(params.value)}>
+                        <CloseRoundedIcon/>
+                    </Button>
+                        :
+                    <div></div>
                 }}
         ]
     }
-
     function getRows(): GridRowsProp{
         return itemsState.map(item=>{
             return {
@@ -155,6 +161,8 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
     }));
 
     function getTotalSum(items: ItemData[]): number {
+        console.log(order)
+        console.log(items)
         return items.reduce((acc, item)=>acc + (item.quantity * item.pricePerUnit), 0)
     }
 
@@ -179,13 +187,17 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                             <Item>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <Stack component="form" noValidate>
-                                        <DesktopDatePicker
-                                            inputFormat="MM/dd/yyyy"
-                                            value={order.lastEditionDate}
-                                            onChange={handleLastEditionDateChange}
-                                            renderInput={(params) => <TextField {...params} />}
-                                        />
+                                        {userState.isAdmin ?
+                                            <DesktopDatePicker
+                                                inputFormat="MM/dd/yyyy"
+                                                value={order.lastEditionDate}
+                                                onChange={handleLastEditionDateChange}
+                                                renderInput={(params) => <TextField {...params} />}
+                                            /> :
+                                            <div>{new Date(order.lastEditionDate).toLocaleDateString()}</div>
+                                        }
                                     </Stack>
+
                                 </LocalizationProvider>
                             </Item>
                         </Grid>
@@ -193,12 +205,15 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                             <Item>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <Stack component="form" noValidate>
-                                        <DesktopDatePicker
-                                            inputFormat="MM/dd/yyyy"
-                                            value={order.deliveryDate}
-                                            onChange={handleDeliveryDateChange}
-                                            renderInput={(params) => <TextField {...params} />}
-                                        />
+                                        {userState.isAdmin ?
+                                            <DesktopDatePicker
+                                                inputFormat="MM/dd/yyyy"
+                                                value={order.deliveryDate}
+                                                onChange={handleLastEditionDateChange}
+                                                renderInput={(params) => <TextField {...params} />}
+                                            /> :
+                                            <div>{new Date(order.deliveryDate).toLocaleDateString()}</div>
+                                        }
                                     </Stack>
                                 </LocalizationProvider>
                             </Item>
@@ -206,16 +221,19 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                         <Grid item md={3}>
                             <Item>
                                 <FormControl sx={{ minWidth: 120 }}>
-                                <Select
-                                    defaultValue={order.status}
-                                    onChange={handleStatusChange}
-                                    sx={{height: 40, fontSize: 16}}
-                                >
-                                    <MenuItem defaultChecked={true} value={order.status}>
-                                        {order.status}
-                                    </MenuItem>
-                                    {getStatuses()}
-                                </Select>
+                                    {userState.isAdmin? <Select
+                                        defaultValue={order.status}
+                                        onChange={handleStatusChange}
+                                        sx={{height: 40, fontSize: 16}}
+                                    >
+                                        <MenuItem defaultChecked={true} value={order.status}>
+                                            {order.status}
+                                        </MenuItem>
+                                        {getStatuses()}
+                                    </Select> :
+                                    <div>{order.status}</div>
+                                    }
+
                             </FormControl>
                             </Item>
                         </Grid>
@@ -233,10 +251,10 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                         />
 
                     </div>
-                    {!_.isEqual(itemsState, order.OrderItems) &&
+                    {!_.isEqual(itemsState, order.orderItems) &&
                         <ButtonGroup>
                             <Button onClick={()=>onEditQuantityOfItems(itemsState)}>Update order</Button>
-                            <Button onClick={()=>setItemsState(_.cloneDeep(order.OrderItems))}>Reset</Button>
+                            <Button onClick={()=>setItemsState(_.cloneDeep(order.orderItems))}>Reset</Button>
                         </ButtonGroup>}
                 </AccordionDetails>
             </Accordion>
