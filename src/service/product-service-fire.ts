@@ -23,6 +23,8 @@ export default class ProductServiceFire extends AbstractDataProvider<ProductData
         } catch (e) {
             throw ErrorCode.AUTH_ERROR;
         }
+        console.log("done")
+        console.log(entity)
         return entity;
     }
     async exists(id: number): Promise<boolean> {
