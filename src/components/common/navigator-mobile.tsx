@@ -4,6 +4,7 @@ import {FC, useEffect, useState} from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import {RouteType} from '../../models/common/route-type';
+import LogoutIcon from "@mui/icons-material/Logout";
 
 
 function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
@@ -12,8 +13,8 @@ function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
 
 }
 
-const NavigatorDrawer: FC<{ items: RouteType[] }> = ({items}) => {
-
+const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (props) => {
+    const {items, logoutFn} = props;
     const path = useLocation().pathname;
     const [activeTabIndex, setActiveTab] = useState(getInitialActiveTabIndex(path, items));
     const [label, setLabel] = useState(items[activeTabIndex].label);
@@ -58,7 +59,7 @@ const NavigatorDrawer: FC<{ items: RouteType[] }> = ({items}) => {
     );
 
     return (
-        <Toolbar disableGutters sx={{backgroundColor: 'aqua'}}>
+        <Toolbar disableGutters sx={{backgroundColor: ''}}>
             <Box>
                 <Toolbar>
                     <IconButton
@@ -92,11 +93,14 @@ const NavigatorDrawer: FC<{ items: RouteType[] }> = ({items}) => {
                 component="div"
                 sx={{
                     textAlign: 'center',
-                    flexGrow: '1'
+                    flexGrow: '2'
                 }}
             >
                 {label}
             </Typography>
+            {!!logoutFn && <IconButton sx={{flexGrow: '1'}} edge="end" onClick={logoutFn}>
+                <LogoutIcon/>
+            </IconButton>}
         </Toolbar>
     );
 };

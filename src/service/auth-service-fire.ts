@@ -1,18 +1,29 @@
 import AuthService from "./auth-service";
-import {getAuth, signInWithEmailAndPassword, signInWithPopup, signOut} from "firebase/auth";
+import {
+    getAuth, signInWithEmailAndPassword, signInWithPopup, signOut, sendSignInLinkToEmail,
+    isSignInWithEmailLink,
+    signInWithEmailLink,
+    ActionCodeSettings
+} from "firebase/auth";
 import {authState} from "rxfire/auth";
 import firebaseApp from "../config/fire-config";
 
 import {LoginData} from "../models/common/login-data";
 import {nonAuthorizedUser, UserData} from "../models/common/user-data";
-import {from, Observable} from "rxjs";
+import {from, Observable, of} from "rxjs";
 import {map, mergeMap} from "rxjs/operators";
 import {
     collection,
     CollectionReference, doc, DocumentReference,
-    DocumentSnapshot, getDoc,
-    getFirestore
+    DocumentSnapshot, getDoc, getDocs,
+    getFirestore,
+    where, query
 } from "firebase/firestore";
+import {getUuidByUser} from "../utils/uuid";
+import {PATH_LOGIN_STEP_2} from "../config/routes-config";
+import {userService} from "../config/services-config";//TODO
+
+const EMAIL_STORAGE_KEY = 'emailForSignIn';
 
 export default class AuthServiceFire implements AuthService {
     private auth = getAuth(firebaseApp);
@@ -33,6 +44,17 @@ export default class AuthServiceFire implements AuthService {
         return docSnap.exists();
     }
 
+    async isAdminsEmail(email: string): Promise<boolean> {
+        if (!email) {
+            return false;
+        }
+
+        const docRef = query(this.adminsCollection, where("email", "==", email));
+        const docSnap = await getDocs(docRef);
+
+        return !docSnap.empty;
+    }
+
     getUserData(): Observable<UserData> {
         return authState(this.auth)
             .pipe(mergeMap(user => from(this.isAdmin(user?.uid))
@@ -41,23 +63,85 @@ export default class AuthServiceFire implements AuthService {
                         return {
                             username: user.uid,
                             displayName: user.displayName ?? user.email!,
-                            isAdmin: isAdmin
+                            isAdmin: isAdmin,
+                            email: user.email || '',
                         };
                     }
 
                     return nonAuthorizedUser;
                 }))
+                .pipe(mergeMap(userData => {
+                    if (!!userData.username) {
+                        return from(userService.get(userData.username))
+                            .pipe(map(data => {
+                                if (!!data) {
+                                    data = data as UserData;
+                                    userData.deliveryAddress = data.deliveryAddress;
+                                }
+
+                                return userData;
+                            }))
+                    }
+                    return of(userData);
+                }))
             ));
     }
 
+    buildActionCodeSettings(): ActionCodeSettings {
+        const hash = getUuidByUser();
+
+        return {
+            url: 'http://localhost:3000' + PATH_LOGIN_STEP_2 + '?hash=' + hash,
+            handleCodeInApp: true,
+        };
+    }
+
     login(loginData: LoginData): Promise<boolean> {
-        return signInWithEmailAndPassword(this.auth, loginData.email, loginData.password)
-            .then(() => true).catch(() => false);
+        if (!!loginData.password) {
+            return signInWithEmailAndPassword(this.auth, loginData.email, loginData.password)
+                .then(() => true).catch(() => false);
+        } else {
+            return sendSignInLinkToEmail(this.auth, loginData.email, this.buildActionCodeSettings())
+                .then(() => {
+                    window.localStorage.setItem(EMAIL_STORAGE_KEY, loginData.email);
+                    return true;
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode, errorMessage);
+                    return false;
+                });
+        }
+    }
+
+    isLoginLink(): boolean {
+        return isSignInWithEmailLink(this.auth, window.location.href);
+    }
+
+    async completeLogin() {
+        let email = window.localStorage.getItem(EMAIL_STORAGE_KEY);
+        if (!email) {
+            email = window.prompt('Please provide your email for confirmation');
+        }
+
+        try {
+            const result = await signInWithEmailLink(this.auth, email as string, window.location.href);
+            window.localStorage.removeItem(EMAIL_STORAGE_KEY);
+            console.log(result);
+            return true;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
     }
 
     loginWithSocial(loginData: LoginData): Promise<boolean> {
         return signInWithPopup(this.auth, new loginData.provider!['class']())
-            .then(() => true).catch(() => false);
+            .then(() => true).catch((e) => {
+                console.log(e);
+                return false;
+            });
     }
 
     logout(): Promise<boolean> {

@@ -9,6 +9,7 @@ import CatalogPage from "../components/pages/catalog-page";
 
 export const PATH_ASSORTMENT = "/assortment";
 export const PATH_LOGIN = "/login";
+export const PATH_LOGIN_STEP_2 = "/login/step2";
 export const PATH_BASKET = "/basket";
 export const PATH_ORDERS = "/orders";
 export const PATH_LISTING = "/listing";
