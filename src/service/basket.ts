@@ -30,9 +30,9 @@ export default class Basket {
         const indexId = basket.basketItems.findIndex((element) => element.productId === productId);
         if (-1 !== indexId) {
             if (basket.basketItems[indexId].quantity <= 1) {
-                console.log("qty 1")
+                // console.log("qty 1")
                  basket.basketItems.splice(indexId, 1);
-                console.log(basket.basketItems)
+                // console.log(basket.basketItems)
             } else {
                 basket.basketItems[indexId].quantity -= 1;
             }

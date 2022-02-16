@@ -6,4 +6,6 @@ export type RouteType = {
     label: string;
     authenticated?: boolean;
     adminOnly?: boolean;
+    childRoutes?: RouteType[];
+    indexElement?: ReactNode;
 }

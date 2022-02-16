@@ -3,7 +3,7 @@ import './App.css';
 import {Alert, ThemeProvider} from "@mui/material";
 import {theme} from "./config/theme";
 import NavigatorResponsive from "./components/common/navigator-responsive";
-import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
 import {RouteType} from "./models/common/route-type";
 import {developmentRoutes, PATH_LISTING, routes} from "./config/routes-config";
 import {UserData} from "./models/common/user-data";
@@ -95,7 +95,14 @@ const App: FC = () => {
     }
 
     function getRoutes(): ReactNode[] {
-        return relevantRoutes.map((r: RouteType) => <Route key={r.path} path={r.path} element={r.element}/>)
+        return relevantRoutes.map((r: RouteType) => {
+            return <Route key={r.path} path={r.path} element={r.element}>
+                {r.indexElement && <Route index element={r.indexElement}/>}
+                {r.childRoutes && r.childRoutes.map(r =>
+                    <Route key={r.path} path={r.path} element={r.element}/>)}
+            </Route>
+        });
+
     }
 
     useEffect(() => {
@@ -134,5 +141,4 @@ const App: FC = () => {
             </BrowserRouter>}
     </ThemeProvider>
 }
-
 export default App;

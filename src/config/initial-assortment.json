@@ -1,0 +1,114 @@
+{
+  "products": [
+    {
+      "productId": 1000000,
+      "name": "Signature Tea Cakes Assortment",
+      "categoryName": "Bread",
+      "description": "Enjoy the satisfying tastes of dense, moist tea cakes bursting with incredible flavor. The chocolate swirl cake blends together decadent chocolate and vanilla cakes, while the lemon vanilla blueberry and apple tea cakes are crafted with real fruit pieces. Finally, the banana pecan loaf cake is topped with a sweet cocoa streusel that perfectly complements the rich cake beneath.",
+      "imageUrl": "https://cdn1.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/20_33484_30XP_01ex.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 29.99,
+      "unitOfMeasurement": "pieces",
+      "isActive": true
+    },
+    {
+      "productId": 1000001,
+      "name": "Baker's Best Basket",
+      "categoryName": "Bread",
+      "description": "long a warm afternoon breeze. With snickerdoodle cookies and chocolate chunk cookies rounding out this gift, the forecast is decidedly delicious no matter when you share it.",
+      "imageUrl": "https://cdn1.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/19_32149_30XP_01ex.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 39.99,
+      "unitOfMeasurement": "pieces",
+      "isActive": true
+    },
+    {
+      "productId": 1000002,
+      "name": "Deluxe Chest of Chocolates",
+      "categoryName": "Chocolate",
+      "description": "Surprise your favorite chocolate connoisseur with the ultimate experience—an elegant chest that's filled with the finest chocolate treats. Inside this beautiful chest are dark chocolate bars, luscious truffles, milk chocolate mini mints, dark chocolate-covered Moose Munch® Premium Popcorn, and more. Each of these rich desserts are crafted by chocolatiers in our very own Southern Oregon candy kitchen.",
+      "imageUrl": "https://cdn1.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/22_34211_30PA_19_003x.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 94.99,
+      "unitOfMeasurement": "pieces",
+      "isActive": true
+    },
+    {
+      "productId": 1000003,
+      "name": "Heritage Chocolate Assortment",
+      "categoryName": "Chocolate",
+      "description": "This assortment of classic chocolates from our candy kitchen features several delectable flavors, including dulce de leche, dark chocolate raspberry, and more. Expertly crafted in small batches on our Southern Oregon campus using our signature blend of chocolate, these delights are a rich, decadent treat. Those seeking a premium chocolate gift need look no further.",
+      "imageUrl": "https://cdn1.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/18_24457_30E_01ex.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 29.99,
+      "unitOfMeasurement": "pieces",
+      "isActive": true
+    },
+    {
+      "productId": 1000004,
+      "name": "Chocolate Cake Cheesecake",
+      "categoryName": "Cakes",
+      "description": "The REESE'S® Peanut Butter Chocolate Cake Cheesecake is an irresistible addition to the lineup of cakes from The Cheesecake Factory® we now offer online. Crafted with chunks of actual peanut butter cups, this rich chocolate peanut butter cheesecake is complemented by layers of fudge cake and gooey salted caramel.",
+      "imageUrl": "https://cdn2.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/17_40017_30W_159e_v1x.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 99.99,
+      "unitOfMeasurement": "pieces",
+      "isActive": true
+    },
+    {
+      "productId": 1000005,
+      "name": "Ultimate Chocolate Cake",
+      "categoryName": "Cakes",
+      "description": "Straight from the Harry & David bakery, it's the Ultimate Chocolate Cake. Enjoy an original specialty cake with a unique combination of decadent flavors. A layer of rich brownie fudge cake and a layer of our famous New York-style cheesecake are separated by delicious fudge filling. To top off an already extravagant dessert, our expert bakers decorate the cake with even more fudge frosting and add pecans for a finishing touch.",
+      "imageUrl": "https://cdn2.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/17_24680_31F_01ex.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 69.99,
+      "unitOfMeasurement": "pieces",
+      "isActive": true
+    },
+    {
+      "productId": 1000006,
+      "name": "Artisan Macarons",
+      "categoryName": "Cookies",
+      "description": "Enjoy this luxurious selection of delicious macaron cookies, made with only the finest ingredients. Handcrafted from scratch without preservatives, these macarons have a light, airy texture and a creamy center. This collection arrives in a stylish teal box with 12 exquisite flavors, including sweet pistachio, rich raspberry, classic vanilla, and so much more.",
+      "imageUrl": "https://cdn1.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/19_33463_30GL_01ex.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 49.99,
+      "unitOfMeasurement": "500 gr",
+      "isActive": true
+    },
+    {
+      "productId": 1000007,
+      "name": "Signature Bakery Assortment",
+      "categoryName": "Cookies",
+      "description": "This beautiful bakery gift is filled with delicacies made in our own Southern Oregon bakery. Delicate lemon poppyseed coffee cake, our famous cinnamon swirl, and hand-layered baklava join some of our most popular cookies, including raspberry galettes and Macadamia Nut Chocolate Chip Cookies, to round out this generous collection.",
+      "imageUrl": "https://cdn2.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/18_7609_30RA_09ex.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 69.99,
+      "unitOfMeasurement": "kg",
+      "isActive": true
+    },
+    {
+      "productId": 1000008,
+      "name": "Bacon-Wrapped Stuffed Smoked Sausages",
+      "categoryName": "Sandwiches",
+      "description": "Dish up a mouthwatering crowd-pleaser that will have everyone cheering. Four extra-large pork sausages rich in smoked barbecue flavor; stuffed with rich, smooth cheddar cheese; and wrapped in premium, award-winning bacon. Simply bake, slice, and serve.",
+      "imageUrl": "https://cdn2.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/22_34917_30GK_79_022x.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 64.99,
+      "unitOfMeasurement": "pieces",
+      "isActive": true
+    },
+    {
+      "productId": 1000009,
+      "name": "Barbecue Pork and Brisket Collection",
+      "categoryName": "Sandwiches",
+      "description": "Add a whole lot of flavor to your next get-together with our BBQ pork and brisket collection. These savory meats are the best of barbecue all seasoned with that famous Kansas City flair. With simple thawing and cooking instructions, they're the perfect entrées for effortless dinner parties and family gatherings. Included are six servings each of tantalizing pulled pork and chopped BBQ brisket.",
+      "imageUrl": "https://cdn2.harryanddavid.com/wcsstore/HarryAndDavid/images/catalog/22_34925_30GK_55_013x.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 59.99,
+      "unitOfMeasurement": "500 gr",
+      "isActive": true
+    },
+    {
+      "productId": 1000010,
+      "name": "Eggs Benedict Box",
+      "categoryName": "Sandwiches",
+      "description": "Everything you need for a gourmet breakfast or brunch is here in the Eggs Benedict Box—just add the eggs. Our foolproof Hollandaise sauce, Wolferman's® super-thick signature English muffins, and tender, flavorful Canadian bacon are the key components to creating this elegant dish.",
+      "imageUrl": "https://cdn2.wolfermans.com/wcsstore/Wolfermans/images/catalog/19_3185_61J_01ex.jpg?width=545&height=597&quality=80&auto=webp&optimize={medium}",
+      "price": 39.99,
+      "unitOfMeasurement": "kg",
+      "isActive": true
+    }
+  ]
+}

@@ -14,7 +14,7 @@ const style = {
     p: 4,
 };
 
-type ModalProps = {
+export type ModalProps = {
     title: string,
     message: string[],
     onClose: () => void
