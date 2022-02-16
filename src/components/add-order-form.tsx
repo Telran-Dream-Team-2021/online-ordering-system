@@ -2,16 +2,20 @@ import {OrderData} from "../models/order-data";
 import {FC} from "react";
 import {getRandomOrder} from "../utils/random";
 import {Button} from "@mui/material";
+import {BasketData} from "../models/basket-data";
+import {useSelector} from "react-redux";
+import {basketSelector} from "../redux/store";
 
 type AddOrderForm = {
-    addOrderFn: (order: OrderData) => void
+    addOrderFn: (basket: BasketData) => void
 }
 
 const AddOrderForm: FC<AddOrderForm> = (props)=>{
     const {addOrderFn} = props
-
+    const basket = useSelector(basketSelector)
+    console.log('basket', basket)
     return (
-        <Button onClick={()=>addOrderFn(getRandomOrder())}>add random order</Button>
+        <Button onClick={()=>addOrderFn(basket)}>add my basket</Button>
     )
 }
 
