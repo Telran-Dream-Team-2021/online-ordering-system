@@ -25,7 +25,6 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
     async exists(id: string): Promise<boolean> {
         const docRef: DocumentReference = doc(this.fireCollection, id.toString());
         const docSnap: DocumentSnapshot = await getDoc(docRef);
-
         return docSnap.exists();
     }
 
