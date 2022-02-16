@@ -2,8 +2,8 @@ import {Box, Grid, Paper, Tooltip} from '@mui/material';
 import React, {FC, useMemo, useRef, useState} from 'react';
 import {DataGrid, GridColumns, GridRowsProp, GridActionsCellItem, GridRowParams} from "@mui/x-data-grid";
 import {ProductData} from "../../models/product-data";
-import {useSelector} from "react-redux";
-import {userDataSelector, catalogSelector} from "../../redux/store";
+import {useDispatch, useSelector} from "react-redux";
+import {userDataSelector, catalogSelector, basketSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
 import {Visibility} from "@mui/icons-material";
 import Badge from "@mui/material/Badge";
@@ -11,6 +11,9 @@ import InfoModal from "../common/info-modal";
 import {ItemData} from "../../models/item-data";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import {BasketData} from "../../models/basket-data";
+import {addBasketItemAction, getBasketAction, removeBasketItemAction, setBasket} from "../../redux/actions";
+import {baskets} from "../../config/services-config";
 
 function getInfo(product: ProductData): string[] {
     const res: string[] = [
@@ -29,15 +32,17 @@ function getRows(products: ProductData[]): GridRowsProp {
 }
 
 const ListingPage: FC = () => {
-    const [basket, setBasket] = React.useState(new Set());
+    const dispatch = useDispatch();
+    const [basket0, setBasket0] = React.useState(new Set());
     const userData: UserData = useSelector(userDataSelector);
     const products: ProductData[] = useSelector(catalogSelector);
+    const basket: BasketData = useSelector(basketSelector);
     const rows = useMemo(() => getRows(products), [products]);
     const [modalVisible, setModalVisible] = useState(false);
     const textModal = useRef<string[]>(['']);
     const imgUrlModal = useRef<string>('');
 
-    function getColumns(userData: UserData): GridColumns {
+    function getColumns(): GridColumns {
         return [
             {
                 field: "imageUrl",
@@ -59,15 +64,18 @@ const ListingPage: FC = () => {
                             label='Details'
                             onClick={() => showDetails(params.id as number)}
                         />];
-                    actionItems.push(<GridActionsCellItem icon={
-                        !basket.has(params.id)
-                            ?
-                            <AddToShoppingCart/>
-                            :
-                            <RemoveFromShoppingCart/>
-                    } label='Basket' onClick={() => {
-                        badgeHandler(params.id as number);
-                    }}
+                    actionItems.push(<GridActionsCellItem
+                        icon={
+                            !isItemInCart(+params.id)
+                                ?
+                                <AddToShoppingCart/>
+                                :
+                                <RemoveFromShoppingCart/>
+                        }
+                        label='Basket'
+                        onClick={() => {
+                            badgeHandler(params.id as number);
+                        }}
                     />)
                     return actionItems;
                 }
@@ -75,22 +83,18 @@ const ListingPage: FC = () => {
         ]
     }
 
+    function isItemInCart(itemId: number) {
+        return basket.basketItems.find(i => i.productId == itemId) ? true : false;
+    }
+
     function badgeHandler(id: any) {
-        if (basket.has(id)) {
-            console.log("удаляем из корзины " + id);
-            basket.delete(id);
-            setBasket(new Set(basket));
-        } else {
-            console.log("добавляем в корзину " + id);
-            basket.add(id);
-            setBasket(new Set(basket));
-        }
-        const itemData: ItemData = {pricePerUnit: 0, productId: 0, quantity: 0};
         const product = products.find(e => e.productId === +id);
-        if (!!product) {
-            itemData.productId = product.productId;
-            itemData.pricePerUnit = product.price;
-            itemData.quantity = 1;
+        if (isItemInCart(id)) {
+            dispatch(removeBasketItemAction(basket, id));
+        } else {
+            //на тот случай, когда корзины еще нет, насильно записываем в нее юзер айди, чтобы она успешно создалась
+            dispatch(setBasket({...basket, userId: userData.username}));
+            dispatch(addBasketItemAction(basket, product!));
         }
     }
 
@@ -111,7 +115,7 @@ const ListingPage: FC = () => {
         '& .Mui-error': {bgcolor: '#FF9494', color: 'white', width: '100%', height: '100%'}
     }}>
         <Paper sx={{width: {xs: '100vw', sm: '80vw'}, height: '80vh', marginTop: '2vh'}}>
-            <DataGrid getRowId={(row) => row.productId} rows={rows} columns={getColumns(userData)}/>
+            <DataGrid getRowId={(row) => row.productId} rows={rows} columns={getColumns()}/>
         </Paper>
         <InfoModal title={"Detailed information about the product"}
                    message={textModal.current} open={modalVisible}
