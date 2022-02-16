@@ -141,5 +141,4 @@ const App: FC = () => {
             </BrowserRouter>}
     </ThemeProvider>
 }
-
 export default App;

@@ -30,18 +30,19 @@ const AssortmentPage: FC = () => {
 
     function getColumns(): GridColumns {
         return [
-            {field: 'categoryName', headerName: 'Category', flex: 2},
             {field: 'imageUrl', headerName: 'Image', flex: 1, headerAlign: "center", align: "center",
                 renderCell: params => {
                     return <Avatar
                         src={params.value}
                         sx={{ width: 48, height: 48 }}
+                        variant={'rounded'}
                     />
                 }
             },
-            {field: 'productId', headerName: 'Product ID', flex: 2},
+            {field: 'productId', headerName: 'Product ID', flex: 1},
             {field: 'name', headerName: 'Product name', flex: 6},
-            {field: 'isActive', headerName: '', flex: 1,
+            {field: 'categoryName', headerName: 'Category', flex: 2},
+            {field: 'isActive', headerName: '', flex: 0.1, align:"center",
                 renderCell: params => {
                     return (
                         <Switch
@@ -52,7 +53,7 @@ const AssortmentPage: FC = () => {
                     );
                 }
             },
-            {field: 'edit', headerName: '',
+            {field: 'edit', flex: 0.1, align:"center", headerName: '',
                 renderCell: params => {
                     return (
                         <IconButton
@@ -65,7 +66,7 @@ const AssortmentPage: FC = () => {
                     );
                 }
             },
-            {field: 'actions', type: "actions", getActions(params) {
+            {field: 'actions', flex: 0.1, align:"center", type: "actions", getActions(params) {
                     return [
                         <GridActionsCellItem icon={<Delete />}
                                              onClick={() => {
