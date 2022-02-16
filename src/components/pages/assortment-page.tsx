@@ -1,14 +1,14 @@
 import React, {useState, FC, useMemo, useRef} from 'react';
 import {ProductData} from "../../models/product-data";
 import {useDispatch, useSelector} from "react-redux";
-import {catalogSelector, userDataSelector} from "../../redux/store";
-import {UserData} from "../../models/common/user-data";
+import {catalogSelector} from "../../redux/store";
 import {Avatar, Box, Button, IconButton, Paper, Switch} from '@mui/material';
 import {DataGrid, GridActionsCellItem, GridColumns, GridRowsProp} from "@mui/x-data-grid";
-import {Delete, Visibility, AddRounded} from "@mui/icons-material";
+import {Delete, Visibility, AddRounded, UploadRounded} from "@mui/icons-material";
 import ConfirmDialog from "../common/confirm-dialog";
 import {ConfirmationDataType, initialConfirmationData} from "../../models/common/confirmation-data-type";
-import {removeProductAction, updateProductAction} from "../../redux/actions";
+import {addProductAction, removeProductAction, updateProductAction} from "../../redux/actions";
+import initialAssortment from "../../config/initial-assortment.json";
 import {Link} from "react-router-dom";
 
 
@@ -18,7 +18,6 @@ function getRows(assortment: ProductData[]): GridRowsProp {
 
 const AssortmentPage: FC = () => {
     const dispatch = useDispatch();
-    const userData: UserData = useSelector(userDataSelector);
     const assortment: ProductData[] = useSelector(catalogSelector);
     console.log(assortment);
     const rows = useMemo(() => {
@@ -42,6 +41,8 @@ const AssortmentPage: FC = () => {
             {field: 'productId', headerName: 'Product ID', flex: 1},
             {field: 'name', headerName: 'Product name', flex: 6},
             {field: 'categoryName', headerName: 'Category', flex: 2},
+            {field: 'price', headerName: 'Price', flex: 1},
+            {field: 'unitOfMeasurement', headerName: 'Unit', flex: 1},
             {field: 'isActive', headerName: '', flex: 0.1, align:"center",
                 renderCell: params => {
                     return (
@@ -97,10 +98,17 @@ const AssortmentPage: FC = () => {
         }
         return product;
     }
-    function removeProduct(productId: number) {
-        dispatch(removeProductAction(productId));
+    function removeProduct(productId: number, isConfirmed: boolean) {
+        if (isConfirmed) {
+            dispatch(removeProductAction(productId));
+        }
         setIsConfDialogVisible(false);
     }
+
+    function uploadInitialAssortment() {
+        initialAssortment.products.forEach(product => dispatch(addProductAction(product)))
+    }
+
     return (
         <Box
             sx={{
@@ -125,7 +133,19 @@ const AssortmentPage: FC = () => {
                 >
                     Add product
                 </Button>
-                <DataGrid rows={rows} getRowId={(row) => row.productId} columns={columns} />
+                {
+                    assortment.length == 0 ?
+                        <Button
+                            variant="outlined"
+                            startIcon={<UploadRounded/>}
+                            onClick={() => uploadInitialAssortment()}
+                            sx={{m: 1}}
+                        >
+                            Load assortment
+                        </Button>
+                        :
+                        <DataGrid rows={rows} getRowId={(row) => row.productId} columns={columns}/>
+                }
             </Paper>
             {isConfDialogVisible && <ConfirmDialog data={confirmationDialog.current} open={isConfDialogVisible}/>}
         </Box>
