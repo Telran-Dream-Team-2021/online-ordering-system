@@ -1,4 +1,4 @@
-import {Avatar, Box, Grid, IconButton, Paper, Tooltip} from '@mui/material';
+import {Avatar, Box, Paper, Tooltip} from '@mui/material';
 import React, {FC, useMemo, useRef, useState} from 'react';
 import {DataGrid, GridColumns, GridRowsProp, GridActionsCellItem, GridRowParams} from "@mui/x-data-grid";
 import {ProductData} from "../../models/product-data";
@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {userDataSelector, catalogSelector, basketSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
 import {Visibility} from "@mui/icons-material";
-import InfoModal, {ModalProps} from "../common/info-modal";
+import InfoModal from "../common/info-modal";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import {BasketData} from "../../models/basket-data";
@@ -89,8 +89,7 @@ const ListingPage: FC = () => {
             dispatch(removeBasketLineAction(basket, id));
             console.log(basket);
         } else {
-            //на тот случай, когда корзины еще нет, насильно записываем в нее юзер айди, чтобы она успешно создалась
-            // dispatch(setBasket({...basket, userId: userData.username}));
+            basket.userId = userData.username;
             dispatch(addBasketItemAction(basket, product!));
         }
     }

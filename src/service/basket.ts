@@ -5,7 +5,7 @@ import {ProductData} from "../models/product-data";
 import {ItemData} from "../models/item-data";
 import _ from 'lodash'
 
-import {from, Observable} from "rxjs";
+import {Observable} from "rxjs";
 
 export default class Basket {
     constructor(private basketService: DataProvider<BasketData>) {
@@ -17,7 +17,6 @@ export default class Basket {
         if (await basketService.exists(basket.userId)) {
             const indexId = basket.basketItems.findIndex((element) => element.productId === item.productId);
             if (-1 === indexId) {
-
                 basket.basketItems.push(item);
             }
              else {
@@ -26,7 +25,7 @@ export default class Basket {
             return await this.basketService.update(basket.userId, _.cloneDeep(basket));
         } else {
             basket.basketItems.push(item);
-            return await this.basketService.update(basket.userId, _.cloneDeep(basket));
+            return await this.basketService.add(basket);
         }
     }
 
