@@ -32,4 +32,10 @@ export default interface DataProvider<T> {
      * @return Old entity
      */
     update(id: number | string, newEntity: T): Promise<T>;
+
+    /**
+     * Return observable of first entity with given id
+     * @param id
+     */
+    getFirst(id: number | string): Observable<T>;
 }

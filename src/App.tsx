@@ -11,9 +11,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {userDataSelector} from "./redux/store";
 import process from "process";
 import {Subscription} from "rxjs";
-import {authService, basket, catalog} from "./config/services-config";
+import {authService, basket, catalog, userDataProcessor} from "./config/services-config";
 import ErrorCode from "./models/common/error-code";
-import {setBasket, setCatalog, setErrorCode, setUserData} from "./redux/actions";
+import {logoutAction, setBasket, setCatalog, setErrorCode, setUserData} from "./redux/actions";
 import UserDataModal from "./components/common/user-data-modal";
 
 
@@ -45,7 +45,7 @@ const App: FC = () => {
             authService.completeLogin().then(() => {
                 setNavigateTo(PATH_LISTING);
             });
-        } else if (!!userData.username && !userData.deliveryAddress) {
+        } else if (!!userData.username && !userData.deliveryAddress && !userData.isAdmin) {
             setFlStep2ModalOpen(true);
         }
 
@@ -53,10 +53,12 @@ const App: FC = () => {
     }, [userData])
 
     useEffect(() => {
-        let subscriptionUserData = getUserData();
+        let subscriptionUserData: Subscription;
+        subscriptionUserData = getUserData();
 
         function getUserData(): Subscription {
-            return authService.getUserData().subscribe({
+            subscriptionUserData && subscriptionUserData.unsubscribe();
+            return userDataProcessor.getUserData().subscribe({
                 next(ud) {
                     dispatch(setErrorCode(ErrorCode.NO_ERROR));
                     dispatch(setUserData(ud));
@@ -91,7 +93,7 @@ const App: FC = () => {
     }, [dispatch, userData.username]);
 
     async function logout() {
-        return await authService.logout();
+         dispatch(logoutAction());
     }
 
     function getRoutes(): ReactNode[] {
@@ -131,11 +133,13 @@ const App: FC = () => {
     return <ThemeProvider theme={theme}>
         {flErrorServer ? <Alert severity='error'>Server is unavailable</Alert> :
             <BrowserRouter>
-                <NavigatorResponsive items={relevantRoutes}
-                                     logoutFn={!!userData.username ? logout : undefined}/>
+                {<NavigatorResponsive items={relevantRoutes}
+                                     logoutFn={!!userData.username ? logout : undefined}/>}
+                {/*{JSON.stringify(userData)}*/}
                 <Routes>
                     {getRoutes()}
                     {!!navigateTo && <Route path={'*'} element={<Navigate to={navigateTo}/>}/>}
+                    <Route path={'/'} element={<Navigate to={PATH_LISTING}/>}/>
                 </Routes>
                 {<UserDataModal onClose={() => setFlStep2ModalOpen(false)} open={flStep2ModalOpen}/>}
             </BrowserRouter>}

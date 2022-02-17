@@ -10,7 +10,7 @@ import firebaseApp from "../config/fire-config";
 
 import {LoginData} from "../models/common/login-data";
 import {nonAuthorizedUser, UserData} from "../models/common/user-data";
-import {from, Observable, of} from "rxjs";
+import {from, Observable} from "rxjs";
 import {map, mergeMap} from "rxjs/operators";
 import {
     collection,
@@ -21,7 +21,6 @@ import {
 } from "firebase/firestore";
 import {getUuidByUser} from "../utils/uuid";
 import {PATH_LOGIN_STEP_2} from "../config/routes-config";
-import {userService} from "../config/services-config";//TODO
 
 const EMAIL_STORAGE_KEY = 'emailForSignIn';
 
@@ -59,6 +58,7 @@ export default class AuthServiceFire implements AuthService {
         return authState(this.auth)
             .pipe(mergeMap(user => from(this.isAdmin(user?.uid))
                 .pipe(map((isAdmin) => {
+                    console.log(user);
                     if (!!user) {
                         return {
                             username: user.uid,
@@ -69,20 +69,6 @@ export default class AuthServiceFire implements AuthService {
                     }
 
                     return nonAuthorizedUser;
-                }))
-                .pipe(mergeMap(userData => {
-                    if (!!userData.username) {
-                        return from(userService.get(userData.username))
-                            .pipe(map(data => {
-                                if (!!data) {
-                                    data = data as UserData;
-                                    userData.deliveryAddress = data.deliveryAddress;
-                                }
-
-                                return userData;
-                            }))
-                    }
-                    return of(userData);
                 }))
             ));
     }

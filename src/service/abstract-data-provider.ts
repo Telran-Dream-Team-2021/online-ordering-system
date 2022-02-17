@@ -11,4 +11,8 @@ export default abstract class AbstractDataProvider<T> implements DataProvider<T>
     abstract remove(id: number | string): Promise<T>;
 
     abstract update(id: number | string, newEntity: T): Promise<T>;
+
+    getFirst(id: number | string): Observable<T> {
+        throw new Error('Method is not implemented');
+    }
 }
