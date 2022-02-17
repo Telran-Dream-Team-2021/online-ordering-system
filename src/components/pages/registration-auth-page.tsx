@@ -22,7 +22,7 @@ const RegistrationAuthPage = () => {
         if (userData.username) {
             navigate(PATH_LISTING);
         }
-    }, [userData])
+    }, [userData]);// eslint-disable-line react-hooks/exhaustive-deps
 
     async function login(loginData: LoginData): Promise<void> {
         dispatch(loginAction(loginData));

@@ -30,7 +30,7 @@ const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (prop
     useEffect(() => {
         setActiveTab(getInitialActiveTabIndex(path, items));
         setLabel(items[activeTabIndex].label);
-    }, [items, path])
+    }, [items, path]);// eslint-disable-line react-hooks/exhaustive-deps
     document.title = label;
 
     const [displayDrawer, setStateDrawer] = useState(false);
