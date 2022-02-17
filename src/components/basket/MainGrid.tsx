@@ -19,15 +19,14 @@ const MainGrid = () => {
         return basketData.basketItems.map(
             (i, row) => {
                 const imageUrl = catalogData.find(product => product.productId === i.productId)
-                return [
-                    {
+                return {
                         id: row, col0: imageUrl ? imageUrl : '',
                         col1: catalogData.find(p => p.productId === i.productId)!.name,
                         col2: i.quantity,
                         col3: i.pricePerUnit,
                         col4: i.quantity * i.pricePerUnit
                     }
-                ]
+
             }
         )
     }

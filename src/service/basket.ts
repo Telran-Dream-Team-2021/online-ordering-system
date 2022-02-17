@@ -3,6 +3,8 @@ import {BasketData} from "../models/basket-data";
 import {basketService} from "../config/services-config";
 import {ProductData} from "../models/product-data";
 import {ItemData} from "../models/item-data";
+import _ from 'lodash'
+
 import {from, Observable} from "rxjs";
 
 export default class Basket {
@@ -15,14 +17,16 @@ export default class Basket {
         if (await basketService.exists(basket.userId)) {
             const indexId = basket.basketItems.findIndex((element) => element.productId === item.productId);
             if (-1 === indexId) {
+
                 basket.basketItems.push(item);
-            } else {
+            }
+             else {
                 basket.basketItems[indexId].quantity += 1;
             }
-            return await this.basketService.update(basket.userId, basket);
+            return await this.basketService.update(basket.userId, _.cloneDeep(basket));
         } else {
             basket.basketItems.push(item);
-            return await this.basketService.add(basket);
+            return await this.basketService.update(basket.userId, _.cloneDeep(basket));
         }
     }
 
@@ -41,6 +45,11 @@ export default class Basket {
     }
 
     getBasket(userId: string): Observable<BasketData> {
-        return from(this.basketService.get(userId) as Promise<BasketData>);
+        return this.basketService.getFirst(userId)
+    }
+
+    removeBasket(basket: BasketData): Promise<BasketData>{
+        console.log('removeBasket')
+        return this.basketService.remove(basket.userId)
     }
 }

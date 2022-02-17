@@ -93,8 +93,9 @@ const ListingPage: FC = () => {
             dispatch(removeBasketItemAction(basket, id));
         } else {
             //на тот случай, когда корзины еще нет, насильно записываем в нее юзер айди, чтобы она успешно создалась
-            dispatch(setBasket({...basket, userId: userData.username}));
+            // dispatch(setBasket({...basket, userId: userData.username}));
             dispatch(addBasketItemAction(basket, product!));
+            console.log(basket)
         }
     }
 

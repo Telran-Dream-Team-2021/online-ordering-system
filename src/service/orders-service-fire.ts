@@ -6,6 +6,7 @@ import firebaseApp from "../config/fire-config";
 import {CollectionReference, getFirestore, collection, doc, setDoc, getDoc, deleteDoc} from "firebase/firestore";
 import ErrorCode from "../models/common/error-code";
 import {getUuidByOrder} from "../utils/uuid";
+import {UserData} from "../models/common/user-data";
 
 export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
     fireCollection: CollectionReference;
@@ -73,6 +74,10 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
             throw ErrorCode.AUTH_ERROR
         }
         return oldOrderSnapshot
+    }
+
+    getFirst(id: string | number): Observable<OrderData> {
+        throw new Error("not implements")
     }
 
 

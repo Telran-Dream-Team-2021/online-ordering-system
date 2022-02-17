@@ -36,6 +36,7 @@ async function action(handlerFn: any, dispatch: Dispatch) {
         await handlerFn();
         dispatch(setErrorCode(ErrorCode.NO_ERROR));
     } catch (error: any) {
+        console.log(error)
         dispatch(setErrorCode(error));
     }
 }
@@ -55,11 +56,13 @@ export const addBasketItemAction = function (basketData: BasketData, productData
 export const removeBasketItemAction = function (basketData: BasketData, productId: number): (dispatch: any) => void {
     return action.bind(null, basket.removeItem.bind(basket, basketData, productId));
 }
+export const removeBasketAction = function (basketData: BasketData): (dispatch: any) => void {
+    return action.bind(null, basket.removeBasket.bind(basket, basketData));
+}
 export const getBasketAction = function (id: string): (dispatch: any) => void {
     return action.bind(null, basket.getBasket.bind(basket, id));
 }
 
-export const addOrderAction = function(basket: BasketData): (dispatch: any) => void {
-    console.log('addOrderAction')
-    return action.bind(null, orders.addOrder.bind(orders, basket));
+export const addOrderAction = function(basket: BasketData, userData: UserData): (dispatch: any) => void {
+    return action.bind(null, orders.addOrder.bind(orders, basket, userData));
 }

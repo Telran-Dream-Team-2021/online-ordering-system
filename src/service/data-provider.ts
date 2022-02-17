@@ -1,4 +1,5 @@
 import {Observable} from "rxjs";
+import {BasketData} from "../models/basket-data";
 
 export default interface DataProvider<T> {
     /**
@@ -32,4 +33,6 @@ export default interface DataProvider<T> {
      * @return Old entity
      */
     update(id: number | string, newEntity: T): Promise<T>;
+
+    getFirst(id: string | number): Observable<T>
 }

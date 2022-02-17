@@ -7,10 +7,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {basketSelector, userDataSelector} from "../../redux/store";
 import {BasketData} from "../../models/basket-data";
 import {ProductData} from "../../models/product-data";
-import {setBasket, setOrders} from "../../redux/actions";
+import {addOrderAction, removeBasketAction, setBasket, setErrorCode, setOrders} from "../../redux/actions";
 import {UserData} from "../../models/common/user-data";
 import {basket, orders} from "../../config/services-config";
 import {Subscription} from "rxjs";
+import ErrorCode from "../../models/common/error-code";
 
 
 const BasketPage = () => {
@@ -25,32 +26,6 @@ const BasketPage = () => {
     const basketData: BasketData = useSelector(basketSelector);
     const userData: UserData = useSelector(userDataSelector);
     const dispatch = useDispatch();
-    console.log(userData)
-    useEffect(() => {
-        let subscription: any;
-        subscription = getData();
-
-        function getData(): Subscription {
-            subscription && subscription.unsubscribe();
-            return basket.getBasket(userData.username).subscribe({
-
-                next(data) {
-                    // handleError(ErrorCode.NO_ERROR);
-
-                    dispatch(setBasket(data))
-                },
-                error(err) {
-                    // handleError(err);
-                    setTimeout(() => {
-                        subscription = getData()
-                    }, 2000);
-                }
-
-            })
-        }
-
-        return () => subscription.unsubscribe();
-    }, [])
 
     function removeFromCart() {
         // dispatch(removeBasketItemAction(basketData, 444));
@@ -84,7 +59,8 @@ const BasketPage = () => {
     }
 
      const makeOrder = async (_basketData: BasketData) => {
-        await orders.addOrder(_basketData)
+        await dispatch(addOrderAction(_basketData, userData))
+         await dispatch(removeBasketAction(_basketData))
     }
 
     return (

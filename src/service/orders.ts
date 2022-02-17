@@ -9,23 +9,18 @@ import {UserData} from "../models/common/user-data";
 
 export default class Orders {
     constructor(private ordersService: DataProvider<OrderData>) {}
-    async addOrder(basket: BasketData): Promise<OrderData> {
+
+    async addOrder(basket: BasketData, userData: UserData): Promise<OrderData> {
         console.log('addOrder')
         console.log(basket)
         const order: OrderData = {
             orderId: getUuidByOrder(),
             orderItems: basket.basketItems,
             userId: basket.userId,
-            deliveryAddress: String((await userService.get(basket.userId) as UserData).deliveryAddress),
+            deliveryAddress: userData.deliveryAddress || 'Beer Sheva',
             status: statuses[statuses.created],
             deliveryDate: getDeliveryDate(),
             lastEditionDate: getLastEditionDate()
-        }
-        try{
-            await basketService.remove(basket.userId)
-        } catch(e){
-            console.log('addOrder error')
-            console.log(e)
         }
         return this.ordersService.add(order);
     }

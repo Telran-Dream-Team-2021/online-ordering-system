@@ -11,7 +11,11 @@ import {
 import firebaseApp from "../config/fire-config";
 import ErrorCode from "../models/common/error-code";
 import {BasketData} from "../models/basket-data";
-import {Observable} from "rxjs";
+import {from, Observable} from "rxjs";
+import {collectionData, docData} from "rxfire/firestore";
+import {map} from "rxjs/operators";
+import { ItemData } from "../models/item-data";
+import {DocumentData} from "rxfire/firestore/interfaces";
 
 
 export default class BasketServiceFire extends AbstractDataProvider<BasketData> {
@@ -38,18 +42,18 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
     }
 
     get(id?: string): Observable<BasketData[]> | Promise<BasketData> {
-        if (!!id) {
-            const docRef: DocumentReference = doc(this.fireCollection, id.toString());
-
-            return getDoc(docRef).then(docSnap => docSnap.data() as BasketData);
-        }
         throw new Error('Illegal argument.');
+    }
+
+    getFirst(id: string | number): Observable<BasketData> {
+        const docRef: DocumentReference = doc(this.fireCollection, id.toString())
+        return docData(docRef) as Observable<BasketData>
     }
 
     async remove(id: string): Promise<BasketData> {
         const basket = (await getDoc(doc(this.fireCollection, id))).data() as BasketData;
         const newBasket = {
-            basketItems: basket.basketItems = [], userId: id
+            ...basket, basketItems : [], userId: id
         }
         try {
             await setDoc(doc(this.fireCollection, id), newBasket);
@@ -60,7 +64,6 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
     }
 
     async update(id: string, newEntity: BasketData): Promise<BasketData> {
-        const oldBasketSnapshot = await this.get(id) as BasketData;
         try {
             await setDoc(doc(this.fireCollection, id), newEntity);
         } catch (e) {
