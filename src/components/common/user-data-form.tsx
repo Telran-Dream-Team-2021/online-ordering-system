@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Backdrop, Box, Button, CircularProgress, Container, CssBaseline, Grid, TextField} from "@mui/material";
+import {Box, Button, Container, CssBaseline, Grid, TextField} from "@mui/material";
 import {UserData} from "../../models/common/user-data";
 import {useDispatch, useSelector} from "react-redux";
 import {userDataSelector} from "../../redux/store";
 import {updateUserDataAction} from "../../redux/actions";
+import Spinner from "./spinner";
 
 type UserFormData = {
     country: string,
@@ -88,13 +89,7 @@ const UserDataForm: React.FC<UserDataFormProps> = (props) => {
     }
 
     return <Container component="main">
-        <Backdrop//TODO
-            sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
-            open={spinner}
-            onClick={() => setSpinner(false)}
-        >
-            <CircularProgress color="inherit"/>
-        </Backdrop>
+        <Spinner open={spinner} onClickFn={() => setSpinner(false)}/>
         <CssBaseline/>
 
         <Box component="form" onSubmit={onSubmit} sx={{mt: 1}} onReset={reset}>
