@@ -99,7 +99,7 @@ const ListingPage: FC = () => {
     }
 
     function showDetails(id: number | string) {
-        const product = products.find(e => e.productId == +id);
+        const product = products.find(e => e.productId === +id);
         console.log(product);
         if (!!product) {
             textModal.current = getInfo(product);
