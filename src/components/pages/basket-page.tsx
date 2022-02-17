@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import MainGrid from "../basket/MainGrid";
 import SummaryCheckoutBlock from "../basket/SummaryCheckoutBlock";
@@ -12,9 +12,10 @@ import {UserData} from "../../models/common/user-data";
 import {basket, orders} from "../../config/services-config";
 import {Subscription} from "rxjs";
 import ErrorCode from "../../models/common/error-code";
-
+import UserDataModal from "../common/user-data-modal";
 
 const BasketPage = () => {
+    const [flStep2ModalOpen, setFlStep2ModalOpen] = useState<boolean>(false);
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
@@ -58,14 +59,19 @@ const BasketPage = () => {
         // dispatch(addBasketItemAction(basketData, product));
     }
 
-     const makeOrder = async (_basketData: BasketData) => {
-        await dispatch(addOrderAction(_basketData, userData))
-         await dispatch(removeBasketAction(_basketData))
+    const makeOrder = async (_basketData: BasketData) => {
+        if (!userData.deliveryAddress) {
+            setFlStep2ModalOpen(true);
+        } else {
+            await dispatch(addOrderAction(_basketData, userData))
+            await dispatch(removeBasketAction(_basketData))
+        }
     }
 
     return (
         <Box sx={{flexGrow: 1}}>
             <Grid container spacing={2}>
+                {<UserDataModal onClose={() => setFlStep2ModalOpen(false)} open={flStep2ModalOpen}/>}
                 <Grid item xs={1}>
                     <ShoppingBasketIcon/>
                 </Grid>
@@ -76,14 +82,13 @@ const BasketPage = () => {
                     <Item><MainGrid/></Item>
                 </Grid>
                 <Grid item xs={4}>
-                    <Item><SummaryCheckoutBlock makeOrderFn={()=>makeOrder(basketData)}/></Item>
+                    <Item><SummaryCheckoutBlock makeOrderFn={() => makeOrder(basketData)}/></Item>
                 </Grid>
                 <Grid>
                     <Button size="large" onClick={addToCart}>Add to cart</Button>
                     <Button size="large" onClick={removeFromCart}>Remove</Button>
                 </Grid>
             </Grid>
-            <div>{JSON.stringify(basketData)}</div>
         </Box>
     );
 };
