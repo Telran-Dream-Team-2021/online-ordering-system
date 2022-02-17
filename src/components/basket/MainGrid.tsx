@@ -12,15 +12,12 @@ const MainGrid = () => {
 
     console.log(basketData)
     const getRows: (basketData: BasketData) => GridRowsProp = () => {
-        // function getRowId(row) {
-        //     return row.id;
-        // }
 
         return basketData.basketItems.map(
             (i, row) => {
-                const imageUrl = catalogData.find(product => product.productId === i.productId)
+                const prd = catalogData.find(product => product.productId === i.productId)
                 return {
-                        id: row, col0: imageUrl ? imageUrl : '',
+                        id: row, col0: prd!.imageUrl ? prd!.imageUrl : '',
                         col1: catalogData.find(p => p.productId === i.productId)!.name,
                         col2: i.quantity,
                         col3: i.pricePerUnit,
@@ -41,10 +38,10 @@ const MainGrid = () => {
                     sx={{width: 56, height: 56}}/>
             }
         },
-        {field: 'col1', headerName: 'Product', width: 150},
-        {field: 'col2', headerName: 'Qty', width: 150},
-        {field: 'col3', headerName: 'Price per unit', width: 150},
-        {field: 'col4', headerName: 'Price', width: 150},
+        {field: 'col1', headerName: 'Product', width: 200},
+        {field: 'col2', headerName: 'Qty', width: 200},
+        {field: 'col3', headerName: 'Price per unit', width: 200},
+        {field: 'col4', headerName: 'Price', width: 200},
     ];
 
     return (

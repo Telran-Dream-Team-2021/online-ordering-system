@@ -19,7 +19,7 @@ export type ModalProps = {
     message: string[],
     onClose: () => void
     open: boolean,
-    imageUrl: string,
+    imageUrl?: string,
 }
 
 const InfoModal: React.FC<ModalProps> = (props) => {

@@ -5,6 +5,7 @@ import {ProductData} from "../models/product-data";
 import {basket, catalog, userDataProcessor, orders} from "../config/services-config";
 import {BasketData} from "../models/basket-data";
 import {OrderData} from "../models/order-data";
+import {LoginData} from "../models/common/login-data";
 
 export const SET_USER_DATA = "set_user_data";
 export const SET_ERROR_CODE = "set_error_code";
@@ -80,6 +81,9 @@ export const updateUserDataAction = function (userData: UserData): (dispatch: an
 }
 export const logoutAction = function (): (dispatch: any) => void {
     return action.bind(null, userDataProcessor.logout.bind(userDataProcessor));
+}
+export const loginAction = function (loginData: LoginData): (dispatch: any) => void {
+    return action.bind(null, userDataProcessor.login.bind(userDataProcessor, loginData));
 }
 
 export const addOrderAction = function(basket: BasketData, userData: UserData): (dispatch: any) => void {

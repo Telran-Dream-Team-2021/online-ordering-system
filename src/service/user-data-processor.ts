@@ -4,6 +4,8 @@ import AuthService from "./auth-service";
 import {from, mergeMap, Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
 import {authService} from "../config/services-config";
+import {LoginData} from "../models/common/login-data";
+import ErrorCode from "../models/common/error-code";
 
 export default class UserDataProcessor {
     constructor(private authService: AuthService, private userService: DataProvider<UserData>) {
@@ -51,5 +53,21 @@ export default class UserDataProcessor {
 
     async logout() {
         return await authService.logout();
+    }
+
+    async login(loginData: LoginData): Promise<boolean> {
+        let res: boolean;
+
+        if (!loginData.provider) {
+            res = await authService.login(loginData);
+        } else {
+            res = await authService.loginWithSocial(loginData);
+        }
+
+        if (!res) {
+            throw ErrorCode.AUTH_ERROR;
+        }
+
+        return res;
     }
 }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {LoginData} from "../../models/common/login-data";
 import {Box, Button, Typography} from "@mui/material";
 import {authService} from "../../config/services-config";
@@ -7,26 +7,25 @@ import authConfig from "../../config/auth-config.json";
 import RegistrationAuthForm from "../common/registration-auth-form";
 import {Navigate} from "react-router-dom";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import {useDispatch, useSelector} from "react-redux";
+import {loginAction} from "../../redux/actions";
+import {userDataSelector} from "../../redux/store";
 
 const RegistrationAuthPage = () => {
+    const dispatch = useDispatch();
+    const userData = useSelector(userDataSelector);
     const [flNavigate, setFlNavigate] = useState<boolean>(false);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [emailSent, setEmailSent] = useState<boolean>(false);
 
-    async function login(loginData: LoginData): Promise<boolean> {
-        let res: boolean;
-
-        if (!loginData.provider) {//TODO dispatch
-            res = await authService.login(loginData);
-        } else {
-            res = await authService.loginWithSocial(loginData);
-        }
-
-        if (res && (!!loginData.provider || !!loginData.password)) {
+    useEffect(() => {
+        if (userData.username) {
             setFlNavigate(true);
         }
+    }, [userData])
 
-        return res;
+    async function login(loginData: LoginData): Promise<void> {
+        dispatch(loginAction(loginData));
     }
 
     function passwordValidation(password: string): string {
