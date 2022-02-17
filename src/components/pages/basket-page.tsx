@@ -93,7 +93,7 @@ const BasketPage = () => {
                     <Button size="large" onClick={addToCart}>Add to cart</Button>
                     <Button size="large" onClick={removeFromCart}>Remove</Button>
                 </Grid>
-                <CustomizedSnackbars message={`Order has been created!`} open={open} handleState={handleState}/>
+                <CustomizedSnackbars  message={`Order has been created!`} open={open} handleState={handleState}/>
             </Grid>
         </Box>
     );

@@ -18,7 +18,7 @@ const CustomizedSnackbars: FC<{ message: string, open:boolean, handleState: ()=>
     return (
         <Stack spacing={2} sx={{width: '100%'}}>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleState}>
-                <Alert onClose={handleState} severity="success" sx={{width: '100%'}}>
+                <Alert variant="outlined" onClose={handleState} severity="success" sx={{width: '100%'}}>
                     {message}
                 </Alert>
             </Snackbar>
