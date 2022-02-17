@@ -3,20 +3,17 @@ import './App.css';
 import {Alert, ThemeProvider} from "@mui/material";
 import {theme} from "./config/theme";
 import NavigatorResponsive from "./components/common/navigator-responsive";
-import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import {RouteType} from "./models/common/route-type";
 import {developmentRoutes, PATH_LISTING, routes} from "./config/routes-config";
 import {UserData} from "./models/common/user-data";
 import {useDispatch, useSelector} from "react-redux";
-import {basketSelector, userDataSelector} from "./redux/store";
+import {errorCodeSelector, userDataSelector} from "./redux/store";
 import process from "process";
 import {Subscription} from "rxjs";
 import {authService, basket, catalog, userDataProcessor} from "./config/services-config";
 import ErrorCode from "./models/common/error-code";
 import {logoutAction, setBasket, setCatalog, setErrorCode, setUserData} from "./redux/actions";
-import UserDataModal from "./components/common/user-data-modal";
-import {BasketData} from "./models/basket-data";
-
 
 function getRelevantRoutes(userData: UserData): RouteType[] {
     let resRoutes: RouteType[] = routes;
@@ -35,20 +32,16 @@ function getRelevantRoutes(userData: UserData): RouteType[] {
 
 const App: FC = () => {
     const userData: UserData = useSelector(userDataSelector);
+    const errorCode: ErrorCode = useSelector(errorCodeSelector);
     const dispatch = useDispatch();
-    const [flErrorServer, setFlErrorServer] = useState<boolean>(false);
     const [relevantRoutes, setRelevantRoutes] = useState<RouteType[]>(routes);
-    const [flStep2ModalOpen, setFlStep2ModalOpen] = useState<boolean>(false);
     const [navigateTo, setNavigateTo] = useState<string>('');
-    const basketData: BasketData = useSelector(basketSelector);
 
     useEffect(() => {
         if (authService.isLoginLink()) {
             authService.completeLogin().then(() => {
                 setNavigateTo(PATH_LISTING);
             });
-        } else if (!!userData.username && !userData.deliveryAddress && !userData.isAdmin) {
-            setFlStep2ModalOpen(true);
         }
 
         setRelevantRoutes(getRelevantRoutes((userData)));
@@ -100,7 +93,7 @@ const App: FC = () => {
                 return subscriptionBasketData.unsubscribe();
             }
         }
-    }, [userData.username]);
+    }, [userData.username]);// eslint-disable-line react-hooks/exhaustive-deps
 
     async function logout() {
          dispatch(logoutAction());
@@ -138,10 +131,10 @@ const App: FC = () => {
         }
 
         return () => subscription.unsubscribe();
-    }, [])
+    }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
     return <ThemeProvider theme={theme}>
-        {flErrorServer ? <Alert severity='error'>Server is unavailable</Alert> :
+        {errorCode === ErrorCode.SERVER_UNAVAILABLE ? <Alert severity='error'>Server is unavailable</Alert> :
             <BrowserRouter>
                 {<NavigatorResponsive items={relevantRoutes}
                                      logoutFn={!!userData.username ? logout : undefined}/>}
@@ -150,7 +143,6 @@ const App: FC = () => {
                     {!!navigateTo && <Route path={'*'} element={<Navigate to={navigateTo}/>}/>}
                     <Route path={'/'} element={<Navigate to={PATH_LISTING}/>}/>
                 </Routes>
-                {<UserDataModal onClose={() => setFlStep2ModalOpen(false)} open={flStep2ModalOpen}/>}
             </BrowserRouter>}
     </ThemeProvider>
 }
