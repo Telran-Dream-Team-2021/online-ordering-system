@@ -52,4 +52,12 @@ export default class Basket {
         console.log('removeBasket')
         return this.basketService.remove(basket.userId)
     }
+
+    removeLine(basket: BasketData, productId: number): Promise<BasketData> {
+        const indexId = basket.basketItems.findIndex((element) => element.productId === productId);
+        if (indexId >=0 ) {
+            basket.basketItems.splice(indexId, 1);
+        }
+        return this.basketService.update(basket.userId, basket);
+    }
 }

@@ -10,7 +10,7 @@ import InfoModal from "../common/info-modal";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import {BasketData} from "../../models/basket-data";
-import {addBasketItemAction, removeBasketItemAction, setBasket} from "../../redux/actions";
+import {addBasketItemAction, removeBasketLineAction} from "../../redux/actions";
 
 function getInfo(product: ProductData): string[] {
     const res: string[] = [
@@ -87,7 +87,8 @@ const ListingPage: FC = () => {
     function badgeHandler(id: any) {
         const product = products.find(e => e.productId === +id);
         if (isItemInCart(id)) {
-            dispatch(removeBasketItemAction(basket, id));
+            dispatch(removeBasketLineAction(basket, id));
+            console.log(basket);
         } else {
             //на тот случай, когда корзины еще нет, насильно записываем в нее юзер айди, чтобы она успешно создалась
             // dispatch(setBasket({...basket, userId: userData.username}));
