@@ -10,8 +10,6 @@ import {ProductData} from "../../models/product-data";
 import {addOrderAction, removeBasketAction, setBasket, setErrorCode, setOrders} from "../../redux/actions";
 import {UserData} from "../../models/common/user-data";
 import {basket, orders} from "../../config/services-config";
-import {Subscription} from "rxjs";
-import ErrorCode from "../../models/common/error-code";
 import UserDataModal from "../common/user-data-modal";
 
 const BasketPage = () => {
@@ -62,6 +60,9 @@ const BasketPage = () => {
     const makeOrder = async (_basketData: BasketData) => {
         if (!userData.deliveryAddress) {
             setFlStep2ModalOpen(true);
+        }
+        else if(!basketData.basketItems) {
+
         } else {
             await dispatch(addOrderAction(_basketData, userData))
             await dispatch(removeBasketAction(_basketData))

@@ -38,10 +38,10 @@ const MainGrid = () => {
                     sx={{width: 56, height: 56}}/>
             }
         },
-        {field: 'col1', headerName: 'Product', width: 150},
-        {field: 'col2', headerName: 'Qty', width: 150},
-        {field: 'col3', headerName: 'Price per unit', width: 150},
-        {field: 'col4', headerName: 'Price', width: 150},
+        {field: 'col1', headerName: 'Product', width: 200},
+        {field: 'col2', headerName: 'Qty', width: 200},
+        {field: 'col3', headerName: 'Price per unit', width: 200},
+        {field: 'col4', headerName: 'Price', width: 200},
     ];
 
     return (
