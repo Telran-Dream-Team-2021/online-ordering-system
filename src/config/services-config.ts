@@ -4,6 +4,7 @@ import AuthServiceFire from "../service/auth-service-fire";
 import UserServiceFire from "../service/user-service-fire";
 import BasketServiceFire from "../service/basket-service-fire";
 import Basket from "../service/basket";
+import UserDataProcessor from "../service/user-data-processor";
 import OrdersServiceFire from "../service/orders-service-fire";
 import Orders from "../service/orders";
 
@@ -11,11 +12,10 @@ import Orders from "../service/orders";
 const productService = new ProductServiceFire("products");
 export const catalog: Catalog = new Catalog(productService);
 
-/*** Auth Service Config ***/
+/*** Auth & UserData Services Config ***/
 export const authService = new AuthServiceFire();
-
-/*** Users Service Config ***/
 export const userService = new UserServiceFire("users");
+export const userDataProcessor = new UserDataProcessor(authService, userService);
 
 /*** Basket Service config***/
 export const basketService = new BasketServiceFire("baskets");

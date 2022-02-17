@@ -1,4 +1,4 @@
-import {Box, Grid, Paper, Tooltip} from '@mui/material';
+import {Avatar, Box, Grid, Paper, Tooltip} from '@mui/material';
 import React, {FC, useMemo, useRef, useState} from 'react';
 import {DataGrid, GridColumns, GridRowsProp, GridActionsCellItem, GridRowParams} from "@mui/x-data-grid";
 import {ProductData} from "../../models/product-data";
@@ -6,14 +6,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {userDataSelector, catalogSelector, basketSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
 import {Visibility} from "@mui/icons-material";
-import Badge from "@mui/material/Badge";
 import InfoModal from "../common/info-modal";
-import {ItemData} from "../../models/item-data";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import {BasketData} from "../../models/basket-data";
-import {addBasketItemAction, getBasketAction, removeBasketItemAction, setBasket} from "../../redux/actions";
-// import {baskets} from "../../config/services-config";
+import {addBasketItemAction, removeBasketItemAction, setBasket} from "../../redux/actions";
 
 function getInfo(product: ProductData): string[] {
     const res: string[] = [
@@ -28,7 +25,7 @@ function getInfo(product: ProductData): string[] {
 }
 
 function getRows(products: ProductData[]): GridRowsProp {
-    return products.map(product => product);
+    return products.filter(p => p.isActive);
 }
 
 const ListingPage: FC = () => {
@@ -48,7 +45,7 @@ const ListingPage: FC = () => {
                 field: "imageUrl",
                 headerName: "Image",
                 flex: 50, align: 'center', headerAlign: 'center',
-                renderCell: (params) => <img src={params.value} height={50}/>
+                renderCell: (params) => <Avatar src={params.value}/>
             },
             {field: 'name', headerName: 'Product', flex: 350, align: 'center', headerAlign: 'center'},
             {field: 'categoryName', headerName: 'Category', align: 'center', headerAlign: 'center', flex: 150},

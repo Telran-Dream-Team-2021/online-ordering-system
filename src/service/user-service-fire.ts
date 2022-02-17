@@ -11,6 +11,7 @@ import {
     DocumentSnapshot, getDoc, setDoc
 } from "firebase/firestore";
 import ErrorCode from "../models/common/error-code";
+import {docData} from "rxfire/firestore";
 
 export default class UserServiceFire extends AbstractDataProvider<UserData> {
     private readonly fireCollection: CollectionReference;
@@ -48,15 +49,22 @@ export default class UserServiceFire extends AbstractDataProvider<UserData> {
         throw new Error('Illegal argument.');
     }
 
+    getFirst(id: number | string): Observable<UserData> {
+        const docRef: DocumentReference = doc(this.fireCollection, id.toString());
+
+        return docData(docRef) as Observable<UserData>;
+    }
+
     remove(id: string): Promise<UserData> {
         throw new Error('Unusable method.');
     }
 
     async update(id: string, newEntity: UserData): Promise<UserData> {
         try {
+            const oldEntity = await this.get(id.toString()) as UserData;
             await setDoc(doc(this.fireCollection, id.toString()), newEntity);
 
-            return newEntity;
+            return oldEntity;
         } catch (e) {
             throw ErrorCode.AUTH_ERROR;
         }
