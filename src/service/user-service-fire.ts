@@ -70,8 +70,4 @@ export default class UserServiceFire extends AbstractDataProvider<UserData> {
         }
     }
 
-    getFirst(id: string | number): Observable<UserData> {
-        throw new Error("not implements")
-    }
-
 }
