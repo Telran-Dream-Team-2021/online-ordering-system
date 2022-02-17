@@ -23,10 +23,21 @@ function getRelevantRoutes(userData: UserData): RouteType[] {
     }
 
     return resRoutes.filter((route) => {
-        return (route.authenticated === undefined && route.adminOnly === undefined)
-            || (!!userData.username && route.authenticated)
-            || (userData.isAdmin && route.adminOnly === true)
-            || (!userData.username && !route.authenticated && !route.adminOnly);
+        if (route.authenticated === undefined && route.adminOnly === undefined) {
+            return true;
+        }
+
+        if (!userData.username) {
+            return route.authenticated === false;
+        } else {
+            let res = route.authenticated !== false;
+
+            if (userData.isAdmin) {
+                return res && route.adminOnly !== false;
+            } else {
+                return res && route.adminOnly !== true;
+            }
+        }
     });
 }
 
@@ -97,6 +108,7 @@ const App: FC = () => {
 
     async function logout() {
          dispatch(logoutAction());
+         setNavigateTo(PATH_LISTING);
     }
 
     function getRoutes(): ReactNode[] {
