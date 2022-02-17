@@ -1,13 +1,16 @@
-import {Box, Grid, Paper} from '@mui/material';
+import {Avatar, Box, Grid, Paper, Tooltip} from '@mui/material';
 import React, {FC, useMemo, useRef, useState} from 'react';
 import {DataGrid, GridColumns, GridRowsProp, GridActionsCellItem, GridRowParams} from "@mui/x-data-grid";
 import {ProductData} from "../../models/product-data";
-import {useSelector} from "react-redux";
-import {userDataSelector, catalogSelector} from "../../redux/store";
+import {useDispatch, useSelector} from "react-redux";
+import {userDataSelector, catalogSelector, basketSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
-import {ShoppingCart, Visibility} from "@mui/icons-material";
-import Badge from "@mui/material/Badge";
+import {Visibility} from "@mui/icons-material";
 import InfoModal from "../common/info-modal";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import {BasketData} from "../../models/basket-data";
+import {addBasketItemAction, removeBasketItemAction, setBasket} from "../../redux/actions";
 
 function getInfo(product: ProductData): string[] {
     const res: string[] = [
@@ -22,30 +25,27 @@ function getInfo(product: ProductData): string[] {
 }
 
 function getRows(products: ProductData[]): GridRowsProp {
-    return products.map(product => product);
+    return products.filter(p => p.isActive);
 }
 
 const ListingPage: FC = () => {
-    const [count, setCount] = React.useState(1);
-
+    const dispatch = useDispatch();
+    const [basket0, setBasket0] = React.useState(new Set());
     const userData: UserData = useSelector(userDataSelector);
     const products: ProductData[] = useSelector(catalogSelector);
-    console.log(products);
+    const basket: BasketData = useSelector(basketSelector);
     const rows = useMemo(() => getRows(products), [products]);
-    console.log(rows);
-
     const [modalVisible, setModalVisible] = useState(false);
-
     const textModal = useRef<string[]>(['']);
     const imgUrlModal = useRef<string>('');
 
-    function getColumns(userData: UserData): GridColumns {
+    function getColumns(): GridColumns {
         return [
             {
                 field: "imageUrl",
                 headerName: "Image",
                 flex: 50, align: 'center', headerAlign: 'center',
-                renderCell: (params) => <img src={params.value} height={50}/>
+                renderCell: (params) => <Avatar src={params.value}/>
             },
             {field: 'name', headerName: 'Product', flex: 350, align: 'center', headerAlign: 'center'},
             {field: 'categoryName', headerName: 'Category', align: 'center', headerAlign: 'center', flex: 150},
@@ -54,36 +54,50 @@ const ListingPage: FC = () => {
             {
                 field: 'actions', type: 'actions', width: 100, getActions: (params: GridRowParams) => {
                     const actionItems = [
-                        <GridActionsCellItem icon={<Visibility/>} label='Details'
-                                             onClick={() => showDetails(params.id as number)}
+                        <GridActionsCellItem
+                            icon={
+                                <DetailedInfo/>
+                            }
+                            label='Details'
+                            onClick={() => showDetails(params.id as number)}
                         />];
-
-                    actionItems.push(<GridActionsCellItem icon={
-                        <Badge color="secondary" badgeContent={count}>
-                            <ShoppingCart/>
-                        </Badge>
-                    } label='Basket' onClick={() => {
-                        badgeHandler();
-                    }}
+                    actionItems.push(<GridActionsCellItem
+                        icon={
+                            !isItemInCart(+params.id)
+                                ?
+                                <AddToShoppingCart/>
+                                :
+                                <RemoveFromShoppingCart/>
+                        }
+                        label='Basket'
+                        onClick={() => {
+                            badgeHandler(params.id as number);
+                        }}
                     />)
-
                     return actionItems;
                 }
-
             }
         ]
     }
 
-    function badgeHandler() {
-        if (count == 0) {
-            setCount(count + 1);
+    function isItemInCart(itemId: number) {
+        return basket.basketItems.find(i => i.productId == itemId) ? true : false;
+    }
+
+    function badgeHandler(id: any) {
+        const product = products.find(e => e.productId === +id);
+        if (isItemInCart(id)) {
+            dispatch(removeBasketItemAction(basket, id));
         } else {
-            setCount(Math.max(count - 1, 0));
+            //на тот случай, когда корзины еще нет, насильно записываем в нее юзер айди, чтобы она успешно создалась
+            dispatch(setBasket({...basket, userId: userData.username}));
+            dispatch(addBasketItemAction(basket, product!));
         }
     }
 
-    function showDetails(id: any) {
-        const product = products.find(e => e.productId === +id);
+    function showDetails(id: number | string) {
+        const product = products.find(e => e.productId == +id);
+        console.log(product);
         if (!!product) {
             textModal.current = getInfo(product);
             imgUrlModal.current = product.imageUrl;
@@ -98,7 +112,7 @@ const ListingPage: FC = () => {
         '& .Mui-error': {bgcolor: '#FF9494', color: 'white', width: '100%', height: '100%'}
     }}>
         <Paper sx={{width: {xs: '100vw', sm: '80vw'}, height: '80vh', marginTop: '2vh'}}>
-            <DataGrid getRowId={(row) => row.productId} rows={rows} columns={getColumns(userData)}/>
+            <DataGrid getRowId={(row) => row.productId} rows={rows} columns={getColumns()}/>
         </Paper>
         <InfoModal title={"Detailed information about the product"}
                    message={textModal.current} open={modalVisible}
@@ -108,6 +122,35 @@ const ListingPage: FC = () => {
     </Box>
 };
 
+const AddToShoppingCart = () => {
+    return (
+        <Tooltip
+            title="Add to the shopping cart"
+        >
+            <AddShoppingCartIcon color={"success"}/>
+        </Tooltip>
+    );
+};
+const RemoveFromShoppingCart = () => {
+    return (
+        <Tooltip
+            title="Remove from the shopping cart"
+        >
+            <RemoveShoppingCartIcon color={"error"}/>
+        </Tooltip>
+    );
+};
+const DetailedInfo = () => {
+    return (
+        <Tooltip
+            title="Show detailed info"
+        >
+            <Visibility/>
+        </Tooltip>
+    );
+};
+
 export default ListingPage;
+
 
 
