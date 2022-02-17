@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Button, Modal, Typography, useTheme} from "@mui/material";
+import {Box, Button, Modal, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import UserDataForm from "./user-data-form";
 
@@ -9,7 +9,6 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: {sm: '70vw', md: '60vw', xs: '80vw'},
-    border: '2px solid #000',
     boxShadow: 24,
     p: 4,
 };
@@ -20,15 +19,13 @@ type ModalProps = {
 }
 
 const UserDataModal: React.FC<ModalProps> = (props) => {
-    const theme = useTheme();
-
     return <Modal
         open={props.open}
         onClose={props.onClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
     >
-        <Box sx={{...style, bgcolor: theme.palette.secondary.main}}>
+        <Box sx={{...style, bgcolor: "#FFFFFF"}}>
             <Button sx={{float: 'right'}} onClick={props.onClose}><CloseIcon/></Button>
             <Typography id="modal-modal-title" variant="h6" component="h2">
                 THE LAST STEP!
