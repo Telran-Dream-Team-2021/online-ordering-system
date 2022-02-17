@@ -57,6 +57,9 @@ export const addBasketItemAction = function (basketData: BasketData, productData
 export const removeBasketItemAction = function (basketData: BasketData, productId: number): (dispatch: any) => void {
     return action.bind(null, basket.removeItem.bind(basket, basketData, productId));
 }
+export const removeBasketLineAction = function (basketData: BasketData, productId: number): (dispatch: any) => void {
+    return action.bind(null, basket.removeLine.bind(basket, basketData, productId));
+}
 export const removeBasketAction = function (basketData: BasketData): (dispatch: any) => void {
     return action.bind(null, basket.removeBasket.bind(basket, basketData));
 }
