@@ -1,7 +1,7 @@
-import {AppBar, Box, Container, Drawer, IconButton, Tab, Tabs, Toolbar, Typography} from '@mui/material';
+import {Box, Drawer, IconButton, Tab, Tabs, Toolbar, Typography} from '@mui/material';
 import {FC, useEffect, useState} from 'react';
 
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import {RouteType} from '../../models/common/route-type';
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -11,7 +11,7 @@ import * as React from "react";
 import {BasketData} from "../../models/basket-data";
 import {useSelector} from "react-redux";
 import {basketSelector} from "../../redux/store";
-
+import {PATH_BASKET, PATH_LOGIN} from "../../config/routes-config";
 
 function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
     let res = items.findIndex(item => path === item.path);
@@ -25,6 +25,7 @@ const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (prop
     const path = useLocation().pathname;
     const [activeTabIndex, setActiveTab] = useState(getInitialActiveTabIndex(path, items));
     const [label, setLabel] = useState(items[activeTabIndex].label);
+    const navigate = useNavigate();
 
     useEffect(() => {
         setActiveTab(getInitialActiveTabIndex(path, items));
@@ -53,7 +54,7 @@ const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (prop
             value={activeTabIndex}
             onChange={onChangeHandler}
         >
-            {items.map((item, index) => (
+            {items.map((item) => (
                 <Tab
                     key={item.label}
                     component={Link}
@@ -105,7 +106,7 @@ const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (prop
             >
                 {label}
             </Typography>
-            {<IconButton aria-label="cart">
+            {<IconButton aria-label="cart" onClick={() => navigate(!props.logoutFn ? PATH_LOGIN : PATH_BASKET)}>
                 <Badge color="secondary" badgeContent={basket.basketItems.length}>
                     <ShoppingCartIcon/>
                 </Badge>

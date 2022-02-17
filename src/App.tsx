@@ -145,7 +145,6 @@ const App: FC = () => {
             <BrowserRouter>
                 {<NavigatorResponsive items={relevantRoutes}
                                      logoutFn={!!userData.username ? logout : undefined}/>}
-                {/*{JSON.stringify(userData)}*/}
                 <Routes>
                     {getRoutes()}
                     {!!navigateTo && <Route path={'*'} element={<Navigate to={navigateTo}/>}/>}
