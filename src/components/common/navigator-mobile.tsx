@@ -5,6 +5,12 @@ import {Link, useLocation} from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import {RouteType} from '../../models/common/route-type';
 import LogoutIcon from "@mui/icons-material/Logout";
+import Badge from "@mui/material/Badge";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import * as React from "react";
+import {BasketData} from "../../models/basket-data";
+import {useSelector} from "react-redux";
+import {basketSelector} from "../../redux/store";
 
 
 function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
@@ -14,6 +20,7 @@ function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
 }
 
 const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (props) => {
+    const basket: BasketData = useSelector(basketSelector);
     const {items, logoutFn} = props;
     const path = useLocation().pathname;
     const [activeTabIndex, setActiveTab] = useState(getInitialActiveTabIndex(path, items));
@@ -98,9 +105,15 @@ const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (prop
             >
                 {label}
             </Typography>
+            {<IconButton aria-label="cart">
+                <Badge color="secondary" badgeContent={basket.basketItems.length}>
+                    <ShoppingCartIcon/>
+                </Badge>
+            </IconButton>}
             {!!logoutFn && <IconButton sx={{flexGrow: '1'}} edge="end" onClick={logoutFn}>
                 <LogoutIcon/>
             </IconButton>}
+
         </Toolbar>
     );
 };
