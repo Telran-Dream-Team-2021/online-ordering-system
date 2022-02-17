@@ -1,21 +1,26 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {LoginData} from "../../models/common/login-data";
 import {
-    Alert, AlertColor,
-    Backdrop,
+    Alert,
+    AlertColor,
     Box,
     Button,
     ButtonGroup,
-    CircularProgress,
     Collapse,
-    Container, CssBaseline,
-    IconButton, TextField,
+    Container,
+    CssBaseline,
+    IconButton,
+    TextField,
     Typography
 } from "@mui/material";
 import socialAuthProviders, {SocialProvider} from "../../config/firebase-auth-config";
+import Spinner from "./spinner";
+import {useSelector} from "react-redux";
+import {errorCodeSelector} from "../../redux/store";
+import ErrorCode from "../../models/common/error-code";
 
 type RegistrationAuthType = {
-    loginFn: (loginData: LoginData) => Promise<boolean>,
+    loginFn: (loginData: LoginData) => Promise<void>,
     isAdminsEmailFn: (email: string) => Promise<boolean>,
     passwordValidationFn: (password: string) => string,
     sentFn: () => void,
@@ -32,6 +37,17 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
     const [spinner, setSpinner] = useState(false);
     const withPassword = useRef<boolean>(false);
     const alertMessage = useRef<string>('');
+    const error = useSelector((errorCodeSelector));
+
+    useEffect(() => {
+        if (error === ErrorCode.AUTH_ERROR) {
+            alertMessage.current = 'Wrong credentials!';
+            setAlert('error');
+            setSpinner(false);
+        } else if (error === ErrorCode.NO_ERROR) {
+            alertMessage.current = '';
+        }
+    }, [error])
 
     useEffect(() => {
         setValid(validateEmailFormat(loginData.email) && (!withPassword.current || !passwordValidationFn(loginData.password)));
@@ -41,12 +57,10 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
     async function onSubmit(event: any) {
         event.preventDefault();
         setSpinner(true);
-        const res: boolean = await loginFn(loginData);
 
-        if (!res) {
-            alertMessage.current = 'Wrong credentials!';
-            setAlert('error');
-        } else if (!withPassword.current) {
+        await loginFn(loginData);
+
+        if (!withPassword.current) {
             sentFn();
         }
 
@@ -55,13 +69,8 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
 
     async function loginWithSocial(provider: SocialProvider): Promise<void> {
         setSpinner(true);
-        const res: boolean = await loginFn({...loginData, provider});
 
-        if (!res) {
-            alertMessage.current = 'Wrong provider!';
-            setAlert('error');
-            setSpinner(false);
-        }
+        await loginFn({...loginData, provider});
     }
 
     function validateEmailFormat(email: string) {
@@ -93,13 +102,7 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
         height: '100%',
         justifyContent: 'center'
     }} component="main" maxWidth="xs">
-        <Backdrop
-            sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
-            open={spinner}
-            onClick={() => setSpinner(false)}
-        >
-            <CircularProgress color="inherit"/>
-        </Backdrop>
+        <Spinner open={spinner} onClickFn={() => setSpinner(false)}/>
         <CssBaseline/>
         <Box
             sx={{
@@ -111,9 +114,10 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
             <Typography component="h1" variant="h3">
                 {!withPassword.current ? 'Enter your Email' : 'Enter your Password'}
             </Typography>
-            {/*<Collapse in={!!alert}>*/}
-            {/*    <Alert onClose={() => setAlert(undefined)} severity={alert}>{alertMessage.current}</Alert>*/}
-            {/*</Collapse>*/}
+            <Collapse in={!!alert}>
+                <Alert sx={{'& .MuiAlert-message': {zIndex: 1}}}
+                       onClose={() => setAlert(undefined)} severity={alert}>{alertMessage.current}</Alert>
+            </Collapse>
             <Box component="form" onSubmit={onSubmit} sx={{mt: 1}}>
                 <TextField
                     margin="normal"
