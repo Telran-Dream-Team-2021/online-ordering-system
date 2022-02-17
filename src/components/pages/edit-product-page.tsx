@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {dummyProduct, ProductData} from "../../models/product-data";
-import {Box, Button} from "@mui/material";
+import {Box, Button, Paper, Grid} from "@mui/material";
 import EditProductForm from "../edit-product-form";
 import {useDispatch, useSelector} from "react-redux";
 import {catalogSelector} from "../../redux/store";
@@ -30,76 +30,87 @@ const EditProductPage: FC = () => {
         minProductPrice, maxProductPrice} = assortmentConfig;
 
     return (
-        <Box>
+        <Grid
+            container
+            direction="row"
+            justifyContent="flex-start"
+            alignItems="stretch"
+            sx={{ml: 0}}
+        >
             {/* Кнопки действий*/}
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                }}
-            >
+            <Grid item xs={1} alignContent="left">
                 {/*Кнопка возврата на страницу Ассортимент*/}
                 <Box>
-                    <Button
-                        variant="outlined"
-                        startIcon={<KeyboardReturn />}
-                        component={Link}
-                        to={`/assortment`}
-                        sx={{m: 1}}
-                    > Back to Assortment </Button>
-                </Box>
+                        <Button
+                            variant="outlined"
+                            startIcon={<KeyboardReturn />}
+                            component={Link}
+                            to={`/assortment`}
+                            sx={{m: 1}}
+                        ></Button>
+                    </Box>
                 {/*Кнопка для удаления карточки товара из Ассортимента*/}
                 <Box>
                 </Box>
-            </Box>
 
-            <EditProductForm
-                 initialProductState={product}
-                 validateProductIdFn={function (productId: number): string {
-                     const initialProductIndex = assortment.indexOf(product);
-                     const newProductIndex = assortment.findIndex(p => p.productId === productId);
-                    if(newProductIndex < 0 || newProductIndex === initialProductIndex) {
-                        return "";
-                    } else {
-                        return `Product with id ${productId} already exists in assortment`
-                    }
-                }} validateProductNameFn={function (productName: string): string {
-                    if(productName.length < minProductNameLength || productName.length > maxProductNameLength) {
-                        return `Product name length must be within range ${minProductNameLength} - 
+            </Grid>
+            <Grid item xs={11}>
+                <Paper
+                    sx={{
+                        width: { xs: '100vw', sm: '80vw'},
+                        height: '80vh', marginTop: '2vh'
+                    }}
+                >
+                    <EditProductForm
+                        initialProductState={product}
+                        validateProductIdFn={function (productId: number): string {
+                            const initialProductIndex = assortment.indexOf(product);
+                            const newProductIndex = assortment.findIndex(p => p.productId === productId);
+                            if(newProductIndex < 0 || newProductIndex === initialProductIndex) {
+                                return "";
+                            } else {
+                                return `Product with id ${productId} already exists in assortment`
+                            }
+                        }} validateProductNameFn={function (productName: string): string {
+                        if(productName.length < minProductNameLength || productName.length > maxProductNameLength) {
+                            return `Product name length must be within range ${minProductNameLength} - 
                             ${maxProductNameLength} symbols`
-                    } else {
-                        return "";
-                    }
-                }} validateProductDescriptionFn={function (productDescription: string): string {
-                    if(productDescription.length > maxProductDescriptionLength) {
-                        return `Product description length must be less then 
+                        } else {
+                            return "";
+                        }
+                    }} validateProductDescriptionFn={function (productDescription: string): string {
+                        if(productDescription.length > maxProductDescriptionLength) {
+                            return `Product description length must be less then 
                                 ${maxProductNameLength} symbols`
-                    } else {
-                        return "";
-                    }
-                }} validateProductPriceFn={function (productPrice: number): string {
-                    if(productPrice < minProductPrice || productPrice > maxProductPrice) {
-                        return `Product price must be within range ${minProductPrice} - 
+                        } else {
+                            return "";
+                        }
+                    }} validateProductPriceFn={function (productPrice: number): string {
+                        if(productPrice < minProductPrice || productPrice > maxProductPrice) {
+                            return `Product price must be within range ${minProductPrice} - 
                                 ${maxProductPrice}`
-                    } else {
-                        return "";
-                    }
-                }} submitProductFn={function (productState: ProductData): void {
+                        } else {
+                            return "";
+                        }
+                    }} submitProductFn={function (productState: ProductData): void {
 
-                    // add new product
-                    if (product == dummyProduct) {
-                        dispatch(addProductAction(productState));
-                    //   update product without productId change
-                    } else if(productState.productId === product.productId) {
-                        dispatch(updateProductAction(product.productId as number, productState));
-                    // update product with productId change
-                    } else {
-                        dispatch(addProductAction(productState));
-                        dispatch(removeProductAction(product.productId as number));
-                    }
-                }}
-            />
-        </Box>
+                        // add new product
+                        if (product == dummyProduct) {
+                            dispatch(addProductAction(productState));
+                            //   update product without productId change
+                        } else if(productState.productId === product.productId) {
+                            dispatch(updateProductAction(product.productId as number, productState));
+                            // update product with productId change
+                        } else {
+                            dispatch(addProductAction(productState));
+                            dispatch(removeProductAction(product.productId as number));
+                        }
+                    }}
+                    />
+                </Paper>
+            </Grid>
+
+        </Grid>
     );
 };
 
