@@ -11,6 +11,7 @@ import {addOrderAction, removeBasketAction, setBasket, setErrorCode, setOrders} 
 import {UserData} from "../../models/common/user-data";
 import {basket, orders} from "../../config/services-config";
 import UserDataModal from "../common/user-data-modal";
+import CustomizedSnackbars from "../common/popup-info";
 
 const BasketPage = () => {
     const [flStep2ModalOpen, setFlStep2ModalOpen] = useState<boolean>(false);
@@ -60,13 +61,16 @@ const BasketPage = () => {
     const makeOrder = async (_basketData: BasketData) => {
         if (!userData.deliveryAddress) {
             setFlStep2ModalOpen(true);
-        }
-        else if(!basketData.basketItems) {
-
         } else {
             await dispatch(addOrderAction(_basketData, userData))
             await dispatch(removeBasketAction(_basketData))
+            handleState();
         }
+    }
+    const [open, setOpen] = React.useState(false);
+
+    function handleState() {
+        setOpen(!open)
     }
 
     return (
@@ -89,6 +93,7 @@ const BasketPage = () => {
                     <Button size="large" onClick={addToCart}>Add to cart</Button>
                     <Button size="large" onClick={removeFromCart}>Remove</Button>
                 </Grid>
+                <CustomizedSnackbars message={`Order has been created!`} open={open} handleState={handleState}/>
             </Grid>
         </Box>
     );
