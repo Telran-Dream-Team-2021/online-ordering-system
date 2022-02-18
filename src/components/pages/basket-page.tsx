@@ -11,6 +11,8 @@ import {UserData} from "../../models/common/user-data";
 import {basket, orders} from "../../config/services-config";
 import UserDataModal from "../common/user-data-modal";
 import CustomizedSnackbars from "../common/popup-info";
+import {PATH_ORDERS} from "../../config/routes-config";
+import {useNavigate} from "react-router-dom";
 
 const BasketPage = () => {
     const [flStep2ModalOpen, setFlStep2ModalOpen] = useState<boolean>(false);
@@ -26,14 +28,8 @@ const BasketPage = () => {
     const userData: UserData = useSelector(userDataSelector);
     const catalogData = useSelector(catalogSelector);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    function removeFromCart() {
-        // dispatch(removeBasketItemAction(basketData, 444));
-        const res = basket.removeItem(basketData, 444);
-        return res.then((bd) => {
-            dispatch(setBasket({...bd}));
-        })
-    }
 
     const makeOrder = async (_basketData: BasketData) => {
         if (!userData.deliveryAddress) {
@@ -42,6 +38,9 @@ const BasketPage = () => {
             await dispatch(addOrderAction(_basketData, userData))
             await dispatch(removeBasketAction(_basketData))
             handleState();
+            setTimeout(() => {
+                navigate(PATH_ORDERS);
+            }, 3000);
         }
     }
     const [open, setOpen] = React.useState(false);
@@ -67,12 +66,10 @@ const BasketPage = () => {
                     <Item><MainGrid basketData={basketData} catalogData={catalogData}/></Item>
                 </Grid>
                 <Grid item xs={4}>
-                    <Item><SummaryCheckoutBlock basket={basketData} userState={userData} makeOrderFn={()=>makeOrder(basketData)}/></Item>
+                    <Item><SummaryCheckoutBlock basket={basketData} userState={userData}
+                                                makeOrderFn={() => makeOrder(basketData)}/></Item>
                 </Grid>
-                <Grid>
-                    <Button size="large" onClick={removeFromCart}>Remove</Button>
-                </Grid>
-                <CustomizedSnackbars  message={`Order has been created!`} open={open} handleState={handleState}/>
+                <CustomizedSnackbars message={`Order has been created!`} open={open} handleState={handleState}/>
             </Grid>
         </Box>
     );
