@@ -50,7 +50,8 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
     }, [error])
 
     useEffect(() => {
-        setValid(validateEmailFormat(loginData.email) && (!withPassword.current || !passwordValidationFn(loginData.password)));
+        setValid(validateEmailFormat(loginData.email)
+            && (!withPassword.current || !passwordValidationFn(loginData.password)));
     }, [loginData]);// eslint-disable-line react-hooks/exhaustive-deps
 
 

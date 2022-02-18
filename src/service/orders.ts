@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {OrderData, statuses} from "../models/order-data";
 import {BasketData} from "../models/basket-data";
 import {getUuidByOrder} from "../utils/uuid";
-import {basketService, userService} from "../config/services-config";
+import {basketService} from "../config/services-config";
 import {UserData} from "../models/common/user-data";
 
 
