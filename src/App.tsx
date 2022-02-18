@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {errorCodeSelector, userDataSelector} from "./redux/store";
 import process from "process";
 import {Subscription} from "rxjs";
-import {authService, basket, catalog, userDataProcessor} from "./config/services-config";
+import {basket, catalog, userDataProcessor} from "./config/services-config";
 import ErrorCode from "./models/common/error-code";
 import {logoutAction, setBasket, setCatalog, setErrorCode, setUserData} from "./redux/actions";
 
@@ -49,8 +49,8 @@ const App: FC = () => {
     const [navigateTo, setNavigateTo] = useState<string>('');
 
     useEffect(() => {
-        if (authService.isLoginLink()) {
-            authService.completeLogin().then(() => {
+        if (userDataProcessor.isLoginLink()) {
+            userDataProcessor.completeLogin().then(() => {
                 setNavigateTo(PATH_LISTING);
             });
         }
