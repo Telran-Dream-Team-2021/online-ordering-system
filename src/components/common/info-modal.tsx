@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {Box, Button, List, ListItem, Modal, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -20,26 +22,42 @@ export type ModalProps = {
     onClose: () => void
     open: boolean,
     imageUrl?: string,
+    addRemove?: any
 }
 
 const InfoModal: React.FC<ModalProps> = (props) => {
+    const {open, onClose, title, imageUrl, message, addRemove} = props
     return <Modal
-        open={props.open}
-        onClose={props.onClose}
+        open={open}
+        onClose={onClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
     >
         <Box sx={style}>
-            <Button sx={{float: 'right'}} onClick={props.onClose}><CloseIcon/></Button>
+            <Button sx={{float: 'right'}} onClick={onClose}><CloseIcon/></Button>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-                {props.title}
+                {title}
             </Typography>
             <Box id="modal-modal-description" sx={{ mt: 2 }}>
-                <img src={props.imageUrl} height={350}/>
+                <img src={imageUrl} height={350}/>
                 <List>
-                    {props.message.map((e, index) => <ListItem key={index}>{e}</ListItem>)}
+                    {message.map((e, index) => <ListItem key={index}>{e}</ListItem>)}
                 </List>
             </Box>
+
+            {!!addRemove&&(addRemove.flag?
+                <Box><Button onClick={()=>{
+                    addRemove.addRemoveFns.remove()
+                    addRemove.setFlag(!addRemove.flag)
+                }}>
+                    <RemoveShoppingCartIcon/>
+                </Button></Box>:
+                <Box><Button onClick={()=>{
+                    addRemove.addRemoveFns.add()
+                    addRemove.setFlag(!addRemove.flag)
+                }}>
+                    <AddShoppingCartIcon/>
+                </Button></Box>)}
         </Box>
     </Modal>
 };

@@ -7,7 +7,6 @@ import {
 } from "firebase/auth";
 import {authState} from "rxfire/auth";
 import firebaseApp from "../config/fire-config";
-
 import {LoginData} from "../models/common/login-data";
 import {nonAuthorizedUser, UserData} from "../models/common/user-data";
 import {from, Observable} from "rxjs";
@@ -105,29 +104,23 @@ export default class AuthServiceFire implements AuthService {
         return isSignInWithEmailLink(this.auth, window.location.href);
     }
 
-    async completeLogin() {
+    async completeLogin(): Promise<boolean> {
         let email = window.localStorage.getItem(EMAIL_STORAGE_KEY);
         if (!email) {
             email = window.prompt('Please provide your email for confirmation');
         }
 
         try {
-            const result = await signInWithEmailLink(this.auth, email as string, window.location.href);
+            await signInWithEmailLink(this.auth, email as string, window.location.href);
             window.localStorage.removeItem(EMAIL_STORAGE_KEY);
-            console.log(result);
             return true;
         } catch (error) {
-            console.log(error);
             return false;
         }
     }
 
     loginWithSocial(loginData: LoginData): Promise<boolean> {
-        return signInWithPopup(this.auth, new loginData.provider!['class']())
-            .then(() => true).catch((e) => {
-                console.log(e);
-                return false;
-            });
+        return signInWithPopup(this.auth, new loginData.provider!['class']()).then(() => true).catch(() => false);
     }
 
     logout(): Promise<boolean> {

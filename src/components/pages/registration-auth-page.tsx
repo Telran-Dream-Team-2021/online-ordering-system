@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {LoginData} from "../../models/common/login-data";
 import {Box, Button, Typography} from "@mui/material";
-import {authService} from "../../config/services-config";
+import {userDataProcessor} from "../../config/services-config";
 import {PATH_LISTING} from "../../config/routes-config";
 import authConfig from "../../config/auth-config.json";
 import RegistrationAuthForm from "../common/registration-auth-form";
@@ -37,7 +37,7 @@ const RegistrationAuthPage = () => {
     }
 
     async function isAdminsEmail(email: string): Promise<boolean> {
-        const res = await authService.isAdminsEmail(email);
+        const res = await userDataProcessor.isAdminsEmail(email);
         setIsAdmin(res);
         return res;
     }
