@@ -14,7 +14,7 @@ const SummaryCheckoutBlock: FC<{ makeOrderFn: () => void, userState: UserData, b
     }
 
     return (
-        <div style={{ border: '1px solid black', height: 300, width: '100%', alignContent: "center", justifyContent: "center"}}>
+        <div style={{ border: '0.5px solid', height: 300, width: '100%', alignContent: "center", justifyContent: "center"}}>
             <h2>TOTAL: ${getTotalSum(basket.basketItems)}</h2>
             <p>Address: {userState.deliveryAddress}</p>
             <Button disabled={!basket.basketItems.length} onClick={() => {

@@ -82,10 +82,10 @@ const BasketPage = () => {
                 }}>
                     <h2>Shopping Cart
                         details</h2></Box>
-                <Box sx={{gridArea: 'main', bgcolor: 'secondary.main'}}>
+                <Box sx={{gridArea: 'main'}}>
                     <MainGrid basketData={basketData}
                               catalogData={catalogData}/></Box>
-                <Box sx={{gridArea: 'sidebar', bgcolor: 'beige', justifyContent: 'center', alignItems: 'center'}}>
+                <Box sx={{gridArea: 'sidebar', justifyContent: 'center', alignItems: 'center'}}>
                     <SummaryCheckoutBlock
                         basket={basketData} userState={userData}
                         makeOrderFn={() => makeOrder(basketData)}/></Box>
@@ -98,5 +98,6 @@ const BasketPage = () => {
         </Box>
     );
 };
-
+// , bgcolor: 'secondary.main'
+// , bgcolor: 'beige'
 export default BasketPage;
