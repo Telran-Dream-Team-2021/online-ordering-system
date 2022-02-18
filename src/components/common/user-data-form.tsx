@@ -31,7 +31,6 @@ const UserDataForm: React.FC<UserDataFormProps> = (props) => {
     );
     const dispatch = useDispatch();
 
-
     useEffect(() => {
         let res = true;
         for (const formDataKey in formData) {

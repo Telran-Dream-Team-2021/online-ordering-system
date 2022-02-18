@@ -1,4 +1,4 @@
-import {Avatar, Box, Paper, Tooltip} from '@mui/material';
+import {Avatar, Box, Button, Paper, Tooltip} from '@mui/material';
 import React, {FC, useMemo, useRef, useState} from 'react';
 import {DataGrid, GridActionsCellItem, GridColumns, GridRowParams, GridRowsProp} from "@mui/x-data-grid";
 import {ProductData} from "../../models/product-data";
@@ -39,6 +39,8 @@ const ListingPage: FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const textModal = useRef<string[]>(['']);
     const imgUrlModal = useRef<string>('');
+    const [addRemoveFns, setAddRemoveFns] = useState<any>();
+    const [flag, setFlag] = useState<boolean>(false)
 
     function getColumns(): GridColumns {
         return [
@@ -104,7 +106,11 @@ const ListingPage: FC = () => {
         if (!!product) {
             textModal.current = getInfo(product);
             imgUrlModal.current = product.imageUrl;
-
+            setFlag(isItemInCart(+id))
+            setAddRemoveFns({
+                    remove: ()=>dispatch(removeBasketLineAction(basket, +id)),
+                    add: ()=>dispatch(addBasketItemAction(userData.username, product))
+                })
         } else {
             textModal.current = ["Not found"];
         }
@@ -127,6 +133,7 @@ const ListingPage: FC = () => {
                    open={modalVisible}
                    onClose={() => setModalVisible(false)}
                    imageUrl={imgUrlModal.current}
+                   addRemove={{addRemoveFns, setFlag, flag}}
         />
         {flNavigate && <Navigate to={PATH_LOGIN}/>}
     </Box>

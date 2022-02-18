@@ -13,8 +13,8 @@ const productService = new ProductServiceFire("products");
 export const catalog: Catalog = new Catalog(productService);
 
 /*** Auth & UserData Services Config ***/
-export const authService = new AuthServiceFire();
-export const userService = new UserServiceFire("users");
+const authService = new AuthServiceFire();
+const userService = new UserServiceFire("users");
 export const userDataProcessor = new UserDataProcessor(authService, userService);
 
 /*** Basket Service config***/

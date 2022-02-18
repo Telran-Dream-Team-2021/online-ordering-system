@@ -3,7 +3,6 @@ import {UserData} from "../models/common/user-data";
 import AuthService from "./auth-service";
 import {from, mergeMap, Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
-import {authService} from "../config/services-config";
 import {LoginData} from "../models/common/login-data";
 import ErrorCode from "../models/common/error-code";
 
@@ -43,16 +42,16 @@ export default class UserDataProcessor {
     }
 
     async logout() {
-        return await authService.logout();
+        return await this.authService.logout();
     }
 
     async login(loginData: LoginData): Promise<boolean> {
         let res: boolean;
 
         if (!loginData.provider) {
-            res = await authService.login(loginData);
+            res = await this.authService.login(loginData);
         } else {
-            res = await authService.loginWithSocial(loginData);
+            res = await this.authService.loginWithSocial(loginData);
         }
 
         if (!res) {
@@ -60,5 +59,17 @@ export default class UserDataProcessor {
         }
 
         return res;
+    }
+
+    isLoginLink(): boolean {
+        return this.authService.isLoginLink();
+    }
+
+    completeLogin(): Promise<boolean> {
+        return this.authService.completeLogin();
+    }
+
+    isAdminsEmail(email: string): Promise<boolean> {
+        return this.authService.isAdminsEmail(email);
     }
 }
