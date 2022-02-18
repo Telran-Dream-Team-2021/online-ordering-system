@@ -26,7 +26,6 @@ const SummaryCheckoutBlock: FC<{ makeOrderFn: () => void, userState: UserData, b
                     style={{maxWidth: '150px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
                 ORDER
             </Button>
-            <CustomizedSnackbars message={"Lalala"} open={open} handleState={handleState}/>
         </div>
     );
 };

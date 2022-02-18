@@ -6,7 +6,6 @@ import {Box, Button, Grid, Paper, styled} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {basketSelector, catalogSelector, userDataSelector} from "../../redux/store";
 import {BasketData} from "../../models/basket-data";
-import {ProductData} from "../../models/product-data";
 import {addOrderAction, removeBasketAction, setBasket, setErrorCode, setOrders} from "../../redux/actions";
 import {UserData} from "../../models/common/user-data";
 import {basket, orders} from "../../config/services-config";
