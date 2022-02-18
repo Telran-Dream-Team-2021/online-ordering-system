@@ -5,7 +5,7 @@ import {basketSelector, ordersSelector, userDataSelector} from "../../redux/stor
 import {UserData} from "../../models/common/user-data";
 import {BasketData} from "../../models/basket-data";
 import {getTotalSum} from "../../utils/calculatign";
-import CustomizedSnackbars from "../common/popup-info";
+
 
 const SummaryCheckoutBlock: FC<{ makeOrderFn: () => void, userState: UserData, basket: BasketData }> = (props) => {
     const {makeOrderFn, userState, basket} = props;

@@ -57,7 +57,7 @@ const UserDataForm: React.FC<UserDataFormProps> = (props) => {
             const email = formData.email;
             const displayName = formData.displayName;
 
-            dispatch(updateUserDataAction({...userData, deliveryAddress, email, displayName}));
+            await dispatch(updateUserDataAction({...userData, deliveryAddress, email, displayName}));
 
             errors.current.delete('main');
             props.closeFn();
