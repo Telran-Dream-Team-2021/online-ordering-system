@@ -52,12 +52,13 @@ const BasketPage = () => {
     return (
         <Box
             sx={{
+                gap:0,
                 alignSelf:'center',
                 width: '85%',
                 height: '140px',
                 '& > .MuiBox-root > .MuiBox-root': {
                     p: 1,
-                    borderRadius: 0,
+                    borderRadius: 2,
                     fontSize: '0.875rem',
                     fontWeight: '700',
                 },
@@ -77,6 +78,7 @@ const BasketPage = () => {
                     gridArea: 'header',
                     textAlign: 'center',
                     display: 'flex',
+                    gap:0,
                     flexDirection: 'row',
                     justifyContent: 'center'
                 }}>
