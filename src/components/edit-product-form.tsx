@@ -1,6 +1,17 @@
 import React, {FC, ReactNode, useEffect, useState} from 'react';
 import {noProductImageUrl, ProductData} from "../models/product-data";
-import {Box, FormControl, InputLabel, Select, Switch, TextField, MenuItem, Avatar, Button} from "@mui/material";
+import {
+    Box,
+    FormControl,
+    InputLabel,
+    Select,
+    Switch,
+    TextField,
+    MenuItem,
+    Avatar,
+    Button,
+    FormControlLabel
+} from "@mui/material";
 import assortmentConfig from "../config/assortment-config.json";
 
 type EditProductFormType ={
@@ -133,10 +144,16 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
                     sx={{display: "flex", flexDirection: "column", margin: 2}}
                 >
                     {/*    isActive: boolean,*/}
-                    <Switch
-                        checked={productState.isActive}
-                        onChange={() => handleProductDataChange('isActive', !productState.isActive)}
-                        inputProps={{ 'aria-label': 'controlled' }}
+                    <FormControlLabel
+                        control =
+                            {
+                                <Switch
+                                    checked={productState.isActive}
+                                    onChange={() => handleProductDataChange('isActive', !productState.isActive)}
+                                    inputProps={{ 'aria-label': 'controlled' }}
+                                />
+                            }
+                        label ={productState.isActive ? "Active" : "Disabled"}
                     />
                     {/*    productId: number | string,*/}
                     <TextField
