@@ -11,7 +11,7 @@ import {
     CssBaseline,
     IconButton,
     TextField,
-    Typography
+    Typography, useTheme
 } from "@mui/material";
 import socialAuthProviders, {SocialProvider} from "../../config/firebase-auth-config";
 import Spinner from "./spinner";
@@ -38,6 +38,7 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
     const withPassword = useRef<boolean>(false);
     const alertMessage = useRef<string>('');
     const error = useSelector((errorCodeSelector));
+    const theme = useTheme();
 
     useEffect(() => {
         if (error === ErrorCode.AUTH_ERROR) {
@@ -97,7 +98,9 @@ const RegistrationAuthForm: React.FC<RegistrationAuthType> = (props) => {
     }
 
     return <Container sx={{
-        marginLeft: '55vw',
+        [theme.breakpoints.up('md')]: {
+            marginLeft: '55vw',
+        },
         display: 'flex',
         flexDirection: 'column',
         height: '100%',

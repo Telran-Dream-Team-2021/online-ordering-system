@@ -1,4 +1,4 @@
-import {ReactNode} from "react";
+import {ReactElement, ReactNode} from "react";
 
 export type RouteType = {
     path: string;
@@ -8,4 +8,5 @@ export type RouteType = {
     adminOnly?: boolean;
     childRoutes?: RouteType[];
     indexElement?: ReactNode;
+    icon?: ReactElement;
 }
