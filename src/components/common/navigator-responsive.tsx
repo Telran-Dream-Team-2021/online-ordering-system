@@ -4,7 +4,6 @@ import {RouteType} from "../../models/common/route-type";
 import NavigatorWeb from "./navigator-web";
 import NavigatorDrawer from "./navigator-mobile";
 
-
 const NavigatorResponsive: FC<{ items: RouteType[], logoutFn?: () => void }> = (props) => {
     const theme = useTheme();
     const isMobileOrLaptop = useMediaQuery(theme.breakpoints.up('md'));

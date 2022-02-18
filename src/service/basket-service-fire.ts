@@ -16,6 +16,7 @@ import {collectionData, docData} from "rxfire/firestore";
 import {map} from "rxjs/operators";
 import { ItemData } from "../models/item-data";
 import {DocumentData} from "rxfire/firestore/interfaces";
+import {ProductData} from "../models/product-data";
 
 
 export default class BasketServiceFire extends AbstractDataProvider<BasketData> {
@@ -42,7 +43,13 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
     }
 
     get(id?: string): Observable<BasketData[]> | Promise<BasketData> {
-        throw new Error('Illegal argument.');
+        if(id){
+            const productDocRef = doc(this.fireCollection, id.toString());
+            return getDoc(productDocRef).then(resp => resp.data() as BasketData)
+        } else {
+            throw new Error("not implement")
+        }
+
     }
 
     getFirst(id: string | number): Observable<BasketData> {
@@ -67,6 +74,8 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
         try {
             await setDoc(doc(this.fireCollection, id), newEntity);
         } catch (e) {
+            console.log('err')
+            console.log(e)
             throw ErrorCode.AUTH_ERROR;
         }
         return newEntity;

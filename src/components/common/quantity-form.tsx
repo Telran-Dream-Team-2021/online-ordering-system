@@ -10,7 +10,7 @@ const Quantity: FC<{item: ItemData, setItemsStateFn: ()=>void}> = (props)=>{
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         item.quantity = isNaN(parseInt(event.target.value))?0: parseInt(event.target.value)
         setItemsStateFn()
-    };
+    }
     return <ButtonGroup>
         <Button
             aria-label="reduce"

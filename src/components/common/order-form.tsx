@@ -27,8 +27,10 @@ import {
 import Quantity from "./quantity-form";
 import {ItemData} from "../../models/item-data";
 import _ from 'lodash'
-import {userDataSelector} from "../../redux/store";
+import {catalogSelector, userDataSelector} from "../../redux/store";
 import {useSelector} from "react-redux";
+import {ProductData} from "../../models/product-data";
+import {getTotalSum} from "../../utils/calculatign";
 
 
 const OrderForm: FC<{ order: OrderData }> = (props) =>{
@@ -37,6 +39,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
     const [confirmOpen, setConfirmOpen] = useState<boolean>(false)
     const confirmationData = useRef<ConfirmationDataType>(initialConfirmationData);
     const userState = useSelector(userDataSelector)
+    const products: ProductData[] = useSelector(catalogSelector);
     const handleStatusChange = (event: SelectChangeEvent) => {
         const oldValue = order.status
         const newOrder = {...order, status: event.target.value}
@@ -108,6 +111,10 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
 
 
     const getColumns = (): GridColDef[] =>{
+        console.log(order)
+        console.log(`last = ${new Date(order.lastEditionDate)}> now = ${(new Date())}`)
+
+        console.log(new Date(order.lastEditionDate)>=(new Date()))
         return [
             // { field: 'id', headerName: 'Id', width: 150, align: 'center', headerAlign: 'center' },
             { field: 'photo', headerName: 'Photo', width: 150, align: 'center', headerAlign: 'center', renderCell: (params)=> <Avatar
@@ -117,12 +124,12 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                 />},
             { field: 'productName', headerName: 'Name', width: 150, align: 'center', headerAlign: 'center' },
             { field: 'quantity', headerName: 'Qty', width: 150, align: 'center', headerAlign: 'center', renderCell: (params)=> {
-                    return !userState.isAdmin?<Quantity item={params.value.item} setItemsStateFn={handleSetItemsState}/> : <div>{params.value.item.quantity}</div>
+                    return !userState.isAdmin && new Date(order.lastEditionDate)>=(new Date()) ?<Quantity item={params.value.item} setItemsStateFn={handleSetItemsState}/> : <div>{params.value.item.quantity}</div>
                 }},
             { field: 'price', headerName: 'Price ($)', width: 150, align: 'center', headerAlign: 'center' },
             { field: 'totalSum', headerName: 'Total ($)', width: 150, align: 'center', headerAlign: 'center' },
             { field: 'removing', headerName: '', width: 50, align: 'center', headerAlign: 'center', renderCell: (params)=>{
-                return !userState.isAdmin?
+                return !userState.isAdmin && new Date(order.lastEditionDate)>=(new Date())?
                     <Button onClick={() => onRemoveItem(params.value)}>
                         <CloseRoundedIcon/>
                     </Button>
@@ -135,11 +142,11 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
         return itemsState.map(item=>{
             return {
                 id: item.productId,
-                photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Sesame_seed_hamburger_buns.jpg/1200px-Sesame_seed_hamburger_buns.jpg",
-                productName: item.productId,
+                photo: products.find(p=>p.productId===item.productId)!.imageUrl,
+                productName: products.find(p=>p.productId===item.productId)!.name,
                 quantity: {item, handleSetItemsState},
-                price: item.pricePerUnit,
-                totalSum: (item.quantity*item.pricePerUnit),
+                price: parseFloat(item.pricePerUnit.toFixed(2)),
+                totalSum: parseFloat((item.quantity*item.pricePerUnit).toFixed(2)),
                 removing: item
             }
         })
@@ -159,12 +166,6 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
-
-    function getTotalSum(items: ItemData[]): number {
-        console.log(order)
-        console.log(items)
-        return items.reduce((acc, item)=>acc + (item.quantity * item.pricePerUnit), 0)
-    }
 
     return (
         <div >
@@ -209,7 +210,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                                             <DesktopDatePicker
                                                 inputFormat="MM/dd/yyyy"
                                                 value={order.deliveryDate}
-                                                onChange={handleLastEditionDateChange}
+                                                onChange={handleDeliveryDateChange}
                                                 renderInput={(params) => <TextField {...params} />}
                                             /> :
                                             <div>{new Date(order.deliveryDate).toLocaleDateString()}</div>
@@ -221,7 +222,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                         <Grid item md={3}>
                             <Item>
                                 <FormControl sx={{ minWidth: 120 }}>
-                                    {userState.isAdmin? <Select
+                                    {userState.isAdmin ? <Select
                                         defaultValue={order.status}
                                         onChange={handleStatusChange}
                                         sx={{height: 40, fontSize: 16}}

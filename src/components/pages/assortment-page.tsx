@@ -10,6 +10,7 @@ import {ConfirmationDataType, initialConfirmationData} from "../../models/common
 import {addProductAction, removeProductAction, updateProductAction} from "../../redux/actions";
 import initialAssortment from "../../config/initial-assortment.json";
 import {Link} from "react-router-dom";
+import InfoModal from "../common/info-modal";
 
 
 function getRows(assortment: ProductData[]): GridRowsProp {
@@ -26,6 +27,9 @@ const AssortmentPage: FC = () => {
     const columns = getColumns();
     const confirmationDialog = useRef<ConfirmationDataType>(initialConfirmationData);
     const [isConfDialogVisible, setIsConfDialogVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const textModal = useRef<string[]>(['']);
+    const imgUrlModal = useRef<string>('');
 
     function getColumns(): GridColumns {
         return [
@@ -71,7 +75,7 @@ const AssortmentPage: FC = () => {
                     return [
                         <GridActionsCellItem icon={<Delete />}
                                              onClick={() => {
-                                                 showDeleteProductDialog(params.id as number)
+                                                 deleteProduct(params.id as number)
                                              }} label="Delete"/>
                     ]
                 }
@@ -84,6 +88,15 @@ const AssortmentPage: FC = () => {
         dispatch(updateProductAction(productId, product));
     }
 
+    function deleteProduct(productId: number){
+        const product = getProduct(productId);
+        if(product.isActive){
+            showDeleteProductModel(product)
+        } else {
+            showDeleteProductDialog(productId)
+        }
+    }
+
     function showDeleteProductDialog(productId: number) {
         confirmationDialog.current.title = "Delete product";
         confirmationDialog.current.message = `Are you sure that you want to delete ${productId}
@@ -91,6 +104,13 @@ const AssortmentPage: FC = () => {
         confirmationDialog.current.handler = removeProduct.bind(null, productId);
         setIsConfDialogVisible(true);
     }
+
+    function showDeleteProductModel(product: ProductData){
+        textModal.current = [`Product - ${product.productId} is active.`, `First you have to deactivate this product`];
+        imgUrlModal.current = product.imageUrl;
+        setModalVisible(true);
+    }
+
     function getProduct(productId: number): ProductData {
         const product =  assortment.find(product => product.productId === productId);
         if(!product) {
@@ -148,6 +168,12 @@ const AssortmentPage: FC = () => {
                 }
             </Paper>
             {isConfDialogVisible && <ConfirmDialog data={confirmationDialog.current} open={isConfDialogVisible}/>}
+            <InfoModal title={"Delete product"}
+                       message={textModal.current}
+                       open={modalVisible}
+                       onClose={() => setModalVisible(false)}
+                       imageUrl={imgUrlModal.current}
+            />
         </Box>
     );
 };

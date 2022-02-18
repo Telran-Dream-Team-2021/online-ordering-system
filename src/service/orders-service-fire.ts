@@ -3,7 +3,17 @@ import {catchError, Observable} from "rxjs";
 import {OrderData} from "../models/order-data";
 import {collectionData} from "rxfire/firestore";
 import firebaseApp from "../config/fire-config";
-import {CollectionReference, getFirestore, collection, doc, setDoc, getDoc, deleteDoc} from "firebase/firestore";
+import {
+    CollectionReference,
+    getFirestore,
+    collection,
+    doc,
+    setDoc,
+    getDoc,
+    deleteDoc,
+    query,
+    where
+} from "firebase/firestore";
 import ErrorCode from "../models/common/error-code";
 import {getUuidByOrder} from "../utils/uuid";
 import {UserData} from "../models/common/user-data";
@@ -43,8 +53,11 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
 
     get(id?: string): Observable<OrderData[]> | Promise<OrderData> {
         if(id) {
-            const productDocRef = doc(this.fireCollection, id);
-            return getDoc(productDocRef).then(resp => resp.data() as OrderData)
+            return (collectionData(query(this.fireCollection, where("userId", "==", id.toString()))) as Observable<OrderData[]>).pipe(
+                catchError(err => {
+                    throw err.code ?  ErrorCode.AUTH_ERROR : ErrorCode.SERVER_UNAVAILABLE;
+                })
+            )
         } else {
             return (collectionData(this.fireCollection) as Observable<OrderData[]>).pipe(
                 catchError(err => {

@@ -33,6 +33,7 @@ export const setOrders: ActionType<OrderData[]> = orders => (
 )
 
 async function action(handlerFn: any, dispatch: Dispatch) {
+    console.log("action")
     try {
         await handlerFn();
         dispatch(setErrorCode(ErrorCode.NO_ERROR));
@@ -51,11 +52,17 @@ export const removeProductAction = function (productId: number): (dispatch: any)
 export const updateProductAction = function (productId: number, newProduct: ProductData): (dispatch: any) => void {
     return action.bind(null, catalog.updateProduct.bind(catalog, productId, newProduct));
 }
-export const addBasketItemAction = function (basketData: BasketData, productData: ProductData): (dispatch: any) => void {
-    return action.bind(null, basket.addItem.bind(basket, basketData, productData));
+export const addBasketItemAction = function (userId: string | number, productData: ProductData): (dispatch: any) => void {
+    return action.bind(null, basket.addItem.bind(basket, userId, productData));
+}
+export const updateBasketAction = function (basketData: BasketData): (dispatch: any) => void {
+    return action.bind(null, basket.updateBasket.bind(basket, basketData.userId, basketData));
 }
 export const removeBasketItemAction = function (basketData: BasketData, productId: number): (dispatch: any) => void {
     return action.bind(null, basket.removeItem.bind(basket, basketData, productId));
+}
+export const removeBasketLineAction = function (basketData: BasketData, productId: number): (dispatch: any) => void {
+    return action.bind(null, basket.removeLine.bind(basket, basketData, productId));
 }
 export const removeBasketAction = function (basketData: BasketData): (dispatch: any) => void {
     return action.bind(null, basket.removeBasket.bind(basket, basketData));
