@@ -19,7 +19,7 @@ const SummaryCheckoutBlock: FC<{ makeOrderFn: () => void }> = (props) => {
                 makeOrderFn();
             }} size="large" variant="contained"
                     style={{maxWidth: '150px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
-                ORDER
+                CREATE ORDER
             </Button>
 
         </div>

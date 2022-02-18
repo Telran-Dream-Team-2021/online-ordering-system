@@ -75,7 +75,10 @@ const BasketPage = () => {
 
     return (
         <Box sx={{flexGrow: 1}}>
-            <Grid container spacing={2}>
+            <Grid container spacing={0}
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center">
                 {<UserDataModal onClose={() => setFlStep2ModalOpen(false)} open={flStep2ModalOpen}/>}
                 <Grid item xs={1}>
                     <ShoppingBasketIcon/>
