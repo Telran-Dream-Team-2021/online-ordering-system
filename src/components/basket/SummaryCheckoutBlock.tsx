@@ -1,7 +1,5 @@
 import React, {FC} from 'react';
 import Button from '@mui/material/Button';
-import {useDispatch, useSelector} from "react-redux";
-import {basketSelector, ordersSelector, userDataSelector} from "../../redux/store";
 import {UserData} from "../../models/common/user-data";
 import {BasketData} from "../../models/basket-data";
 import {getTotalSum} from "../../utils/calculatign";
@@ -16,7 +14,7 @@ const SummaryCheckoutBlock: FC<{ makeOrderFn: () => void, userState: UserData, b
     }
 
     return (
-        <div style={{height: 300, width: '100%', alignContent: "center", justifyContent: "center"}}>
+        <div style={{ border: '1px solid black', height: 300, width: '100%', alignContent: "center", justifyContent: "center"}}>
             <h2>TOTAL: ${getTotalSum(basket.basketItems)}</h2>
             <p>Address: {userState.deliveryAddress}</p>
             <Button disabled={!basket.basketItems.length} onClick={() => {

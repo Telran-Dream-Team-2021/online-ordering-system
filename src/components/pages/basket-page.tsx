@@ -50,30 +50,51 @@ const BasketPage = () => {
     }
 
     return (
-        <Box sx={{flexGrow: 1}}>
-            <Grid container spacing={0}
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center">
-                {<UserDataModal onClose={() => {
-                    setFlStep2ModalOpen(false);
-                    makeOrder(basketData)
-                }} open={flStep2ModalOpen}/>}
-                <Grid item xs={1}>
-                    <ShoppingBasketIcon/>
-                </Grid>
-                <Grid item xs={4}>
-                    <Item>Shopping Cart</Item>
-                </Grid>
-                <Grid item xs={8}>
-                    <Item><MainGrid basketData={basketData} catalogData={catalogData}/></Item>
-                </Grid>
-                <Grid item xs={4}>
-                    <Item><SummaryCheckoutBlock basket={basketData} userState={userData}
-                                                makeOrderFn={() => makeOrder(basketData)}/></Item>
-                </Grid>
-                <CustomizedSnackbars message={`Order has been created!`} open={open} handleState={handleState}/>
-            </Grid>
+        <Box
+            sx={{
+                alignSelf:'center',
+                width: '85%',
+                height: '140px',
+                '& > .MuiBox-root > .MuiBox-root': {
+                    p: 1,
+                    borderRadius: 0,
+                    fontSize: '0.875rem',
+                    fontWeight: '700',
+                },
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(4, 1fr)',
+                    gap: 0,
+                    gridTemplateRows: 'auto',
+                    gridTemplateAreas: `"header header header header"
+        "main main main sidebar"`,
+                }}
+            >
+                <Box sx={{
+                    gridArea: 'header',
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center'
+                }}>
+                    <h2>Shopping Cart
+                        details</h2></Box>
+                <Box sx={{gridArea: 'main', bgcolor: 'secondary.main'}}>
+                    <MainGrid basketData={basketData}
+                              catalogData={catalogData}/></Box>
+                <Box sx={{gridArea: 'sidebar', bgcolor: 'beige', justifyContent: 'center', alignItems: 'center'}}>
+                    <SummaryCheckoutBlock
+                        basket={basketData} userState={userData}
+                        makeOrderFn={() => makeOrder(basketData)}/></Box>
+            </Box>
+            {<UserDataModal onClose={async () => {
+                setFlStep2ModalOpen(false);
+                await makeOrder(basketData);
+            }} open={flStep2ModalOpen}/>}
+            <CustomizedSnackbars message={`Order has been created!`} open={open} handleState={handleState}/>
         </Box>
     );
 };
