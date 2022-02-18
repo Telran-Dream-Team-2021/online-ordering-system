@@ -1,5 +1,5 @@
 import React, {FC, ReactNode, useEffect, useState} from 'react';
-import {noProductImageUrl, ProductData} from "../models/product-data";
+import {dummyProduct, noProductImageUrl, ProductData} from "../models/product-data";
 import {
     Box,
     FormControl,
@@ -10,9 +10,10 @@ import {
     MenuItem,
     Avatar,
     Button,
-    FormControlLabel
+    FormControlLabel, Snackbar
 } from "@mui/material";
 import assortmentConfig from "../config/assortment-config.json";
+import {Link} from "react-router-dom";
 
 type EditProductFormType ={
     initialProductState: ProductData,
@@ -33,11 +34,14 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
     const [errorProductNameMessage, setProductNameErrorMessage] = React.useState<string>("");
     const [errorProductDescriptionMessage, setProductDescriptionErrorMessage] = React.useState<string>("");
     const [errorProductPriceMessage, setProductPriceErrorMessage] = React.useState<string>("");
+    const [flIsSnackBarOpen, setFlIsSnackBarOpen] = React.useState<boolean>(false);
 
     const [flValid, setFlValid] = useState<boolean>(false);
+    const [flIsProductChanged, setFlIsProductChanged] = useState<boolean>(false);
 
     useEffect(() => {
         setFlValid(validateAll());
+        setFlIsProductChanged(JSON.stringify(productState) != JSON.stringify(initialProductState));
         return () => {}
     }, [productState])
     function validateAll(): boolean {
@@ -45,6 +49,8 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
             && !validateProductNameFn(productState.name)
             && !validateProductDescriptionFn(productState.description)
             && !validateProductPriceFn(productState.price)
+            && !!productState.categoryName
+            && !!productState.unitOfMeasurement
     }
 
 
@@ -90,6 +96,17 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
            return <MenuItem key={o} value={o}>{o}</MenuItem>
         })
     }
+    function handleSnackBarClose(event: React.SyntheticEvent | Event, reason?: string) {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setFlIsSnackBarOpen(false);
+    }
+
+    function handleNewProductSelect(event: any) {
+        setFlIsSnackBarOpen(false);
+        setProductState(dummyProduct)
+    }
 
     function resetFn() {
         setProductState({...initialProductState});
@@ -99,11 +116,26 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
         event.preventDefault();
         try {
             await submitProductFn(productState);
+            setFlIsSnackBarOpen(true);
+            setFlIsProductChanged(false);
         } catch (err) {
             alert("Product can't be save because of error returned by submitProductFn");
         }
     }
 
+    const snackBarAction = (
+        <React.Fragment>
+            <Button
+                color="secondary"
+                size="small"
+                component={Link}
+                to={`/assortment/new_product`}
+                onClick={handleNewProductSelect}
+            >
+                New product
+            </Button>
+        </React.Fragment>
+    );
     return (
         <Box
             component ="form"
@@ -235,9 +267,17 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
             <Box
                 sx={{marginTop: 2}}
             >
-                <Button type="submit" disabled ={!flValid} variant="contained">Save product</Button>
+                <Button type="submit" disabled ={!flValid || !flIsProductChanged} variant="contained">Save product</Button>
                 <Button onClick={resetFn}>Reset changes</Button>
             </Box>
+            <Snackbar
+                anchorOrigin={{vertical: "bottom", horizontal: "center"}}
+                open={flIsSnackBarOpen}
+                autoHideDuration={3000}
+                onClose={handleSnackBarClose}
+                message={initialProductState.productId === 0 ? "Product created" : "Changes saved"}
+                action={snackBarAction}
+            />
         </Box>
     );
 };
