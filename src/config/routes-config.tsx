@@ -22,9 +22,9 @@ export const routes: RouteType[] = [
             {path: PATH_PRODUCT, element: <EditProductPage/>, label: "Product page", adminOnly: true}
         ]
     },
-    {path: PATH_BASKET, element: <BasketPage/>, label: 'Basket', authenticated: true, adminOnly: false},
+    {path: PATH_BASKET, element: <BasketPage/>, label: 'Shopping Cart', authenticated: true, adminOnly: false},
     {path: PATH_ORDERS, element: <OrdersPage/>, label: 'Orders', authenticated: true},
-    {path: PATH_LISTING, element: <ListingPage/>, label: 'Listing'},
+    {path: PATH_LISTING, element: <ListingPage/>, label: 'Catalog'},
     {path: PATH_LOGIN, element: <Login/>, label: 'Login', authenticated: false},
 ]
 export const developmentRoutes: RouteType[] = []
