@@ -1,30 +1,29 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {DataGrid, GridColumns, GridRowsProp, GridActionsCellItem, GridRowParams, GridColDef} from "@mui/x-data-grid";
 import {Avatar} from "@mui/material";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {basketSelector, catalogSelector} from "../../redux/store";
 import {BasketData} from "../../models/basket-data";
+import Quantity from "../common/quantity-form";
+import {updateBasketAction} from "../../redux/actions";
+import {basket} from "../../config/services-config";
+import {ProductData} from "../../models/product-data";
 
-const MainGrid = () => {
+const MainGrid: FC<{basketData: BasketData, catalogData: ProductData[]}> = (props) => {
+    const {basketData, catalogData} = props;
 
-    const basketData = useSelector(basketSelector);
-    const catalogData = useSelector(catalogSelector);
-
-    console.log(basketData)
     const getRows: (basketData: BasketData) => GridRowsProp = () => {
-        // function getRowId(row) {
-        //     return row.id;
-        // }
 
         return basketData.basketItems.map(
-            (i, row) => {
+            (i) => {
                 const imageUrl = catalogData.find(product => product.productId === i.productId)
                 return {
-                        id: row, col0: imageUrl ? imageUrl : '',
+                        id: i.productId,
+                        col0: imageUrl ? imageUrl : '',
                         col1: catalogData.find(p => p.productId === i.productId)!.name,
-                        col2: i.quantity,
+                        col2: i,
                         col3: i.pricePerUnit,
-                        col4: i.quantity * i.pricePerUnit
+                        col4: (i.quantity * i.pricePerUnit).toFixed(2)
                     }
 
             }
@@ -42,16 +41,16 @@ const MainGrid = () => {
             }
         },
         {field: 'col1', headerName: 'Product', width: 150},
-        {field: 'col2', headerName: 'Qty', width: 150},
+        {field: 'col2', headerName: 'Qty', width: 150,
+            renderCell: (params)=><Quantity item={params.value} setItemsStateFn={()=>{basket.updateBasket(basketData.userId, basketData)}}/>},
         {field: 'col3', headerName: 'Price per unit', width: 150},
         {field: 'col4', headerName: 'Price', width: 150},
     ];
 
     return (
         <div style={{height: 300, width: '100%'}}>
-            <DataGrid rows={getRows(basketData)}  columns={columns} checkboxSelection
+            <DataGrid rows={getRows(basketData)}  columns={columns}
                       pageSize={5}/>
-            {/*getRowId={this.getRowId}*/}
         </div>
     );
 };

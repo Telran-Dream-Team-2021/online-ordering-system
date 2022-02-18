@@ -77,7 +77,6 @@ const App: FC = () => {
     useEffect(() => {
         let subscriptionBasketData: any
         function getBasketData(): Subscription {
-            console.log(userData.username)
             return basket.getBasket(userData.username).subscribe({
                 next(bd) {
                     console.log("basket next");

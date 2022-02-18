@@ -11,10 +11,10 @@ export default class Basket {
     constructor(private basketService: DataProvider<BasketData>) {
     }
 
-    async addItem(basket: BasketData, product: ProductData): Promise<BasketData> {
-        console.log("call addItem")
+    async addItem(userId: string | number, product: ProductData): Promise<BasketData> {
         const item: ItemData = {pricePerUnit: product.price, productId: product.productId, quantity: 1};
-        if (await basketService.exists(basket.userId)) {
+        const basket = await basketService.get(userId.toString()) as BasketData
+        if (basket) {
             const indexId = basket.basketItems.findIndex((element) => element.productId === item.productId);
             if (-1 === indexId) {
 
@@ -25,9 +25,12 @@ export default class Basket {
             }
             return await this.basketService.update(basket.userId, _.cloneDeep(basket));
         } else {
-            basket.basketItems.push(item);
-            return await this.basketService.update(basket.userId, _.cloneDeep(basket));
+            return await this.basketService.add({basketItems: [item], userId: userId.toString()});
         }
+    }
+
+    async updateBasket(id: string | number, basket: BasketData): Promise<BasketData>{
+        return await this.basketService.update(id, _.cloneDeep(basket))
     }
 
     removeItem(basket: BasketData, productId: number): Promise<BasketData> {

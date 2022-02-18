@@ -34,8 +34,8 @@ export default class Orders {
     getOrder(productId: number): Promise<OrderData> {
         return this.ordersService.get(productId) as Promise<OrderData>;
     }
-    getAllOrders(): Observable<OrderData[]> {
-        return this.ordersService.get() as Observable<OrderData[]>;
+    getAllOrders(id?: string | number): Observable<OrderData[]> {
+        return this.ordersService.get(id) as Observable<OrderData[]>;
     }
 }
 
