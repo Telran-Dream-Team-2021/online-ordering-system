@@ -4,6 +4,8 @@ import AuthService from "./auth-service";
 import {from, mergeMap, Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
 import {authService} from "../config/services-config";
+import {LoginData} from "../models/common/login-data";
+import ErrorCode from "../models/common/error-code";
 
 export default class UserDataProcessor {
     constructor(private authService: AuthService, private userService: DataProvider<UserData>) {
@@ -16,7 +18,6 @@ export default class UserDataProcessor {
     getUserData(): Observable<UserData> {
         return this.authService.getUserData()
             .pipe(mergeMap(userData => {
-                console.log(userData, 'getUserData');
                 if (!!userData.username) {
                     return from(this.userService.get(userData.username) as Promise<UserData>)
                         .pipe(map(user => {
@@ -26,14 +27,6 @@ export default class UserDataProcessor {
 
                 return of(userData);
             }));
-        // .pipe(mergeMap(userData => {
-        //     if (!!userData.username) {
-        //         return this.userService.getFirst(userData.username)
-        //             .pipe(map(user => UserDataProcessor.mergeUserData(userData, user)))
-        //     }
-        //
-        //     return of(userData);
-        // }));
     }
 
     async updateData(newUserData: UserData): Promise<UserData> {
@@ -51,5 +44,21 @@ export default class UserDataProcessor {
 
     async logout() {
         return await authService.logout();
+    }
+
+    async login(loginData: LoginData): Promise<boolean> {
+        let res: boolean;
+
+        if (!loginData.provider) {
+            res = await authService.login(loginData);
+        } else {
+            res = await authService.loginWithSocial(loginData);
+        }
+
+        if (!res) {
+            throw ErrorCode.AUTH_ERROR;
+        }
+
+        return res;
     }
 }

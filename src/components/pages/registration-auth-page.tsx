@@ -1,32 +1,31 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {LoginData} from "../../models/common/login-data";
 import {Box, Button, Typography} from "@mui/material";
 import {authService} from "../../config/services-config";
 import {PATH_LISTING} from "../../config/routes-config";
 import authConfig from "../../config/auth-config.json";
 import RegistrationAuthForm from "../common/registration-auth-form";
-import {Navigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import {useDispatch, useSelector} from "react-redux";
+import {loginAction} from "../../redux/actions";
+import {userDataSelector} from "../../redux/store";
 
 const RegistrationAuthPage = () => {
-    const [flNavigate, setFlNavigate] = useState<boolean>(false);
+    const dispatch = useDispatch();
+    const userData = useSelector(userDataSelector);
+    const navigate = useNavigate();
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [emailSent, setEmailSent] = useState<boolean>(false);
 
-    async function login(loginData: LoginData): Promise<boolean> {
-        let res: boolean;
-
-        if (!loginData.provider) {//TODO dispatch
-            res = await authService.login(loginData);
-        } else {
-            res = await authService.loginWithSocial(loginData);
+    useEffect(() => {
+        if (userData.username) {
+            navigate(PATH_LISTING);
         }
+    }, [userData]);// eslint-disable-line react-hooks/exhaustive-deps
 
-        if (res && (!!loginData.provider || !!loginData.password)) {
-            setFlNavigate(true);
-        }
-
-        return res;
+    async function login(loginData: LoginData): Promise<void> {
+        dispatch(loginAction(loginData));
     }
 
     function passwordValidation(password: string): string {
@@ -75,9 +74,8 @@ const RegistrationAuthPage = () => {
                 borderRadius: '40vh 0 0 40vh',
             }}>
                 <Button sx={{float: 'right', fontSize: '1.5rem', m: '2vw'}} variant="text"
-                        onClick={() => setFlNavigate(true)}>Catalog</Button>
+                        onClick={() => navigate(PATH_LISTING)}>Catalog</Button>
             </Box>
-            {flNavigate && <Navigate to={PATH_LISTING}/>}
             <RegistrationAuthForm
                 loginFn={login}
                 sentFn={() => setEmailSent(true)}

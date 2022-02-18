@@ -1,7 +1,7 @@
-import {AppBar, Box, Container, Drawer, IconButton, Tab, Tabs, Toolbar, Typography} from '@mui/material';
+import {Box, Drawer, IconButton, Tab, Tabs, Toolbar, Typography} from '@mui/material';
 import {FC, useEffect, useState} from 'react';
 
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import {RouteType} from '../../models/common/route-type';
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -10,8 +10,9 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import * as React from "react";
 import {BasketData} from "../../models/basket-data";
 import {useSelector} from "react-redux";
-import {basketSelector} from "../../redux/store";
-
+import {basketSelector, userDataSelector} from "../../redux/store";
+import {PATH_BASKET, PATH_LOGIN} from "../../config/routes-config";
+import {UserData} from "../../models/common/user-data";
 
 function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
     let res = items.findIndex(item => path === item.path);
@@ -21,15 +22,17 @@ function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
 
 const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (props) => {
     const basket: BasketData = useSelector(basketSelector);
+    const userData: UserData = useSelector(userDataSelector);
     const {items, logoutFn} = props;
     const path = useLocation().pathname;
     const [activeTabIndex, setActiveTab] = useState(getInitialActiveTabIndex(path, items));
     const [label, setLabel] = useState(items[activeTabIndex].label);
+    const navigate = useNavigate();
 
     useEffect(() => {
         setActiveTab(getInitialActiveTabIndex(path, items));
         setLabel(items[activeTabIndex].label);
-    }, [items, path])
+    }, [items, path]);// eslint-disable-line react-hooks/exhaustive-deps
     document.title = label;
 
     const [displayDrawer, setStateDrawer] = useState(false);
@@ -53,7 +56,7 @@ const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (prop
             value={activeTabIndex}
             onChange={onChangeHandler}
         >
-            {items.map((item, index) => (
+            {items.map((item) => (
                 <Tab
                     key={item.label}
                     component={Link}
@@ -105,7 +108,8 @@ const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (prop
             >
                 {label}
             </Typography>
-            {<IconButton aria-label="cart">
+            {(!!userData.username && !userData.isAdmin)
+                && <IconButton aria-label="cart" onClick={() => navigate(!props.logoutFn ? PATH_LOGIN : PATH_BASKET)}>
                 <Badge color="secondary" badgeContent={basket.basketItems.length}>
                     <ShoppingCartIcon/>
                 </Badge>
