@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {LoginData} from "../../models/common/login-data";
-import {Box, Button, Typography} from "@mui/material";
+import {Box, Button, Typography, useMediaQuery, useTheme} from "@mui/material";
 import {userDataProcessor} from "../../config/services-config";
 import {PATH_LISTING} from "../../config/routes-config";
 import authConfig from "../../config/auth-config.json";
@@ -17,6 +17,8 @@ const RegistrationAuthPage = () => {
     const navigate = useNavigate();
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [emailSent, setEmailSent] = useState<boolean>(false);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     useEffect(() => {
         if (userData.username) {
@@ -59,19 +61,19 @@ const RegistrationAuthPage = () => {
         : <Box sx={{
             backgroundImage: "url('/login-bg.png')",
             backgroundRepeat: 'no-repeat',
-            backgroundSize: '60vw',
+            backgroundSize: isMobile ? 'auto' : '60vw',
             position: 'relative',
-            height: '100vh'
+            height: '90vh'
         }}>
             <Box sx={{
                 position: 'absolute',
                 top: 0,
                 right: 0,
                 bottom: 0,
-                width: '60vw',
+                width: isMobile ? '100vw' : '60vw',
                 backgroundColor: !isAdmin ? 'primary.light' : 'secondary.light',
                 boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                borderRadius: '40vh 0 0 40vh',
+                borderRadius: isMobile ? '30vh 0 0 30vh' : '40vh 0 0 40vh',
             }}>
                 <Button sx={{float: 'right', fontSize: '1.5rem', m: '2vw'}} variant="text"
                         onClick={() => navigate(PATH_LISTING)}>Catalog</Button>

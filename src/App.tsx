@@ -147,7 +147,7 @@ const App: FC = () => {
     return <ThemeProvider theme={theme}>
         {errorCode === ErrorCode.SERVER_UNAVAILABLE ? <Alert severity='error'>Server is unavailable</Alert> :
             <BrowserRouter>
-                {<NavigatorResponsive items={relevantRoutes}
+                {<NavigatorResponsive items={relevantRoutes} isAdmin={userData.isAdmin}
                                      logoutFn={!!userData.username ? logout : undefined}/>}
                 <Routes>
                     {getRoutes()}
