@@ -5,8 +5,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {orders} from "../../config/services-config";
 import {Subscription} from "rxjs";
 import {ordersSelector, userDataSelector} from "../../redux/store";
-import {Box, Container, Grid, Paper, styled, Typography} from "@mui/material";
+import {Box, Container, Grid, Paper, styled, SxProps, Typography} from "@mui/material";
 import OrderForm from "../common/order-form";
+import LocalShippingSharpIcon from '@mui/icons-material/LocalShippingSharp';
+import TablePaginationForm from "../common/table-pagination-form";
 
 const OrdersPage = () => {
     const dispatch = useDispatch()
@@ -35,42 +37,32 @@ const OrdersPage = () => {
         return () => subscription.unsubscribe();
     }, [])
 
-    const Item = styled(Paper)(({ theme }) => ({
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-        ...theme.typography.body2,
-        padding: theme.spacing(1),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    }));
+    const styleTypography: SxProps = {
+        color: 'primary.main',
+        fontWeight: 'bold',
+        textAlign: 'center'
+    }
 
     function getColumns(){
-        return <Container sx={{backgroundColor: "#eaeaea"}}>
-            <Grid container spacing={2} sx={{p:1}}>
-                <Grid item md={3}>
-                    <Item>
-                        <Typography>Order id / address</Typography>
-                    </Item>
+        return <Grid container sx={{p:1, backgroundColor: 'primary.light', mt: '20px'}} >
+                <Grid md={3}>
+                    <Typography sx={styleTypography}>Order id / address</Typography>
                 </Grid>
-                <Grid item md={2}>
-                    <Item>Can edit</Item>
+                <Grid md={2}>
+                    <Typography sx={styleTypography}>Can edit</Typography>
                 </Grid>
-                <Grid item md={2}>
-                    <Item>Will arrive</Item>
+                <Grid md={2}>
+                    <Typography sx={styleTypography}>Will arrive</Typography>
                 </Grid>
-                <Grid item md={3}>
-                    <Item>
+                <Grid md={3}>
+                    <Typography sx={styleTypography}>
                         Status
-                    </Item>
+                    </Typography>
                 </Grid>
-                <Grid item md={2}>
-                    <Item>Total $</Item>
+                <Grid md={2}>
+                    <Typography sx={styleTypography}>Total $</Typography>
                 </Grid>
-
             </Grid>
-            {getAccordions()}
-        </Container>
-
-
     }
 
     function getAccordions(){
@@ -78,13 +70,19 @@ const OrdersPage = () => {
     }
 
     return (
-        <div style={{alignSelf: 'center', alignItems:'center', justifyContent:'center'}}>
-            <h1 style={{textAlign:'center'}}>My Orders</h1>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
-                '& .Mui-error': { bgcolor: '#FF9494', color: 'white', width: '100%', height: '100%' } }}>
-                {getColumns()}
-            </Box>
-        </div>
+        <Container>
+            <Typography
+                variant={'h2'}
+                color={'primary'}
+                fontWeight={'500'}
+                letterSpacing={'10px'}
+            mt={"80px"}>
+                Orders
+                <LocalShippingSharpIcon sx={{fontSize: '60px', ml: "20px", mb: '-15px'}}/>
+            </Typography>
+            {getColumns()}
+            <TablePaginationForm data={getAccordions()}/>
+        </Container>
     );
 };
 

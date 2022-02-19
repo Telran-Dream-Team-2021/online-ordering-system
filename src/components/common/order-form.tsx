@@ -7,7 +7,7 @@ import {
     MenuItem,
     FormControl,
     Button,
-    Grid, Paper, styled, Stack, TextField, Avatar, ButtonGroup
+    Grid, Paper, styled, Stack, TextField, Avatar, ButtonGroup, SxProps
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -40,6 +40,10 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
     const confirmationData = useRef<ConfirmationDataType>(initialConfirmationData);
     const userState = useSelector(userDataSelector)
     const products: ProductData[] = useSelector(catalogSelector);
+
+    //
+
+    //
     const handleStatusChange = (event: SelectChangeEvent) => {
         const oldValue = order.status
         const newOrder = {...order, status: event.target.value}
@@ -117,18 +121,18 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
         console.log(new Date(order.lastEditionDate)>=(new Date()))
         return [
             // { field: 'id', headerName: 'Id', width: 150, align: 'center', headerAlign: 'center' },
-            { field: 'photo', headerName: 'Photo', width: 150, align: 'center', headerAlign: 'center', renderCell: (params)=> <Avatar
+            { field: 'photo', headerName: 'Photo', flex: .5, align: 'center', headerAlign: 'center', renderCell: (params)=> <Avatar
                     alt="Remy Sharp"
                     src={params.value}
-                    sx={{ width: 56, height: 56 }}
+                    sx={{ width: 45, height: 45 }}
                 />},
-            { field: 'productName', headerName: 'Name', width: 150, align: 'center', headerAlign: 'center' },
-            { field: 'quantity', headerName: 'Qty', width: 150, align: 'center', headerAlign: 'center', renderCell: (params)=> {
+            { field: 'productName', headerName: 'Name', flex: 1.5, align: 'center', headerAlign: 'center' },
+            { field: 'quantity', headerName: 'Qty', flex: .6, align: 'center', headerAlign: 'center', renderCell: (params)=> {
                     return !userState.isAdmin && new Date(order.lastEditionDate)>=(new Date()) ?<Quantity item={params.value.item} setItemsStateFn={handleSetItemsState}/> : <div>{params.value.item.quantity}</div>
                 }},
-            { field: 'price', headerName: 'Price ($)', width: 150, align: 'center', headerAlign: 'center' },
-            { field: 'totalSum', headerName: 'Total ($)', width: 150, align: 'center', headerAlign: 'center' },
-            { field: 'removing', headerName: '', width: 50, align: 'center', headerAlign: 'center', renderCell: (params)=>{
+            { field: 'price', headerName: 'Price ($)', flex: .8, align: 'center', headerAlign: 'center' },
+            { field: 'totalSum', headerName: 'Total ($)', flex: .8, align: 'center', headerAlign: 'center' },
+            { field: 'removing', headerName: '', flex: .25, align: 'center', headerAlign: 'center', renderCell: (params)=>{
                 return !userState.isAdmin && new Date(order.lastEditionDate)>=(new Date())?
                     <Button onClick={() => onRemoveItem(params.value)}>
                         <CloseRoundedIcon/>
@@ -167,25 +171,39 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
         color: theme.palette.text.secondary,
     }));
 
+    const getBgColor = ()=>{
+        let res
+        switch (order.status) {
+            case statuses[statuses.created]: res = "#F2F5FF"; break;
+            case statuses[statuses.inProgress]: res = "#FFF5EC"; break;
+            case statuses[statuses.shipped]: res = "#E3FFFF"; break;
+            case statuses[statuses.delivered]: res = "#EAFFE8"; break;
+            case statuses[statuses.cancelled]: res = "#FFE5E8"; break;
+        }
+        return res
+    }
+    const styleSummary: ()=>SxProps = () => ({
+        backgroundColor: getBgColor()
+    })
+    const styleTypography: SxProps = {
+        color: 'primary.main',
+        fontWeight: 'bold',
+        textAlign: 'center'
+    }
+
     return (
-        <div >
             <Accordion sx={{mt: 2, p: 0}}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id={order.orderId.toString()}
+                    id={order.orderId as string}
+                    sx={styleSummary()}
                 >
                     <Grid container spacing={6}>
                         <Grid item md={3}>
-                            <Item>
-                                <Typography>{order.orderId}</Typography>
-                            </Item>
-                            <Item>
-                                <Typography fontSize={12}>Address: {order.deliveryAddress}</Typography>
-                            </Item>
+                            <Typography sx={styleTypography}>{order.orderId}</Typography>
+                            <Typography sx={{color: 'primary.main', fontSize: '12px'}}><b>Address:</b> {order.deliveryAddress}</Typography>
                         </Grid>
                         <Grid item md={2}>
-                            <Item>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <Stack component="form" noValidate>
                                         {userState.isAdmin ?
@@ -195,15 +213,13 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                                                 onChange={handleLastEditionDateChange}
                                                 renderInput={(params) => <TextField {...params} />}
                                             /> :
-                                            <div>{new Date(order.lastEditionDate).toLocaleDateString()}</div>
+                                            <Typography sx={styleTypography}>{new Date(order.lastEditionDate).toLocaleDateString()}</Typography>
                                         }
                                     </Stack>
-
                                 </LocalizationProvider>
-                            </Item>
                         </Grid>
-                        <Grid item md={2}>
-                            <Item>
+                        <Grid item md={2} >
+
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <Stack component="form" noValidate>
                                         {userState.isAdmin ?
@@ -213,33 +229,30 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                                                 onChange={handleDeliveryDateChange}
                                                 renderInput={(params) => <TextField {...params} />}
                                             /> :
-                                            <div>{new Date(order.deliveryDate).toLocaleDateString()}</div>
+                                            <Typography sx={styleTypography}>{new Date(order.deliveryDate).toLocaleDateString()}</Typography>
                                         }
                                     </Stack>
                                 </LocalizationProvider>
-                            </Item>
                         </Grid>
                         <Grid item md={3}>
-                            <Item>
-                                <FormControl sx={{ minWidth: 120 }}>
-                                    {userState.isAdmin ? <Select
-                                        defaultValue={order.status}
-                                        onChange={handleStatusChange}
-                                        sx={{height: 40, fontSize: 16}}
-                                    >
-                                        <MenuItem defaultChecked={true} value={order.status}>
-                                            {order.status}
-                                        </MenuItem>
-                                        {getStatuses()}
-                                    </Select> :
-                                    <div>{order.status}</div>
+                                    {userState.isAdmin ?
+                                        <FormControl sx={{ minWidth: 120, display: 'flex', justifyContent: 'center' }}>
+                                            <Select
+                                                defaultValue={order.status}
+                                                onChange={handleStatusChange}
+                                                sx={{height: 50, fontSize: 16}}
+                                            >
+                                                <MenuItem defaultChecked={true} value={order.status}>
+                                                    {order.status}
+                                                </MenuItem>
+                                                {getStatuses()}
+                                            </Select>
+                                        </FormControl>:
+                                            <Typography sx={styleTypography}>{order.status}</Typography>
                                     }
-
-                            </FormControl>
-                            </Item>
                         </Grid>
                         <Grid item md={2}>
-                            <Item>${getTotalSum(itemsState)}</Item>
+                            <Typography sx={styleTypography}>${getTotalSum(itemsState)}</Typography>
                         </Grid>
                     </Grid>
 
@@ -258,9 +271,8 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                             <Button onClick={()=>setItemsState(_.cloneDeep(order.orderItems))}>Reset</Button>
                         </ButtonGroup>}
                 </AccordionDetails>
+                <ConfirmDialog data={confirmationData.current} open={confirmOpen} />
             </Accordion>
-            <ConfirmDialog data={confirmationData.current} open={confirmOpen} />
-        </div>
     );
 }
 
