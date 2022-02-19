@@ -28,10 +28,10 @@ const SummaryCheckoutBlock: FC<{ makeOrderFn: () => void, userState: UserData, b
             <div style={{ padding:'12px', alignContent: "center", justifyContent: "center", height: '68px', }}>
                 <h2><span style={{color:'#9F5E39'}} >TOTAL:</span> ${getTotalSum(basket.basketItems)}</h2>
             </div>
-            <div style={{ wordWrap: 'break-word', padding:'12px', alignItems: "center", justifyContent: "center",height: '88px'}}>
-                <p>Address: <LocationOnIcon fontSize='medium'/> {userState.deliveryAddress}</p>
+            <div style={{wordWrap: 'break-word', padding:'12px', alignItems: "center", justifyContent: "center",height: '88px'}}>
+                <p style={{margin:'30px'}}>Address: <LocationOnIcon fontSize='medium'/> {userState.deliveryAddress}</p>
             </div>
-            <div style={{alignSelf: 'center', alignContent:"center",alignItems: "center", justifyContent: "center",height: '100px'}}>
+            <div style={{margin:'5px',alignSelf: 'center', alignContent:"center",alignItems: "center", justifyContent: "center",height: '100px'}}>
                 <Button disabled={!basket.basketItems.length} onClick={() => {
                     makeOrderFn();
                     handleState();
