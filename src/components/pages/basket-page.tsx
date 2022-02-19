@@ -93,7 +93,7 @@ const BasketPage = () => {
             </Box>
             {<UserDataModal onClose={async () => {
                 setFlStep2ModalOpen(false);
-                await makeOrder(basketData);
+                // await makeOrder(basketData);
             }} open={flStep2ModalOpen}/>}
             <CustomizedSnackbars message={`Order has been created!`} open={open} handleState={handleState}/>
         </Box>
