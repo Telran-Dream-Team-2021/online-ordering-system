@@ -2,11 +2,9 @@ import React, {FC} from 'react';
 import {DataGrid, GridColumns, GridRowsProp, GridActionsCellItem, GridRowParams, GridColDef} from "@mui/x-data-grid";
 import {Avatar} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {basketSelector, catalogSelector} from "../../redux/store";
 import {BasketData} from "../../models/basket-data";
 import Quantity from "../common/quantity-form";
 import {updateBasketAction} from "../../redux/actions";
-import {basket} from "../../config/services-config";
 import {ProductData} from "../../models/product-data";
 
 const MainGrid: FC<{basketData: BasketData, catalogData: ProductData[]}> = (props) => {
@@ -48,9 +46,9 @@ const MainGrid: FC<{basketData: BasketData, catalogData: ProductData[]}> = (prop
     ];
 
     return (
-        <div style={{height: 300, width: '100%'}}>
-            <DataGrid rows={getRows(basketData)}  columns={columns}
-                      pageSize={5}/>
+        <div style={{height: '100%', minHeight:'309px', width: '100%'}}>
+            <DataGrid autoHeight rows={getRows(basketData)}  columns={columns}
+                      pageSize={15}/>
         </div>
     );
 };

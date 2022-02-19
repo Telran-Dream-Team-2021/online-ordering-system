@@ -52,10 +52,11 @@ const BasketPage = () => {
                 gap:0,
                 alignSelf:'center',
                 padding: '0',
+                margin:'5px',
                 width: '85%',
                 height: '140px',
                 '& > .MuiBox-root > .MuiBox-root': {
-                    p: 1,
+                    p: 0,
                     borderRadius: 2,
                     fontSize: '0.875rem',
                     fontWeight: '700',

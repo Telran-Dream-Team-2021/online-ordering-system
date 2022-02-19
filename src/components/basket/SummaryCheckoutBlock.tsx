@@ -15,7 +15,6 @@ const SummaryCheckoutBlock: FC<{ makeOrderFn: () => void, userState: UserData, b
 
     return (
         <div style={{
-            border: '0.5px secondary groove',
             borderRadius: '3px',
             alignSelf: 'center',
             display: 'flex',
