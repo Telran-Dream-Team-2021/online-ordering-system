@@ -78,8 +78,8 @@ const OrdersPage = () => {
     }
 
     return (
-        <div>
-            <h1>OrdersPage</h1>
+        <div style={{alignSelf: 'center', alignItems:'center', justifyContent:'center'}}>
+            <h1 style={{textAlign:'center'}}>OrdersPage</h1>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
                 '& .Mui-error': { bgcolor: '#FF9494', color: 'white', width: '100%', height: '100%' } }}>
                 {getColumns()}
