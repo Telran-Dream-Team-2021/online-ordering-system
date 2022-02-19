@@ -14,16 +14,33 @@ const SummaryCheckoutBlock: FC<{ makeOrderFn: () => void, userState: UserData, b
     }
 
     return (
-        <div style={{ border: '0.5px solid gray', borderRadius:'3px', height: 300, width: '100%', alignContent: "center", justifyContent: "center"}}>
-            <h2>TOTAL: ${getTotalSum(basket.basketItems)}</h2>
-            <p>Address: <LocationOnIcon fontSize='medium'/> {userState.deliveryAddress}</p>
-            <Button disabled={!basket.basketItems.length} onClick={() => {
-                makeOrderFn();
-                handleState();
-            }} size="large" variant="contained"
-                    style={{maxWidth: '150px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
-                CREATE ORDER
-            </Button>
+        <div style={{
+            border: '0.5px secondary groove',
+            borderRadius: '3px',
+            alignSelf: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            alignContent: "center",
+            alignItems:'center',
+            justifyContent: "center",
+
+        }}>
+            <div style={{ padding:'12px', alignContent: "center", justifyContent: "center", height: '68px', }}>
+                <h2><span style={{color:'#9F5E39'}} >TOTAL:</span> ${getTotalSum(basket.basketItems)}</h2>
+            </div>
+            <div style={{ wordWrap: 'break-word', padding:'12px', alignItems: "center", justifyContent: "center",height: '88px'}}>
+                <p>Address: <LocationOnIcon fontSize='medium'/> {userState.deliveryAddress}</p>
+            </div>
+            <div style={{alignSelf: 'center', alignContent:"center",alignItems: "center", justifyContent: "center",height: '100px'}}>
+                <Button disabled={!basket.basketItems.length} onClick={() => {
+                    makeOrderFn();
+                    handleState();
+                }} size="large" variant="contained"
+                        style={{justifyContent: "center", alignItems:'center', width: '320px', height:'97px'}}>
+                    CREATE ORDER
+                </Button>
+            </div>
         </div>
     );
 };

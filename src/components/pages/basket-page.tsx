@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import MainGrid from "../basket/MainGrid";
 import SummaryCheckoutBlock from "../basket/SummaryCheckoutBlock";
 import {Box, Button, Grid, Paper, styled} from "@mui/material";
@@ -8,7 +7,6 @@ import {basketSelector, catalogSelector, userDataSelector} from "../../redux/sto
 import {BasketData} from "../../models/basket-data";
 import {addOrderAction, removeBasketAction, setBasket, setErrorCode, setOrders} from "../../redux/actions";
 import {UserData} from "../../models/common/user-data";
-import {basket, orders} from "../../config/services-config";
 import UserDataModal from "../common/user-data-modal";
 import CustomizedSnackbars from "../common/popup-info";
 import {PATH_ORDERS} from "../../config/routes-config";
@@ -19,7 +17,6 @@ const BasketPage = () => {
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
-        padding: theme.spacing(1),
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
@@ -54,6 +51,7 @@ const BasketPage = () => {
             sx={{
                 gap:0,
                 alignSelf:'center',
+                padding: '0',
                 width: '85%',
                 height: '140px',
                 '& > .MuiBox-root > .MuiBox-root': {
@@ -100,6 +98,4 @@ const BasketPage = () => {
         </Box>
     );
 };
-// , bgcolor: 'secondary.main'
-// , bgcolor: 'beige'
 export default BasketPage;
