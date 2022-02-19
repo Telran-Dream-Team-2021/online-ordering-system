@@ -21,7 +21,7 @@ function getInfo(product: ProductData): string[] {
         `Category   : ${product.categoryName}`,
         `Price      : ${product.price}`,
         `Unit : ${product.unitOfMeasurement}`,
-        `isActive : ${product.isActive}`,
+        `Description : ${product.description}`,
     ];
 }
 
@@ -77,7 +77,6 @@ const ListingPage: FC = () => {
                             }}
                         />)
                     }
-
                     return actionItems;
                 }
             }

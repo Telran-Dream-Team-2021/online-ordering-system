@@ -37,24 +37,28 @@ const InfoModal: React.FC<ModalProps> = (props) => {
         aria-describedby="modal-modal-description"
     >
         <Box sx={style}>
-            <Button sx={{float: 'right'}} onClick={onClose}><CloseIcon/></Button>
+            <Button sx={{float: 'right'}}
+                    onClick={onClose}>
+                <CloseIcon/>
+            </Button>
             <Typography id="modal-modal-title" variant="h6" component="h2">
                 {title}
             </Typography>
             <Box id="modal-modal-description" sx={{mt: 2}}>
-                <img src={imageUrl} height={350}/>
+                <img src={imageUrl} height={250}/>
                 <List>
                     {message.map((e, index) => <ListItem key={index}>{e}</ListItem>)}
                 </List>
             </Box>
 
-            {!!addRemove &&  !!userData.username && !userData.isAdmin && (addRemove.flag ?
+            {!!addRemove && !!userData.username && !userData.isAdmin && (addRemove.flag ?
                 <Box><Button onClick={() => {
                     addRemove.addRemoveFns.remove()
                     addRemove.setFlag(!addRemove.flag)
                 }}>
                     <RemoveFromShoppingCart/>
-                </Button></Box> :
+                </Button></Box>
+                :
                 <Box><Button onClick={() => {
                     addRemove.addRemoveFns.add()
                     addRemove.setFlag(!addRemove.flag)
