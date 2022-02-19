@@ -52,24 +52,24 @@ const MainGrid: FC<{ basketData: BasketData, catalogData: ProductData[] }> = (pr
 
     const columns: GridColumns = [
         {
-            field: 'col0', headerName: '', width: 150, renderCell: (params) => {
+            field: 'col0', headerName: '', flex: 1, minWidth: 70, renderCell: (params) => {
                 return <Avatar
                     alt=""
                     src={params.value}
                     sx={{width: 56, height: 56}}/>
             }
         },
-        {field: 'col1', headerName: 'Product', width: 150},
+        {field: 'col1', headerName: 'Product', flex: 2,minWidth: 150,},
         {
-            field: 'col2', headerName: 'Qty', width: 150,
+            field: 'col2', headerName: 'Qty', flex: 1,minWidth: 50,
             renderCell: (params) => <Quantity item={params.value} setItemsStateFn={() => {
                 dispatch(updateBasketAction(basketData))
             }}/>
         },
-        {field: 'col3', headerName: 'Price per unit', width: 150},
-        {field: 'col4', headerName: 'Price', width: 100},
+        {field: 'col3', headerName: 'Price per unit', flex: 1},
+        {field: 'col4', headerName: 'Price', flex: 1},
         {
-            field: 'actions', type: 'actions', width: 70, getActions: (params: GridRowParams) => {
+            field: 'actions', type: 'actions', flex: 1, getActions: (params: GridRowParams) => {
                 const actionItems = [];
                 actionItems.push(<GridActionsCellItem icon={<Delete/>} label='Remove'
                                                       onClick={() => showRemoveConfirmation(params.id as number)}/>)
