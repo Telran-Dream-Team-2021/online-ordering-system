@@ -1,8 +1,10 @@
 import React, {FC} from 'react';
 import {Box, Button, List, ListItem, Modal, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import {AddToShoppingCart, RemoveFromShoppingCart} from "../pages/listing-page";
+import {UserData} from "../../models/common/user-data";
+import {useSelector} from "react-redux";
+import {userDataSelector} from "../../redux/store";
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -26,6 +28,7 @@ export type ModalProps = {
 }
 
 const InfoModal: React.FC<ModalProps> = (props) => {
+    const userData: UserData = useSelector(userDataSelector);
     const {open, onClose, title, imageUrl, message, addRemove} = props
     return <Modal
         open={open}
@@ -38,25 +41,25 @@ const InfoModal: React.FC<ModalProps> = (props) => {
             <Typography id="modal-modal-title" variant="h6" component="h2">
                 {title}
             </Typography>
-            <Box id="modal-modal-description" sx={{ mt: 2 }}>
+            <Box id="modal-modal-description" sx={{mt: 2}}>
                 <img src={imageUrl} height={350}/>
                 <List>
                     {message.map((e, index) => <ListItem key={index}>{e}</ListItem>)}
                 </List>
             </Box>
 
-            {!!addRemove&&(addRemove.flag?
-                <Box><Button onClick={()=>{
+            {!!addRemove &&  !!userData.username && !userData.isAdmin && (addRemove.flag ?
+                <Box><Button onClick={() => {
                     addRemove.addRemoveFns.remove()
                     addRemove.setFlag(!addRemove.flag)
                 }}>
-                    <RemoveShoppingCartIcon/>
-                </Button></Box>:
-                <Box><Button onClick={()=>{
+                    <RemoveFromShoppingCart/>
+                </Button></Box> :
+                <Box><Button onClick={() => {
                     addRemove.addRemoveFns.add()
                     addRemove.setFlag(!addRemove.flag)
                 }}>
-                    <AddShoppingCartIcon/>
+                    <AddToShoppingCart/>
                 </Button></Box>)}
         </Box>
     </Modal>

@@ -94,8 +94,6 @@ const ListingPage: FC = () => {
             dispatch(removeBasketLineAction(basket, id));
             console.log(basket);
         } else {
-            //на тот случай, когда корзины еще нет, насильно записываем в нее юзер айди, чтобы она успешно создалась
-            // dispatch(setBasket({...basket, userId: userData.username}));
             dispatch(addBasketItemAction(userData.username, product!));
             console.log(basket)
         }
@@ -140,7 +138,7 @@ const ListingPage: FC = () => {
 
 };
 
-const AddToShoppingCart = () => {
+export const AddToShoppingCart = () => {
     return (
         <Tooltip
             title="Add to the shopping cart"
@@ -149,7 +147,7 @@ const AddToShoppingCart = () => {
         </Tooltip>
     );
 };
-const RemoveFromShoppingCart = () => {
+export const RemoveFromShoppingCart = () => {
     return (
         <Tooltip
             title="Remove from the shopping cart"
@@ -169,7 +167,3 @@ const DetailedInfo = () => {
 };
 
 export default ListingPage;
-
-
-
-
