@@ -32,10 +32,10 @@ const ConfirmDialog: React.FC<{data: ConfirmationDataType, open: boolean}> = (pr
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => data.handler(false)}>
-                    Disagree
+                    Cancel
                 </Button>
                 <Button sx={{color: 'error.main'}} onClick={() => data.handler(true)} autoFocus>
-                    Agree
+                    Confirm
                 </Button>
             </DialogActions>
         </Dialog>
