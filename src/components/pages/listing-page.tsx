@@ -1,4 +1,4 @@
-import {Avatar, Box, Button, Paper, Tooltip} from '@mui/material';
+import {Avatar, Box, Paper, Tooltip} from '@mui/material';
 import React, {FC, useMemo, useRef, useState} from 'react';
 import {DataGrid, GridActionsCellItem, GridColumns, GridRowParams, GridRowsProp} from "@mui/x-data-grid";
 import {ProductData} from "../../models/product-data";
