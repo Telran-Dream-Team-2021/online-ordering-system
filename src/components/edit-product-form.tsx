@@ -103,7 +103,7 @@ const EditProductForm: FC<EditProductFormType> = (props) => {
         setFlIsSnackBarOpen(false);
     }
 
-    function handleNewProductSelect(event: any) {
+    function handleNewProductSelect() {
         setFlIsSnackBarOpen(false);
         setProductState(dummyProduct)
     }

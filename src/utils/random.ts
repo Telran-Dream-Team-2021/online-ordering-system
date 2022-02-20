@@ -1,6 +1,6 @@
 import {OrderData, statuses} from "../models/order-data";
 import {ItemData} from "../models/item-data";
-import {getUuidByOrder, getUuidByProduct, getUuidByUser} from "./uuid";
+import {getUuidByProduct, getUuidByUser} from "./uuid";
 
 export const getRandomOrder: ()=>OrderData = ()=>{
     const order: OrderData = {

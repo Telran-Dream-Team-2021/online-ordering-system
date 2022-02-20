@@ -1,5 +1,4 @@
 import {Observable} from "rxjs";
-import {BasketData} from "../models/basket-data";
 
 export default interface DataProvider<T> {
     /**

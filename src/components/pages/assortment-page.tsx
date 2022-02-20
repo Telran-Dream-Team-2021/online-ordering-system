@@ -37,8 +37,8 @@ const AssortmentPage: FC = () => {
                 renderCell: params => {
                     return <Avatar
                         src={params.value}
-                        sx={{ width: 48, height: 48 }}
-                        variant={'rounded'}
+                        sx={{ width: 40, height: 40 }}
+                        // variant={'rounded'}
                     />
                 }
             },

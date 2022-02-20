@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React from 'react';
 import {Box, Button, List, ListItem, Modal, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import {AddToShoppingCart, RemoveFromShoppingCart} from "../pages/listing-page";
@@ -45,7 +45,7 @@ const InfoModal: React.FC<ModalProps> = (props) => {
                 {title}
             </Typography>
             <Box id="modal-modal-description" sx={{mt: 2}}>
-                <img src={imageUrl} height={250}/>
+                <img src={imageUrl} height={250} alt={title}/>
                 <List>
                     {message.map((e, index) => <ListItem key={index}>{e}</ListItem>)}
                 </List>
