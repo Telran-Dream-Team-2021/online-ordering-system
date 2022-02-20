@@ -118,7 +118,6 @@ const App: FC = () => {
                     <Route key={r.path} path={r.path} element={r.element}/>)}
             </Route>
         });
-
     }
 
     useEffect(() => {
