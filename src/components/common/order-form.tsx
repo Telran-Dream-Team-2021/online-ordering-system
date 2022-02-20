@@ -28,9 +28,11 @@ import Quantity from "./quantity-form";
 import {ItemData} from "../../models/item-data";
 import _ from 'lodash'
 import {catalogSelector, userDataSelector} from "../../redux/store";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {ProductData} from "../../models/product-data";
 import {getTotalSum} from "../../utils/calculatign";
+import {updateOrderAction} from "../../redux/actions";
+import BackupOutlinedIcon from '@mui/icons-material/BackupOutlined';
 
 
 const OrderForm: FC<{ order: OrderData }> = (props) =>{
@@ -40,7 +42,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
     const confirmationData = useRef<ConfirmationDataType>(initialConfirmationData);
     const userState = useSelector(userDataSelector)
     const products: ProductData[] = useSelector(catalogSelector);
-
+    const dispatch = useDispatch()
     //
 
     //
@@ -75,7 +77,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
 
         confirmationData.current.handler = (status)=> {
             if (status){
-                orders.updateOrder!(newOrder.orderId, newOrder);
+                dispatch(updateOrderAction(newOrder.orderId, newOrder))
                 setItemsState(_.cloneDeep(newOrder.orderItems))
             }
             setConfirmOpen(false);
@@ -84,17 +86,8 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
     }
 
     const onRemoveItem =(item: ItemData)=>{
-        confirmationData.current.title="Remove item";
-        confirmationData.current.message = `Do you wanna remove ${item.productId}?`;
         const newOrder: OrderData = {...order, orderItems: itemsState.filter(i=>i.productId!==item.productId)}
-        confirmationData.current.handler = (status)=> {
-            if (status){
-                orders.updateOrder(newOrder.orderId, newOrder).then()
-                setItemsState(_.cloneDeep(newOrder.orderItems))
-            }
-            setConfirmOpen(false);
-        }
-        setConfirmOpen(true);
+        setItemsState(_.cloneDeep(newOrder.orderItems))
     }
 
     const onEditQuantityOfItems = (items: ItemData[])=>{
@@ -266,10 +259,35 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
 
                     </div>
                     {!_.isEqual(itemsState, order.orderItems) &&
-                        <ButtonGroup>
+                        <ButtonGroup sx={{m: '10px'}} variant={"text"}>
                             <Button onClick={()=>onEditQuantityOfItems(itemsState)}>Update order</Button>
                             <Button onClick={()=>setItemsState(_.cloneDeep(order.orderItems))}>Reset</Button>
                         </ButtonGroup>}
+                    {userState.isAdmin?<div></div>:
+                        <div>
+                            {order.status != statuses[statuses.cancelled] ? <Button
+                                    disabled={(new Date()) > new Date(order.lastEditionDate)}
+                                    sx={{float: "right", m: "15px", fontWeight: '600', p: "10px"}}
+                                    style={{borderRadius: 5, backgroundColor: "#FFE5E8"}}
+                                    endIcon={<CloseRoundedIcon/>}
+                                    onClick={() => {
+                                        const newOrder = {...order, status: statuses[statuses.cancelled]}
+                                        onEdit(order.status, statuses[statuses.cancelled], newOrder)
+                                    }}
+                                >Cancel order</Button> :
+                                <Button
+                                    disabled={(new Date()) > new Date(order.lastEditionDate)}
+                                    sx={{float: "right", m: "15px", fontWeight: '600', p: "10px"}}
+                                    style={{borderRadius: 5, backgroundColor: "#EAFFE8"}}
+                                    endIcon={<BackupOutlinedIcon/>}
+                                    onClick={() => {
+                                        const newOrder = {...order, status: statuses[statuses.created]}
+                                        onEdit(order.status, statuses[statuses.created], newOrder)
+                                    }}
+                                >Return order</Button>
+                            }
+                        </div>
+                    }
                 </AccordionDetails>
                 <ConfirmDialog data={confirmationData.current} open={confirmOpen} />
             </Accordion>

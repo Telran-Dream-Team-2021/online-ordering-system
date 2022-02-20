@@ -93,3 +93,7 @@ export const loginAction = function (loginData: LoginData): (dispatch: any) => v
 export const addOrderAction = function(basket: BasketData, userData: UserData): (dispatch: any) => void {
     return action.bind(null, orders.addOrder.bind(orders, basket, userData));
 }
+
+export const updateOrderAction = function(id: string | number, newOrder: OrderData): (dispatch: any) => void {
+    return action.bind(null, orders.updateOrder.bind(orders, id, newOrder));
+}

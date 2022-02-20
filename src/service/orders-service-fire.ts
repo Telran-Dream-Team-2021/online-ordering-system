@@ -80,12 +80,17 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
 
     async update(id: string, newEntity: OrderData): Promise<OrderData> {
         const oldOrderSnapshot = await this.get(id) as OrderData
-        try{
-            await setDoc(doc(this.fireCollection, id), this.convertOrder(newEntity))
-        } catch (e) {
-            console.log(e)
-            throw ErrorCode.AUTH_ERROR
+        if(newEntity.orderItems.length>0){
+            try{
+                await setDoc(doc(this.fireCollection, id), this.convertOrder(newEntity))
+            } catch (e) {
+                console.log(e)
+                throw ErrorCode.AUTH_ERROR
+            }
+        } else {
+            return this.remove(id)
         }
+
         return oldOrderSnapshot
     }
 
