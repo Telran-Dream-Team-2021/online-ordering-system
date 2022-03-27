@@ -7,7 +7,7 @@ import {
     MenuItem,
     FormControl,
     Button,
-    Grid, Paper, styled, Stack, TextField, Avatar, ButtonGroup, SxProps
+    Grid, Stack, TextField, Avatar, ButtonGroup, SxProps
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -43,9 +43,8 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
     const userState = useSelector(userDataSelector)
     const products: ProductData[] = useSelector(catalogSelector);
     const dispatch = useDispatch()
-    //
 
-    //
+
     const handleStatusChange = (event: SelectChangeEvent) => {
         const oldValue = order.status
         const newOrder = {...order, status: event.target.value}
@@ -131,7 +130,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                         <CloseRoundedIcon/>
                     </Button>
                         :
-                    <div></div>
+                    ""
                 }}
         ]
     }
@@ -156,13 +155,6 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
             <MenuItem key={status} value={status}>{status}</MenuItem>
         ))
     }
-    const Item = styled(Paper)(({ theme }) => ({
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-        ...theme.typography.body2,
-        padding: theme.spacing(1),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    }));
 
     const getBgColor = ()=>{
         let res
@@ -205,7 +197,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                                                 value={order.lastEditionDate}
                                                 onChange={handleLastEditionDateChange}
                                                 renderInput={(params) => <TextField {...params} />}
-                                            /> :
+                                             /> :
                                             <Typography sx={styleTypography}>{new Date(order.lastEditionDate).toLocaleDateString()}</Typography>
                                         }
                                     </Stack>
@@ -263,7 +255,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                             <Button onClick={()=>onEditQuantityOfItems(itemsState)}>Update order</Button>
                             <Button onClick={()=>setItemsState(_.cloneDeep(order.orderItems))}>Reset</Button>
                         </ButtonGroup>}
-                    {userState.isAdmin?<div></div>:
+                    {userState.isAdmin?"":
                         <div>
                             {order.status != statuses[statuses.cancelled] ? <Button
                                     disabled={(new Date()) > new Date(order.lastEditionDate)}

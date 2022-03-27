@@ -1,11 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
-import AddOrderForm from "../add-order-form";
-import {addOrderAction, setOrders} from "../../redux/actions";
+import React, {useEffect} from 'react';
+import {setOrders} from "../../redux/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {orders} from "../../config/services-config";
 import {Subscription} from "rxjs";
 import {ordersSelector, userDataSelector} from "../../redux/store";
-import {Box, Container, Grid, Paper, styled, SxProps, Typography} from "@mui/material";
+import {Container, Grid, SxProps, Typography} from "@mui/material";
 import OrderForm from "../common/order-form";
 import LocalShippingSharpIcon from '@mui/icons-material/LocalShippingSharp';
 import TablePaginationForm from "../common/table-pagination-form";
@@ -22,12 +21,9 @@ const OrdersPage = () => {
             return orders.getAllOrders(!userState.isAdmin? userState.username: undefined).subscribe({
 
                 next(arr) {
-                    // handleError(ErrorCode.NO_ERROR);
-
                     dispatch(setOrders(arr))
                 },
-                error(err) {
-                    // handleError(err);
+                error() {
                     setTimeout(() => { subscription = getData() }, 2000);
                 }
 

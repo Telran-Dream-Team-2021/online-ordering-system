@@ -9,14 +9,12 @@ import {
     collection,
     doc,
     setDoc,
-    getDoc,
     deleteDoc,
     query,
     where
 } from "firebase/firestore";
 import ErrorCode from "../models/common/error-code";
 import {getUuidByOrder} from "../utils/uuid";
-import {UserData} from "../models/common/user-data";
 
 export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
     fireCollection: CollectionReference;
@@ -30,7 +28,6 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
     }
 
     async add(entity: OrderData): Promise<OrderData> {
-        console.log('add')
         entity.orderId = getUuidByOrder()
         console.log(entity)
         try{
@@ -46,8 +43,8 @@ export default class OrdersServiceFire extends AbstractDataProvider<OrderData> {
     convertOrder(order: OrderData){
         return {...order,
             orderId: order.orderId,
-            deliveryDate: typeof order.deliveryDate !== "string" ? order.deliveryDate.toISOString(): order.deliveryDate,
-            lastEditionDate: typeof order.lastEditionDate !== "string" ? order.lastEditionDate.toISOString(): order.lastEditionDate
+            deliveryDate: order.deliveryDate.toISOString(),
+            lastEditionDate: order.lastEditionDate.toISOString()
         }
     }
 
