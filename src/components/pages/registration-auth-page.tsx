@@ -21,7 +21,7 @@ const RegistrationAuthPage = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     useEffect(() => {
-        if (userData.username) {
+        if (userData.uid) {
             navigate(PATH_LISTING);
         }
     }, [userData]);// eslint-disable-line react-hooks/exhaustive-deps

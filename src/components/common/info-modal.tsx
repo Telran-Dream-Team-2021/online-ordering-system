@@ -51,7 +51,7 @@ const InfoModal: React.FC<ModalProps> = (props) => {
                 </List>
             </Box>
 
-            {!!addRemove && !!userData.username && !userData.isAdmin && (addRemove.flag ?
+            {!!addRemove && !!userData.uid && !userData.isAdmin && (addRemove.flag ?
                 <Box><Button onClick={() => {
                     addRemove.addRemoveFns.remove()
                     addRemove.setFlag(!addRemove.flag)

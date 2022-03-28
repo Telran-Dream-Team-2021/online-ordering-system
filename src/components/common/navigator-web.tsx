@@ -54,7 +54,7 @@ const NavigatorWeb: FC<{ items: RouteType[], logoutFn?: () => void }> = (props) 
         </Grid>
 
         <Grid item xs={2} sx={{textAlign: 'end'}}>
-            {(!!userData.username && !userData.isAdmin)
+            {(!!userData.uid && !userData.isAdmin)
                 && <IconButton aria-label="cart" onClick={() => navigate(!props.logoutFn ? PATH_LOGIN : PATH_BASKET)}>
                     <Badge color="secondary" badgeContent={basket.basketItems.length}>
                         <ShoppingCartIcon/>

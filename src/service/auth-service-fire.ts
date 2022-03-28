@@ -60,7 +60,7 @@ export default class AuthServiceFire implements AuthService {
                     console.log(user);
                     if (!!user) {
                         return {
-                            username: user.uid,
+                            uid: user.uid,
                             displayName: user.displayName ?? user.email!,
                             isAdmin: isAdmin,
                             email: user.email || '',
