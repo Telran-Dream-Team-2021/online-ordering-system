@@ -27,7 +27,7 @@ function getRelevantRoutes(userData: UserData): RouteType[] {
             return true;
         }
 
-        if (!userData.username) {
+        if (!userData.uid) {
             return route.authenticated === false;
         } else {
             let res = route.authenticated !== false;
@@ -66,6 +66,7 @@ const App: FC = () => {
             subscriptionUserData && subscriptionUserData.unsubscribe();
             return userDataProcessor.getUserData().subscribe({
                 next(ud) {
+                    console.log(ud);
                     dispatch(setErrorCode(ErrorCode.NO_ERROR));
                     dispatch(setUserData(ud));
                 },
@@ -81,7 +82,7 @@ const App: FC = () => {
     useEffect(() => {
         let subscriptionBasketData: any
         function getBasketData(): Subscription {
-            return basket.getBasket(userData.username).subscribe({
+            return basket.getBasket(userData.uid).subscribe({
                 next(bd) {
                     console.log("basket next");
                     console.log(bd)
@@ -96,14 +97,14 @@ const App: FC = () => {
             });
 
         }
-        if (!!userData.username) {
+        if (!!userData.uid) {
             subscriptionBasketData = getBasketData();
             return () => {
                 console.log('unsubscribe')
                 return subscriptionBasketData.unsubscribe();
             }
         }
-    }, [userData.username]);// eslint-disable-line react-hooks/exhaustive-deps
+    }, [userData.uid]);// eslint-disable-line react-hooks/exhaustive-deps
 
     async function logout() {
          dispatch(logoutAction());
@@ -147,7 +148,7 @@ const App: FC = () => {
         {errorCode === ErrorCode.SERVER_UNAVAILABLE ? <Alert severity='error'>Server is unavailable</Alert> :
             <BrowserRouter>
                 {<NavigatorResponsive items={relevantRoutes} isAdmin={userData.isAdmin}
-                                     logoutFn={!!userData.username ? logout : undefined}/>}
+                                     logoutFn={!!userData.uid ? logout : undefined}/>}
                 <Routes>
                     {getRoutes()}
                     {!!navigateTo && <Route path={'*'} element={<Navigate to={navigateTo}/>}/>}

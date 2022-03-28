@@ -30,7 +30,7 @@ export default class UserServiceFire extends AbstractDataProvider<UserData> {
 
     async add(entity: UserData): Promise<UserData> {
         try {
-            const id = entity.username;
+            const id: string = entity.uid as string;
             await setDoc(doc(this.fireCollection, id), entity);
 
             return entity;

@@ -1,5 +1,5 @@
 import {Dispatch, PayloadAction} from '@reduxjs/toolkit'
-import {UserData} from "../models/common/user-data";
+import {nonAuthorizedUser, UserData} from "../models/common/user-data";
 import ErrorCode from "../models/common/error-code";
 import {ProductData} from "../models/product-data";
 import {basket, catalog, userDataProcessor, orders} from "../config/services-config";
@@ -33,7 +33,6 @@ export const setOrders: ActionType<OrderData[]> = orders => (
 )
 
 async function action(handlerFn: any, dispatch: Dispatch) {
-    console.log("action")
     try {
         await handlerFn();
         dispatch(setErrorCode(ErrorCode.NO_ERROR));
@@ -84,7 +83,12 @@ export const updateUserDataAction = function (userData: UserData): (dispatch: an
     }
 }
 export const logoutAction = function (): (dispatch: any) => void {
-    return action.bind(null, userDataProcessor.logout.bind(userDataProcessor));
+    return async dispatch => {
+        const res: boolean = await userDataProcessor.logout();
+        if (res) {
+            dispatch(setUserData(nonAuthorizedUser));
+        }
+    }
 }
 export const loginAction = function (loginData: LoginData): (dispatch: any) => void {
     return action.bind(null, userDataProcessor.login.bind(userDataProcessor, loginData));

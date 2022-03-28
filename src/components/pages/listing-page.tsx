@@ -85,7 +85,7 @@ const ListingPage: FC = () => {
 
 
     function badgeHandler(id: any) {
-        if (!userData.username) {
+        if (!userData.uid) {
             setFlNavigate(true);
         }
         const product = products.find(e => e.productId === +id);
@@ -93,7 +93,7 @@ const ListingPage: FC = () => {
             dispatch(removeBasketLineAction(basket, id));
             console.log(basket);
         } else {
-            dispatch(addBasketItemAction(userData.username, product!));
+            dispatch(addBasketItemAction(userData.uid, product!));
             console.log(basket)
         }
     }
@@ -106,7 +106,7 @@ const ListingPage: FC = () => {
             setFlag(isItemInCart(+id))
             setAddRemoveFns({
                     remove: ()=>dispatch(removeBasketLineAction(basket, +id)),
-                    add: ()=>dispatch(addBasketItemAction(userData.username, product))
+                    add: ()=>dispatch(addBasketItemAction(userData.uid, product))
                 })
         } else {
             textModal.current = ["Not found"];

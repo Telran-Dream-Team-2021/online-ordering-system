@@ -46,7 +46,7 @@ export default class Basket {
         return this.basketService.update(basket.userId, basket);
     }
 
-    getBasket(userId: string): Observable<BasketData> {
+    getBasket(userId: string | number): Observable<BasketData> {
         return this.basketService.getFirst(userId)
     }
 

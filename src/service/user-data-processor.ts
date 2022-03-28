@@ -17,8 +17,8 @@ export default class UserDataProcessor {
     getUserData(): Observable<UserData> {
         return this.authService.getUserData()
             .pipe(mergeMap(userData => {
-                if (!!userData.username) {
-                    return from(this.userService.get(userData.username) as Promise<UserData>)
+                if (!!userData.uid) {
+                    return from(this.userService.get(userData.uid) as Promise<UserData>)
                         .pipe(map(user => {
                             return UserDataProcessor.mergeUserData(userData, user);
                         }));
@@ -29,13 +29,13 @@ export default class UserDataProcessor {
     }
 
     async updateData(newUserData: UserData): Promise<UserData> {
-        const user: any = this.userService.get(newUserData.username);
+        const user: any = this.userService.get(newUserData.uid);
         let userData: UserData;
 
         if (!user) {
             userData = await this.userService.add(newUserData);
         } else {
-            userData = await this.userService.update(newUserData.username, newUserData);
+            userData = await this.userService.update(newUserData.uid, newUserData);
         }
 
         return UserDataProcessor.mergeUserData(userData, user);

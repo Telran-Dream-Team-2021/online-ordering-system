@@ -18,7 +18,7 @@ const OrdersPage = () => {
         subscription = getData();
         function getData(): Subscription {
             subscription && subscription.unsubscribe();
-            return orders.getAllOrders(!userState.isAdmin? userState.username: undefined).subscribe({
+            return orders.getAllOrders(!userState.isAdmin? userState.uid: undefined).subscribe({
 
                 next(arr) {
                     dispatch(setOrders(arr))

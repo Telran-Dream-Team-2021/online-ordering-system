@@ -1,5 +1,5 @@
 export type UserData = {
-    username: string;
+    uid: string | number;
     isAdmin: boolean;
     displayName: string;
     deliveryAddress?: string;
@@ -7,13 +7,13 @@ export type UserData = {
 }
 export const DISPLAY_NAME_ERROR = 'error'
 export const nonAuthorizedUser: UserData = {
-    username: '',
+    uid: '',
     isAdmin: false,
     displayName: '',
     email: '',
 };
 export const unavailableServiceUser: UserData = {
-    username: 'error', isAdmin: false,
+    uid: 'error', isAdmin: false,
     displayName: DISPLAY_NAME_ERROR,
     email: '',
 }

@@ -108,7 +108,7 @@ const NavigatorDrawer: FC<{ items: RouteType[], logoutFn?: () => void }> = (prop
             >
                 {label}
             </Typography>
-            {(!!userData.username && !userData.isAdmin)
+            {(!!userData.uid && !userData.isAdmin)
                 && <IconButton aria-label="cart" onClick={() => navigate(!props.logoutFn ? PATH_LOGIN : PATH_BASKET)}>
                 <Badge color="secondary" badgeContent={basket.basketItems.length}>
                     <ShoppingCartIcon/>
