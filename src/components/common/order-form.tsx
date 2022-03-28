@@ -197,7 +197,7 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
                                                 value={order.lastEditionDate}
                                                 onChange={handleLastEditionDateChange}
                                                 renderInput={(params) => <TextField {...params} required/>}
-                                               /> :
+                                                 /> :
                                             <Typography sx={styleTypography}>{new Date(order.lastEditionDate).toLocaleDateString()}</Typography>
                                         }
                                     </Stack>
