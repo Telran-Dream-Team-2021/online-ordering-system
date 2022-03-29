@@ -48,7 +48,7 @@ export default abstract class AbstractDataProvider<T> implements DataProvider<T>
         const response = await fetch(url, queryParams);
 
         if (response.status === 401 || response.status === 403) {
-            localStorage.removeItem(AUTH_TOKEN);
+            localStorage.clear();
             throw ErrorCode.AUTH_ERROR;
         }
 
