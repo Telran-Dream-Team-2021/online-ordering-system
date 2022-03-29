@@ -37,8 +37,11 @@ async function action(handlerFn: any, dispatch: Dispatch) {
         await handlerFn();
         dispatch(setErrorCode(ErrorCode.NO_ERROR));
     } catch (error: any) {
-        console.log(error)
         dispatch(setErrorCode(error));
+
+        if (error === ErrorCode.AUTH_ERROR) {
+            dispatch(setUserData(nonAuthorizedUser));
+        }
     }
 }
 
@@ -71,7 +74,6 @@ export const getBasketAction = function (id: string): (dispatch: any) => void {
 }
 
 export const updateUserDataAction = function (userData: UserData): (dispatch: any) => void {
-    // return action.bind(null, userDataProcessor.updateData.bind(userDataProcessor, userData));
     return async dispatch => {
         try {
             await userDataProcessor.updateData(userData);
@@ -79,6 +81,10 @@ export const updateUserDataAction = function (userData: UserData): (dispatch: an
             dispatch(setErrorCode(ErrorCode.NO_ERROR));
         } catch (error: any) {
             dispatch(setErrorCode(error));
+
+            if (error === ErrorCode.AUTH_ERROR) {
+                dispatch(setUserData(nonAuthorizedUser));
+            }
         }
     }
 }
