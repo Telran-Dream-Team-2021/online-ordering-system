@@ -35,7 +35,7 @@ export default class AuthServiceJava extends AuthServiceRest {
         const userData: UserData = {
             email: email || '',
             displayName: payload.displayName ?? email ?? 'User',
-            isAdmin: payload.role === 'ADMIN',
+            isAdmin: payload.roles.includes('ROLE_ADMIN'),
             uid: payload.uid || '',
         };
 

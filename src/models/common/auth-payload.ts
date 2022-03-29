@@ -1,6 +1,6 @@
 type AuthPayload = {
     accessToken: string,
-    role?: string,
+    roles: string[],
     displayName?: string,
     email?: string,
     uid?: number,
