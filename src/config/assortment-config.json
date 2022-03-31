@@ -7,10 +7,10 @@
     "Chocolate"
   ],
   "unitsOfMeasurement": [
-    "pieces",
+    "PIECES",
     "100 gr",
     "500 gr",
-    "kg"
+    "KG"
   ],
   "minProductNameLength": 3,
   "maxProductNameLength": 30,

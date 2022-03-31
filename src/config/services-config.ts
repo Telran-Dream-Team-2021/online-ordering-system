@@ -7,13 +7,15 @@ import OrdersServiceFire from "../service/orders-service-fire";
 import Orders from "../service/orders";
 import AuthServiceJava from "../service/auth-service-java";
 import UserServiceJava from "../service/user-service-java";
+import ProductServiceJava from "../service/product-service-java";
 
 export const AUTH_TOKEN = 'auth_token';
 export const JAVA_DOMAIN = 'http://localhost:8080';
 const API_V1 = '/api/v1'
+export const JAVA_WS_DOMAIN = 'http://localhost:8080';
 
 /*** Product Service Config ***/
-const productService = new ProductServiceFire("products");
+const productService = new ProductServiceJava(JAVA_DOMAIN + API_V1 + "/products", JAVA_WS_DOMAIN);
 export const catalog: Catalog = new Catalog(productService);
 
 /*** Auth & UserData Services Config ***/

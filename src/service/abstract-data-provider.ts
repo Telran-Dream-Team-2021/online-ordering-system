@@ -23,7 +23,7 @@ export default abstract class AbstractDataProvider<T> implements DataProvider<T>
     protected getHeaders(): HeadersInit {
         return {
             "Authorization": "" + localStorage.getItem(AUTH_TOKEN),
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         };
     }
 
