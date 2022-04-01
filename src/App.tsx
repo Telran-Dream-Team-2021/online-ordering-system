@@ -84,14 +84,10 @@ const App: FC = () => {
         function getBasketData(): Subscription {
             return basket.getBasket(userData.uid).subscribe({
                 next(bd) {
-                    console.log("basket next");
-                    console.log(bd)
                     dispatch(setErrorCode(ErrorCode.NO_ERROR));
                     dispatch(setBasket(bd));
                 },
                 error(err) {
-                    console.log('error basket observable')
-                    console.log(err)
                     dispatch(setErrorCode(err));
                 }
             });
@@ -100,7 +96,6 @@ const App: FC = () => {
         if (!!userData.uid) {
             subscriptionBasketData = getBasketData();
             return () => {
-                console.log('unsubscribe')
                 return subscriptionBasketData.unsubscribe();
             }
         }

@@ -13,8 +13,8 @@ export default class Basket {
 
     async addItem(userId: string | number, product: ProductData): Promise<BasketData> {
         const item: ItemData = {pricePerUnit: product.price, productId: product.productId, quantity: 1};
-        const basket = await basketService.get(userId.toString()) as BasketData
-        if (basket) {
+        const basket = await basketService.get(userId as number) as BasketData
+        if (basket && !!basket.userId) {
             const indexId = basket.basketItems.findIndex((element) => element.productId === item.productId);
             if (-1 === indexId) {
                 basket.basketItems.push(item);
@@ -36,9 +36,7 @@ export default class Basket {
         const indexId = basket.basketItems.findIndex((element) => element.productId === productId);
         if (-1 !== indexId) {
             if (basket.basketItems[indexId].quantity <= 1) {
-                // console.log("qty 1")
                  basket.basketItems.splice(indexId, 1);
-                // console.log(basket.basketItems)
             } else {
                 basket.basketItems[indexId].quantity -= 1;
             }
@@ -51,7 +49,6 @@ export default class Basket {
     }
 
     removeBasket(basket: BasketData): Promise<BasketData>{
-        console.log('removeBasket')
         return this.basketService.remove(basket.userId)
     }
 
