@@ -57,7 +57,6 @@ export default class AuthServiceFire implements AuthService {
         return authState(this.auth)
             .pipe(mergeMap(user => from(this.isAdmin(user?.uid))
                 .pipe(map((isAdmin) => {
-                    console.log(user);
                     if (!!user) {
                         return {
                             uid: user.uid,
