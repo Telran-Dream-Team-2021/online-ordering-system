@@ -11,12 +11,8 @@ import {
 import firebaseApp from "../config/fire-config";
 import ErrorCode from "../models/common/error-code";
 import {BasketData} from "../models/basket-data";
-import {from, Observable} from "rxjs";
-import {collectionData, docData} from "rxfire/firestore";
-import {map} from "rxjs/operators";
-import { ItemData } from "../models/item-data";
-import {DocumentData} from "rxfire/firestore/interfaces";
-import {ProductData} from "../models/product-data";
+import {Observable} from "rxjs";
+import {docData} from "rxfire/firestore";
 
 
 export default class BasketServiceFire extends AbstractDataProvider<BasketData> {
@@ -74,8 +70,6 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
         try {
             await setDoc(doc(this.fireCollection, id), newEntity);
         } catch (e) {
-            console.log('err')
-            console.log(e)
             throw ErrorCode.AUTH_ERROR;
         }
         return newEntity;

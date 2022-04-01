@@ -7,7 +7,6 @@ import {WsMessage} from "../models/common/ws-message-type";
 
 
 export default class ProductServiceJava extends AbstractDataProvider<ProductData> {
-    private WEBSOCKET_MAPPING: string = "/websocket-oos/v1";
     private WEBSOCKET_PRODUCT_THEME: string = "/topics/products";
 
     private productsCache: ProductData[] = [];

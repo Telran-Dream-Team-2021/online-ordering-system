@@ -4,6 +4,7 @@ import ErrorCode from "../models/common/error-code";
 import {AUTH_TOKEN} from "../config/services-config";
 
 export default abstract class AbstractDataProvider<T> implements DataProvider<T>{
+    protected WEBSOCKET_MAPPING: string = "/websocket-oos/v1";
     public constructor(protected url?: string) {}
 
     abstract add(entity: T): Promise<T>;
