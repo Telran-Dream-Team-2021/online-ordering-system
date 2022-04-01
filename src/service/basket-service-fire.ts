@@ -35,7 +35,7 @@ export default class BasketServiceFire extends AbstractDataProvider<BasketData> 
 
     async add(entity: BasketData): Promise<BasketData> {
         try {
-            await setDoc(doc(this.fireCollection, entity.userId), entity);
+            await setDoc(doc(this.fireCollection, entity.userId as string), entity);
         } catch (err) {
             throw ErrorCode.AUTH_ERROR;
         }
