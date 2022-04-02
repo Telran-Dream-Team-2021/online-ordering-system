@@ -7,7 +7,6 @@ import {WsMessage} from "../models/common/ws-message-type";
 
 
 export default class OrdersServiceJava extends AbstractDataProvider<OrderData>{
-    private WEBSOCKET_MAPPING: string = "/websocket-oos/v1";
     private WEBSOCKET_PRODUCT_THEME: string = "/topics/orders";
     private ordersCache: OrderData[] = [];
     stompClient: CompatClient | undefined;
@@ -26,16 +25,13 @@ export default class OrdersServiceJava extends AbstractDataProvider<OrderData>{
     }
 
     get(id: number | string | undefined): Observable<OrderData[]> | Promise<OrderData> {
-        if (id) {
-            return this.query(id as number).then(r => r.json());
-        } else {
-            return (new Observable<OrderData[]>(observer => {
-                    this.fetchData(observer);
-                    this.connect(observer);
-                    return () => {this.disconnect()};
-                })
-            )
-        }
+
+        return (new Observable<OrderData[]>(observer => {
+                this.fetchData(observer, id as number);
+                this.connect(observer);
+                return () => {this.disconnect()};
+            })
+        )
 
     }
 
@@ -53,8 +49,8 @@ export default class OrdersServiceJava extends AbstractDataProvider<OrderData>{
         return this.query(id as number, "PUT", newEntity).then(r => r.json());
     }
 
-    private fetchData(observer: Observer<OrderData[]>) {
-        this.query()
+    private fetchData(observer: Observer<OrderData[]>, id?: number) {
+        this.query(id)
             .then(r => r.json())
             .then(data => {
                 if (this.ordersCache != data) {

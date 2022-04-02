@@ -58,20 +58,20 @@ const OrderForm: FC<{ order: OrderData }> = (props) =>{
     const handleDeliveryDateChange = (newValue: Date | null) => {
         const oldValue = new Date(order.deliveryDate).toLocaleDateString()
         const newOrder: OrderData = {...order, deliveryDate: new Date(newValue!)}
-        onEdit(oldValue, newValue!.toLocaleDateString(), newOrder)
+        onEdit(oldValue, newValue!, newOrder)
     };
 
     const handleLastEditionDateChange = (newValue: Date | null) => {
         const oldValue = new Date(order.lastEditionDate).toLocaleDateString()
         const newOrder: OrderData = {...order, lastEditionDate: new Date(newValue!)}
-        onEdit(oldValue, newValue!.toLocaleDateString(), newOrder)
+        onEdit(oldValue, newValue!, newOrder)
     };
 
     const onEdit = (oldValue: any, newValue: any, newOrder: OrderData)=>{
 
         confirmationData.current.title="Update Confirmation";
         confirmationData.current.message = `Old value is "${oldValue}", 
-            new value is "${newValue}".
+            new value is "${newValue.toLocaleDateString()}".
             Confirm the change?`;
 
         confirmationData.current.handler = (status)=> {
