@@ -3,7 +3,7 @@ import {setOrders} from "../../redux/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {orders} from "../../config/services-config";
 import {Subscription} from "rxjs";
-import {ordersSelector, userDataSelector} from "../../redux/store";
+import {ordersSelector} from "../../redux/store";
 import {Container, Grid, SxProps, Typography} from "@mui/material";
 import OrderForm from "../common/order-form";
 import LocalShippingSharpIcon from '@mui/icons-material/LocalShippingSharp';
@@ -12,13 +12,12 @@ import TablePaginationForm from "../common/table-pagination-form";
 const OrdersPage = () => {
     const dispatch = useDispatch()
     const ordersState = useSelector(ordersSelector)
-    const userState = useSelector(userDataSelector)
     useEffect(() => {
         let subscription:any;
         subscription = getData();
         function getData(): Subscription {
             subscription && subscription.unsubscribe();
-            return orders.getAllOrders(!userState.isAdmin? userState.uid: undefined).subscribe({
+            return orders.getAllOrders().subscribe({
 
                 next(arr) {
                     dispatch(setOrders(arr))

@@ -7,7 +7,7 @@ import {WsMessage} from "../models/common/ws-message-type";
 
 
 export default class OrdersServiceJava extends AbstractDataProvider<OrderData>{
-    private WEBSOCKET_PRODUCT_THEME: string = "/topics/orders";
+    private WEBSOCKET_ORDER_THEME: string = "/topics/orders";
     private ordersCache: OrderData[] = [];
     stompClient: CompatClient | undefined;
 
@@ -25,14 +25,16 @@ export default class OrdersServiceJava extends AbstractDataProvider<OrderData>{
     }
 
     get(id: number | string | undefined): Observable<OrderData[]> | Promise<OrderData> {
-
-        return (new Observable<OrderData[]>(observer => {
-                this.fetchData(observer, id as number);
-                this.connect(observer);
-                return () => {this.disconnect()};
-            })
-        )
-
+        if(id){
+            return this.query(id as number).then(r => r.json());
+        } else{
+            return (new Observable<OrderData[]>(observer => {
+                    this.fetchData(observer);
+                    this.connect(observer);
+                    return () => {this.disconnect()};
+                })
+            )
+        }
     }
 
     async remove(id: number | string): Promise<OrderData> {
@@ -46,11 +48,12 @@ export default class OrdersServiceJava extends AbstractDataProvider<OrderData>{
         if(! await this.exists(id)) {
             throw `Order with id ${id} does not exist`
         }
+        // newEntity.deliveryDate.replace(" ", "T")
         return this.query(id as number, "PUT", newEntity).then(r => r.json());
     }
 
-    private fetchData(observer: Observer<OrderData[]>, id?: number) {
-        this.query(id)
+    private fetchData(observer: Observer<OrderData[]>) {
+        this.query()
             .then(r => r.json())
             .then(data => {
                 if (this.ordersCache != data) {
@@ -69,7 +72,7 @@ export default class OrdersServiceJava extends AbstractDataProvider<OrderData>{
         this.stompClient.connect(
             {},
             (frames: any) => {
-                this.stompClient?.subscribe(this.WEBSOCKET_PRODUCT_THEME, message => {
+                this.stompClient?.subscribe(this.WEBSOCKET_ORDER_THEME, message => {
                     let wsMessage: WsMessage = JSON.parse(message.body);
                     console.log(wsMessage);
                     this.handleWsMessage(wsMessage, observer);
@@ -93,10 +96,13 @@ export default class OrdersServiceJava extends AbstractDataProvider<OrderData>{
             case "updated": {
                 (this.get(wsMessage.entityId) as Promise<OrderData>)
                     .then(createdOrderData => {
+                        console.log("createdOrderData:", createdOrderData)
                         const index = this.ordersCache.findIndex(order => order.orderId == wsMessage.entityId);
                         if (index >= 0) {
                             this.ordersCache[index] = createdOrderData;
                             observer.next([...this.ordersCache]);
+                            console.log("next")
+                            console.log(this.ordersCache)
                         }
                     })
                 break;

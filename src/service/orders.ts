@@ -2,8 +2,6 @@ import DataProvider from "./data-provider";
 import {Observable} from "rxjs";
 import {OrderData, statuses} from "../models/order-data";
 import {BasketData} from "../models/basket-data";
-import {getUuidByOrder} from "../utils/uuid";
-import {basketService} from "../config/services-config";
 import {UserData} from "../models/common/user-data";
 
 
@@ -37,8 +35,8 @@ export default class Orders {
     getOrder(productId: number): Promise<OrderData> {
         return this.ordersService.get(productId) as Promise<OrderData>;
     }
-    getAllOrders(id?: string | number): Observable<OrderData[]> {
-        return this.ordersService.get(id) as Observable<OrderData[]>;
+    getAllOrders(): Observable<OrderData[]> {
+        return this.ordersService.get() as Observable<OrderData[]>;
     }
 }
 
