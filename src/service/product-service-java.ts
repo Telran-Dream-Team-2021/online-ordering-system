@@ -103,7 +103,9 @@ export default class ProductServiceJava extends AbstractDataProvider<ProductData
                     .then(createdProductData => {
                         const index = this.productsCache.findIndex(product => product.productId == wsMessage.entityId);
                         if (index >= 0) {
-                            this.productsCache[index] = createdProductData;
+                            let newProductsCache = [...this.productsCache];
+                            newProductsCache[index] = createdProductData;
+                            this.productsCache = newProductsCache;
                             observer.next([...this.productsCache]);
                         }
                     })
@@ -112,7 +114,9 @@ export default class ProductServiceJava extends AbstractDataProvider<ProductData
             case "removed": {
                 const index = this.productsCache.findIndex(product => product.productId == wsMessage.entityId);
                 if (index >= 0) {
-                    this.productsCache.splice(index, 1);
+                    let newProductsCache = [...this.productsCache];
+                    newProductsCache.splice(index, 1);
+                    this.productsCache = newProductsCache;
                     observer.next([...this.productsCache]);
                 }
                 break;
