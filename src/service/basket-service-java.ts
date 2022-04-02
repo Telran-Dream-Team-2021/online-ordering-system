@@ -1,18 +1,15 @@
-import AbstractDataProvider from "./abstract-data-provider";
 import {BasketData, emptyBasket} from "../models/basket-data";
 import {Observable, Observer} from "rxjs";
-import {CompatClient, Stomp} from "@stomp/stompjs";
 import {WsMessage} from "../models/common/ws-message-type";
-import SockJS from "sockjs-client";
+import WsServiceAbstract from "./messaging/ws-service-abstract";
 
-export default class BasketServiceJava extends AbstractDataProvider<BasketData> {
-    private WEBSOCKET_BASKET_THEME: string = "/topics/baskets";
+const WEBSOCKET_BASKET_THEME: string = "/topics/baskets";
 
-    private stompClient?: CompatClient;
+export default class BasketServiceJava extends WsServiceAbstract<BasketData> {
     private basketCache: BasketData = emptyBasket;
 
-    constructor(url: string, private wsUrl: string) {
-        super(url);
+    constructor(url: string, wsUrl: string) {
+        super(wsUrl, WEBSOCKET_BASKET_THEME, (id) => this.get(id) as Promise<BasketData>, url);
     }
 
     async add(entity: BasketData): Promise<BasketData> {
@@ -75,41 +72,20 @@ export default class BasketServiceJava extends AbstractDataProvider<BasketData> 
         return this.query(id, "PUT", newEntity).then(r => r.json());
     }
 
-    private connect(observer: Observer<BasketData>) {
-        const webSocket = new SockJS(`${this.wsUrl}${(this.WEBSOCKET_MAPPING)}`);
-        this.stompClient = Stomp.over(webSocket);
-
-        this.stompClient.connect(
-            {},
-            () => {
-                this.stompClient?.subscribe(this.WEBSOCKET_BASKET_THEME, message => {
-                    let wsMessage: WsMessage = JSON.parse(message.body);
-                    this.handleWsMessage(wsMessage, observer);
-                })
-            },
-            (error: any) => observer.error(error),
-            () => observer.error("disconnected")
-        );
+    created(wsMessage: WsMessage, observer: Observer<BasketData>) {
+        this.updated(wsMessage, observer);
     }
 
-    private handleWsMessage(wsMessage: WsMessage, observer: Observer<BasketData>): void {
-        switch (wsMessage.action) {
-            case "created":
-            case "updated":
-                (this.get(wsMessage.entityId) as Promise<BasketData>)
-                    .then(createdBasketData => {
-                        this.basketCache = createdBasketData;
-                        observer.next(this.basketCache);
-                    });
-                break;
-            case "removed":
-                this.basketCache = emptyBasket;
+    updated(wsMessage: WsMessage, observer: Observer<BasketData>) {
+        (this.get(wsMessage.entityId) as Promise<BasketData>)
+            .then(createdBasketData => {
+                this.basketCache = createdBasketData;
                 observer.next(this.basketCache);
-                break;
-        }
+            });
     }
 
-    private disconnect() {
-        this.stompClient?.disconnect();
+    removed(wsMessage: WsMessage, observer: Observer<BasketData>) {
+        this.basketCache = emptyBasket;
+        observer.next(this.basketCache);
     }
 }
