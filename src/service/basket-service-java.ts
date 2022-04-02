@@ -9,7 +9,7 @@ export default class BasketServiceJava extends WsServiceAbstract<BasketData> {
     private basketCache: BasketData = emptyBasket;
 
     constructor(url: string, wsUrl: string) {
-        super(wsUrl, WEBSOCKET_BASKET_THEME, (id) => this.get(id) as Promise<BasketData>, url);
+        super(wsUrl, WEBSOCKET_BASKET_THEME, url);
     }
 
     async add(entity: BasketData): Promise<BasketData> {

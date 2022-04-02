@@ -1,17 +1,17 @@
 import Catalog from "../service/catalog";
 import Basket from "../service/basket";
 import UserDataProcessor from "../service/user-data-processor";
-import OrdersServiceFire from "../service/orders-service-fire";
 import Orders from "../service/orders";
 import AuthServiceJava from "../service/auth-service-java";
 import UserServiceJava from "../service/user-service-java";
 import ProductServiceJava from "../service/product-service-java";
 import BasketServiceJava from "../service/basket-service-java";
+import OrdersServiceJava from "../service/orders-service-java";
 
 export const AUTH_TOKEN = 'auth_token';
-export const JAVA_DOMAIN = 'http://localhost:8080';
+export const JAVA_DOMAIN = 'https://oos-12345.herokuapp.com';
 const API_V1 = '/api/v1'
-export const JAVA_WS_DOMAIN = 'http://localhost:8080';
+export const JAVA_WS_DOMAIN = 'https://oos-12345.herokuapp.com';
 
 /*** Product Service Config ***/
 const productService = new ProductServiceJava(JAVA_DOMAIN + API_V1 + "/products", JAVA_WS_DOMAIN);
@@ -27,5 +27,5 @@ export const basketService = new BasketServiceJava(JAVA_DOMAIN + API_V1 + "/bask
 export const basket: Basket = new Basket(basketService);
 
 /*** Orders Service config***/
-export const ordersServiceFire = new OrdersServiceFire("orders")
-export const orders = new Orders(ordersServiceFire)
+export const ordersServiceJava = new OrdersServiceJava(JAVA_DOMAIN + API_V1 + "/orders", JAVA_WS_DOMAIN)
+export const orders = new Orders(ordersServiceJava)

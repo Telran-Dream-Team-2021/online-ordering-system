@@ -6,17 +6,18 @@ import SockJS from "sockjs-client";
 import AbstractDataProvider from "../abstract-data-provider";
 
 export default abstract class WsServiceAbstract<T> extends AbstractDataProvider<T> implements WsService<T> {
+    protected WEBSOCKET_MAPPING: string = "/websocket-oos/v1";
     private stompClient?: CompatClient;
-    constructor(
+
+    protected constructor(
         protected wsUrl: string,
         protected theme: string,
-        protected getFn: (id?: number) => Promise<T>,
         protected url?: string) {
         super(url);
     }
 
     connect(observer: Observer<T>): void {
-        const webSocket = new SockJS(this.wsUrl);
+        const webSocket = new SockJS(`${this.wsUrl}${this.WEBSOCKET_MAPPING}`);
         this.stompClient = Stomp.over(webSocket);
 
         this.stompClient.connect(

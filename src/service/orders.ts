@@ -14,15 +14,18 @@ export default class Orders {
         console.log('addOrder')
         console.log(basket)
         const order: OrderData = {
-            orderId: getUuidByOrder(),
+            orderId: -1,
             orderItems: basket.basketItems,
             userId: basket.userId,
-            deliveryAddress: userData.deliveryAddress || 'Beer Sheva',
+            deliveryAddress: userData.deliveryAddress,
             status: statuses[statuses.created],
             deliveryDate: getDeliveryDate(),
             lastEditionDate: getLastEditionDate()
         }
-        return this.ordersService.add(order);
+        let res: OrderData = await this.ordersService.add(order);
+        console.log("added order")
+        console.log(res)
+        return res
     }
 
     updateOrder(productId: string | number, newOrderData: OrderData): Promise<OrderData> {
